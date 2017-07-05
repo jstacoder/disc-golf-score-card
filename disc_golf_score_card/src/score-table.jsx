@@ -1,29 +1,48 @@
-import React, { Component } from 'react'
-import { Table } from 'react-bootstrap'
-
-const items = [1, 2, 3, 4, 5]
-const tableItems = items.map((itm) => 
-    <td>{itm}</td>
-);
-const rows = tableItems.map((itm) =>
-    <tr>{itm}</tr>
-); 
+import React, { Component } from 'react';
+import { Table, Panel, Button } from 'react-bootstrap';
+const axios = require('axios');
 
 class ScoreTable extends Component {
+    constructor(...args){
+        super(...args);
+        this.state = {
+            data: this.props.courses
+        };
+    }
+    componentWillMount = (e) => {
+        this.setState({data: this.props.courses});
+        this.getData();
+    }
+
+
+    getData = () =>{
+        let self = this;
+        console.log('starting request');
+        axios.get('/course/').then(function(res){
+            console.log('finished request', res);
+            self.setState({data: res.data});
+        });
+    }
+
     render(){
         return (
-            <Table>
-                <thead>
-                    <tr>
-                        <td>
-                            heading
-                        </td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {rows}
-                </tbody>
-            </Table>
+            <div>
+                <Panel header="Hole List">
+                    <ul>{
+                        this.state.data.map((itm)=>{
+                            return (
+                                <li key={itm.id}>
+                                    Name: {itm.display_name}
+                                    <ul>                            
+                                        <li key={`${itm.id}-location`}>location: {itm.location}</li>
+                                        <li key={`${itm.id}-holecount`}>holes: {itm.hole_count}</li>
+                                    </ul>
+                                </li>
+                            );
+                        })
+                    }</ul>
+                </Panel>
+            </div>
         );
     }
 }

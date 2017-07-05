@@ -1,0 +1,2 @@
+web: python app.py
+js: node ../webpack-dev-hmr.js

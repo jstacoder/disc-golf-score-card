@@ -1,9 +1,13 @@
 import sqlalchemy as sa 
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
-from inflection import underscore, pluralize
+from inflection import underscore, pluralize, humanize
+
+from werkzeug import import_string, cached_property
 
 from flask import current_app
+
+from helpers import classproperty
 
 cls_registry = dict()
 
@@ -12,17 +16,14 @@ session = lambda engine: sa.orm.scoped_session(
     sa.orm.sessionmaker(bind=engine)
 )
 
-class classproperty(object):
-    def __init__(self, instance):
-        self.getter = instance
-    
-    def __get__(self, instance, owner):
-        return self.getter(owner)
-
 class BaseModel(object):
     _engine = None
     _session = None
     _query = None
+
+    @property
+    def json(self):
+        raise NotImplementedError
 
     @classproperty
     def engine(cls):
@@ -34,9 +35,9 @@ class BaseModel(object):
 
     @classproperty
     def session(cls):
-        if cls._session is None:
-            cls._session = session(cls.engine)()
-        return cls._session
+        if BaseModel._session is None:
+            BaseModel._session = session(cls.engine)()
+        return BaseModel._session
 
     @classproperty
     def query(cls):
@@ -51,8 +52,8 @@ class BaseModel(object):
         return sa.Column(sa.Integer, primary_key=True)
 
     def save(self, *args, **kwargs):
-        self.session.add(self)
-        self.session.commit()
+        self.__class__.session.add(self)
+        self.__class__.session.commit()
         return self
 
     @classmethod
@@ -61,6 +62,10 @@ class BaseModel(object):
 
     def get_all(self):
         return self.__class__._get_all()
+
+    @property
+    def display_name(self):
+        return humanize(getattr(self, 'name', self.__class__.__name__)).title()
         
 
 Model = declarative_base(cls=BaseModel, class_registry=cls_registry)
@@ -79,11 +84,57 @@ class DiscGolfCourse(Model):
         ), 
         lazy='dynamic'
     )
+
+    def __init__(self, *args, **kwargs):    
+        
+        if 'number_of_holes' in kwargs:
+            num_of_holes = kwargs.pop('number_of_holes')
+        if not num_of_holes:
+            num_of_holes = 0    
+        super(DiscGolfCourse, self).__init__(*args, **kwargs)
+        if num_of_holes and int(num_of_holes):
+            for _ in xrange(int(num_of_holes)):
+                hole = DiscGolfHole(par=3, number=_+1).save()
+                self.holes.append(hole)
+            self.save()
+
+    @cached_property
+    def json(self):
+        return dict(
+            id=self.id,
+            name=self.name,
+            location=self.location,
+            holes=map(
+                lambda hole:hole.json, self.holes.all()
+            ),
+            hole_count=self.holes.count(),
+            display_name=self.display_name,
+        )
     
 class DiscGolfFrisbee(Model):
+    PUTTER_TYPE = 'putter'
+    SHORT_RANGE_TYPE = 'short-range-driver'
+    MID_RANGE_TYPE = 'mid-range-driver'
+    LONG_RANGE_TYPE = 'long-range-driver'
+
+    DISC_TYPES = [
+        PUTTER_TYPE,
+        SHORT_RANGE_TYPE,
+        MID_RANGE_TYPE,
+        LONG_RANGE_TYPE,
+    ]
+
     brand = sa.Column(sa.String(255), nullable=False)
     name =  sa.Column(sa.String(255), nullable=False)
     disc_type = sa.Column(sa.String(255))
+
+    @cached_property
+    def json(self):
+        return dict(
+        brand=self.brand,
+        name=self.name,
+        disc_type=self.disc_type,
+    )
 
 class DiscGolfGame(Model):
     date = sa.Column(sa.Date, default=sa.func.now())
@@ -96,7 +147,22 @@ class DiscGolfGame(Model):
 
 class DiscGolfHole(Model):
     par = sa.Column(sa.Integer, nullable=False, default=3)
+    number = sa.Column(sa.Integer, nullable=False)
     course_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_courses.id'))
+
+    def __init__(self, *args, **kwargs):
+        if 'number' not in kwargs:
+            kwargs['number'] = self.__class__.query.count() + 1
+        super(DiscGolfHole,self).__init__(*args, **kwargs)            
+
+    @cached_property
+    def json(self):
+        return dict(
+            id=self.id,
+            par=self.par,
+            number=self.number,
+        )
+
 
 class DiscGolfScoreCard(Model):
     game = sa.orm.relation('DiscGolfGame', uselist=False)
