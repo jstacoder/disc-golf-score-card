@@ -14,6 +14,7 @@ import AddCourseForm from './add-course-form.jsx';
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 require('../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css');
 let axios = require('axios');
+import AppRoutes from './app-routes.jsx';
 
 class MyApp extends Component {
 	constructor(...args){
@@ -62,9 +63,10 @@ class MyApp extends Component {
 			<Grid>
 				<Heading />
 				<Clock /> 
-				<Row>
+				<Row>					
 					<Icon name="star" size="4x" spin={true} />
 					<Col md={8} sm={12}>					
+						<AppRoutes />
 						<Panel
 							collapsible
 							expanded={this.state.open}

@@ -117,7 +117,8 @@ let getConfig = (clean_options) => {
           //  },
 //        }),
 			//new ExtractTextPlugin({filename:  'bundle.css'})
-        ]
+		 ],
+		 devtool: 'inline-source-map',
 	};
 };
 
