@@ -46,7 +46,7 @@ let getConfig = (clean_options) => {
 					use: {
 						loader: 'babel-loader',
 						options:{
-							presets:['react', 'stage-1']
+							presets:['react', 'stage-0']
 						}
 					}
 				},
@@ -76,6 +76,9 @@ let getConfig = (clean_options) => {
 				}
 			]
         },
+		resolve:{
+			extensions: [' ', '.js','.jsx','.css']
+		},
         plugins: [
             new HtmlWebpackPlugin({
                 template: 'index.template.ejs',
