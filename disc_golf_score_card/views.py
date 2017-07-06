@@ -134,9 +134,16 @@ class BaseAddView(BaseModelView):
 class GameView(BaseListView):
     _model = models.DiscGolfGame
 
-
-class PlayerView(BaseListView):
+class PlayerView(BaseListView, BaseAddView):
     _model = models.DiscGolfPlayer
+    _form_class = forms.AddPlayerForm
+
+    def get(self, *args, **kwargs):
+        return super(PlayerView, self).get(*args, **kwargs)
+
+    def post(self, *args, **kwargs):
+        return super(PlayerView, self).post(*args, **kwargs)
+
 
 class FrisbeeView(BaseAddView, BaseListView):
     _model = models.DiscGolfFrisbee

@@ -4,7 +4,7 @@
 
 import React, { Component } from 'react';
 import  { BrowserRouter as Router, Route } from 'react-router-dom';
-import * as reactBootstrap from 'react-bootstrap';
+import * as reactBS from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
 
@@ -16,35 +16,35 @@ export default class StartPage extends Component {
     render(){
         return (
             <div>
-                <reactBootstrap.Grid>
-                    <reactBootstrap.Row>
-                        <reactBootstrap.Col xs={12} sm={6} md={4} lg={3}>
-                            <reactBootstrap.PageHeader>
+                <reactBS.Grid>
+                    <reactBS.Row>
+                        <reactBS.Col xs={12} sm={6} md={4} lg={3}>
+                            <reactBS.PageHeader>
                                 Start Page
-                            </reactBootstrap.PageHeader>
-                            <reactBootstrap.Well>
-                                <reactBootstrap.Row>
-                                    <reactBootstrap.Col md={6}>                                   
+                            </reactBS.PageHeader>
+                            <reactBS.Well>
+                                <reactBS.Row>
+                                    <reactBS.Col md={6}>                                   
                                         <LinkContainer to={`${this.props.match.url}/add-game`}>
-                                            <reactBootstrap.Button block>
+                                            <reactBS.Button block>
                                                 Start New Game
-                                            </reactBootstrap.Button>
+                                            </reactBS.Button>
                                         </LinkContainer>
-                                    </reactBootstrap.Col>
-                                    <reactBootstrap.Col md={6}>
+                                    </reactBS.Col>
+                                    <reactBS.Col md={6}>
                                         <LinkContainer to={`${this.props.match.url}/add-player`}>
-                                            <reactBootstrap.Button block>
+                                            <reactBS.Button block>
                                                 Add New Player
-                                            </reactBootstrap.Button>        
+                                            </reactBS.Button>        
                                         </LinkContainer>                                                    
-                                    </reactBootstrap.Col>
-                                </reactBootstrap.Row>
-                            </reactBootstrap.Well>
+                                    </reactBS.Col>
+                                </reactBS.Row>
+                            </reactBS.Well>
                             <Route path={`${this.props.match.url}/add-game`} component={AddGame} />
                             <Route path={`${this.props.match.url}/add-player`} component={AddPlayer} />
-                        </reactBootstrap.Col>
-                    </reactBootstrap.Row>
-                </reactBootstrap.Grid>                
+                        </reactBS.Col>
+                    </reactBS.Row>
+                </reactBS.Grid>                
             </div>
         );
     }

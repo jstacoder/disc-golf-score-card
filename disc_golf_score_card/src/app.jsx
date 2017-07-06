@@ -16,6 +16,7 @@ import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
 require('../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css');
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 let axios = require('axios');
+import AppRoutes from './app-routes.jsx';
 
 const Home = () => (
 	<div>
@@ -154,6 +155,7 @@ class MyApp extends Component {
 				<Row>
 					<Icon name="star" size="4x" spin={true} />
 					<Col md={8} sm={12}>					
+						<AppRoutes />
 						<Panel
 							collapsible
 							expanded={this.state.open}

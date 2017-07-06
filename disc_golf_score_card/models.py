@@ -85,12 +85,10 @@ class DiscGolfCourse(Model):
         lazy='dynamic'
     )
 
-    def __init__(self, *args, **kwargs):    
-        
-        if 'number_of_holes' in kwargs:
-            num_of_holes = kwargs.pop('number_of_holes')
-        if not num_of_holes:
-            num_of_holes = 0    
+    def __init__(self, *args, **kwargs):            
+        num_of_holes = kwargs.pop('number_of_holes', None)
+        if num_of_holes is None:
+            num_of_holes = False    
         super(DiscGolfCourse, self).__init__(*args, **kwargs)
         if num_of_holes and int(num_of_holes):
             for _ in xrange(int(num_of_holes)):
@@ -145,6 +143,13 @@ class DiscGolfGame(Model):
     )
     course_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_courses.id'))
 
+    @cached_property
+    def json(self):
+        return dict(
+            date=self.date,
+            score_card=self.score_card.json,                        
+        )
+
 class DiscGolfHole(Model):
     par = sa.Column(sa.Integer, nullable=False, default=3)
     number = sa.Column(sa.Integer, nullable=False)
@@ -163,6 +168,23 @@ class DiscGolfHole(Model):
             number=self.number,
         )
 
+class DiscGolfGamePlayerScore(Model):
+    """
+        represents one line on a game score card:
+        Twila Reid: <- game
+        hole: 1 - kyle: 3 <- hole/player/value
+    """
+    hole = sa.orm.relation('DiscGolfHole', backref=sa.orm.backref('player_scores', lazy='dynamic'))
+    hole_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_holes.id'))
+
+    player = sa.orm.relation('DiscGolfPlayer', backref=sa.orm.backref('game_scores', lazy='dynamic' ))
+    player_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_players.id'))
+
+    game = sa.orm.relation('DiscGolfGame', backref=sa.orm.backref('hole_score', uselist=False))
+    game_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_games.id'))
+    
+    value = sa.Column(sa.Integer, nullable=False)
+    
 
 class DiscGolfScoreCard(Model):
     game = sa.orm.relation('DiscGolfGame', uselist=False)
@@ -171,10 +193,58 @@ class DiscGolfScoreCard(Model):
     course_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_courses.id'))
     players = sa.orm.relation('DiscGolfPlayer', secondary='players_score_cards',backref='score_cards')
 
+    @cached_property
+    def json(self):
+        return dict(
+            course=self.course.json,
+            players=map(
+                lambda player: player.name, self.players.all()
+            ),
+        )
+
 class DiscGolfPlayer(Model):
     name = sa.Column(sa.String(255))
-    games = sa.orm.relation('DiscGolfGame', secondary='players_games',backref='games')
+    games = sa.orm.relation(
+        'DiscGolfGame', 
+        secondary='players_games',
+        backref=sa.orm.backref(
+            'players', lazy='dynamic',
+        ),
+        lazy='dynamic',
+    )
+    frisbees = sa.orm.relation(
+        'DiscGolfFrisbee', 
+        secondary='players_frisbees', 
+        backref=sa.orm.backref(
+            'players', lazy='dynamic',
+        ),
+        lazy='dynamic',
+    )
 
+    def __init__(self, *args, **kwargs):
+        frisbees = None
+        if 'frisbees' in kwargs:
+            frisbees = kwargs.pop('frisbees')
+            if type(frisbees) in [str, unicode]:
+                frisbees = [
+                    DiscGolfFrisbee.query.get(int(frisbees))
+                ]
+            if type(frisbees) not in [tuple, list]:
+                frisbees = [frisbees]
+            kwargs['frisbees'] = frisbees
+        super(DiscGolfPlayer, self).__init__(*args, **kwargs)
+
+    @cached_property
+    def json(self):
+        return dict(
+            name=self.name,
+            frisbees=map(
+                lambda frisbee: frisbee.json, self.frisbees.all()
+            ),
+            games=map(
+                lambda game: game.json, self.games.all()
+            ),
+        )
 
 players_score_cards = sa.Table(
     'players_score_cards', Model.metadata,
@@ -186,6 +256,12 @@ players_games = sa.Table(
     'players_games', Model.metadata,
     sa.Column('players_id',sa.Integer,sa.ForeignKey('disc_golf_players.id')),
     sa.Column('games_id', sa.Integer, sa.ForeignKey('disc_golf_games.id'))
+)
+
+players_frisbees = sa.Table(
+    'players_frisbees', Model.metadata,
+    sa.Column('players_id', sa.Integer, sa.ForeignKey('disc_golf_players.id')),
+    sa.Column('frisbees_id', sa.Integer, sa.ForeignKey('disc_golf_frisbees.id'))
 )
 
 class MyDb(Model):

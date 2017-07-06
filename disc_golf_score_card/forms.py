@@ -11,3 +11,8 @@ class AddCourseForm(Form):
     name = fields.StringField('name')
     location = fields.StringField('location')
     number_of_holes = fields.IntegerField('number of holes')
+
+class AddPlayerForm(Form):
+    name = fields.StringField('name')
+    frisbees = fields.IntegerField('frisbees')
+    
