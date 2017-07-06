@@ -13,7 +13,9 @@ import AddPlayer from './add-player';
 
 /* jshint ignore:start */
 export default class StartPage extends Component {
+    
     render(){
+        let url_prefix = this.props.match.url !== '' ? this.props.match.url : '/app';
         return (
             <div>
                 <reactBS.Grid>
@@ -25,14 +27,14 @@ export default class StartPage extends Component {
                             <reactBS.Well>
                                 <reactBS.Row>
                                     <reactBS.Col md={6}>                                   
-                                        <LinkContainer to={`${this.props.match.url}/add-game`}>
+                                        <LinkContainer to={`${url_prefix}/add-game`}>
                                             <reactBS.Button block>
                                                 Start New Game
                                             </reactBS.Button>
                                         </LinkContainer>
                                     </reactBS.Col>
                                     <reactBS.Col md={6}>
-                                        <LinkContainer to={`${this.props.match.url}/add-player`}>
+                                        <LinkContainer to={`${url_prefix}/add-player`}>
                                             <reactBS.Button block>
                                                 Add New Player
                                             </reactBS.Button>        
@@ -40,8 +42,8 @@ export default class StartPage extends Component {
                                     </reactBS.Col>
                                 </reactBS.Row>
                             </reactBS.Well>
-                            <Route path={`${this.props.match.url}/add-game`} component={AddGame} />
-                            <Route path={`${this.props.match.url}/add-player`} component={AddPlayer} />
+                            <Route path={`${url_prefix}/add-game`} component={AddGame} />
+                            <Route path={`${url_prefix}/add-player`} component={AddPlayer} />
                         </reactBS.Col>
                     </reactBS.Row>
                 </reactBS.Grid>                

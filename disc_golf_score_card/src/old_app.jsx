@@ -152,10 +152,24 @@ class MyApp extends Component {
 				<Heading />
 				<Clock /> 
 				{routerNav()}
-				<Row>					
+				<Row>
+					<Icon name="star" size="4x" spin={true} />
 					<Col md={8} sm={12}>					
-						<Icon name="star" size="4x" spin={true} />
-						<AppRoutes />									
+						<AppRoutes />
+						<Panel
+							collapsible
+							expanded={this.state.open}
+							defaultExpanded={true}
+							header={panelHeader}
+						>
+						<Button onClick={ ()=> this.setState({ open: !this.state.open})}>Click to open</Button>
+						<BootstrapTable data={ this.state.courses } striped hover condensed>
+							<TableHeaderColumn isKey dataField='name'>Course Name</TableHeaderColumn>
+							<TableHeaderColumn dataField='location'>Course Location</TableHeaderColumn>
+							<TableHeaderColumn dataField='hole_count'>Holes</TableHeaderColumn>
+						</BootstrapTable>
+						<AddCourseForm onCourseSubmit={this.onCourseSubmit} />
+					</Panel>					
 					</Col>					
 					<Sidebar />
 				</Row>

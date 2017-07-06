@@ -6,6 +6,12 @@ import json
 import views
 import models
 
+try:
+    import psycopg2
+    use_sqlite = False
+except ImportError:
+    use_sqlite = True
+
 app = flask.Flask(
     __name__, 
     template_folder='./dist',
@@ -14,7 +20,7 @@ app = flask.Flask(
 )
 
 app.config.SECRET_KEY = 'secret'
-app.config.SQLALCHEMY_URI = 'postgresql://dgsc:dgsc@localhost:5432/dgsc'
+app.config.SQLALCHEMY_URI = 'postgresql://dgsc:dgsc@localhost:5432/dgsc' if not use_sqlite else 'sqlite:///my.db'
 app.config.SQLALCHEMY_ECHO = True
 
 
