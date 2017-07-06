@@ -1,8 +1,9 @@
 /* jshint esversion:6 */
 /* jshint moz: true */
+/* jshint -W015 */
 
 import React, { Component } from 'react';
-import  { BrowserRouter as Router, Route, Link } from 'react-router-dom';
+import  { BrowserRouter as Router, Route } from 'react-router-dom';
 import * as reactBootstrap from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 
@@ -10,6 +11,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import AddGame from './add-game.jsx';
 import AddPlayer from './add-player';
 
+/* jshint ignore:start */
 export default class StartPage extends Component {
     render(){
         return (
@@ -47,3 +49,4 @@ export default class StartPage extends Component {
         );
     }
 }
+/* jshint ignore:end */

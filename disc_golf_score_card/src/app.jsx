@@ -75,16 +75,16 @@ const routerNav = () => (
 	<Router>
 		<div>
 			<ul>
-				<li><Link to="/">Home</Link></li>
-				<li><Link to="/about">About</Link></li>
-				<li><Link to="/topics">Topics</Link></li>
-				<li><Link to="/start-page">Start</Link></li>
+				<li><Link to="/app">Home</Link></li>
+				<li><Link to="/app/about">About</Link></li>
+				<li><Link to="/app/topics">Topics</Link></li>
+				<li><Link to="/app/start-page">Start</Link></li>
 			</ul>
 			<hr />
-			<Route exact path="/" component={Home}/>
-			<Route path="/about" component={About} />
-			<Route path="/topics" component={Topics}/>
-			<Route path="/start-page" component={StartPage}/>
+			<Route exact path="/app" component={Home}/>
+			<Route path="/app/about" component={About} />
+			<Route path="/app/topics" component={Topics}/>
+			<Route path="/app/start-page" component={StartPage}/>
 		</div>
 	</Router>
 );
