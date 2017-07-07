@@ -35,7 +35,7 @@ export default class AppRoutes extends Component {
             );
         }).concat([
             <Route path="/" component={StartPage} />,
-            <Route path="/app" component={StartPage} />,
+            <Route path="/app" component={StartPage} />
         ]);
         return (
             <Router>

@@ -10,9 +10,7 @@ class Heading extends Component {
                     sm={12}
                     xs={12}
                 >
-                    <PageHeader>
-                        <h1>Disc Golf Score Card</h1>
-                    </PageHeader>
+                    <PageHeader>Disc Golf Score Card</PageHeader>
                 </Col>
             </Row>
         );

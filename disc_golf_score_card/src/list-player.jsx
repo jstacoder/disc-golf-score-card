@@ -33,7 +33,7 @@ export default class ListPlayer extends Component {
                 <ListGroup>
                     {this.state.players.map((itm) =>{
                             return (
-                                <ListGroupItem>{itm.name}</ListGroupItem>
+                                <ListGroupItem key={itm.name}>{itm.name}</ListGroupItem>
                             );
                     })
                 }
