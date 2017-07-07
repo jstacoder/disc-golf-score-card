@@ -17,7 +17,7 @@ require('../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import * as axios from 'axios';
 import AppRoutes from './app-routes.jsx';
-import routerNav from './routes.jsx';
+import RouterNav from './routes.jsx';
 
 class MyApp extends Component {
 	constructor(...args){
@@ -80,11 +80,11 @@ class MyApp extends Component {
 			<Grid>
 				<Heading />
 				<Clock /> 
-				{routerNav}
+				
 				<Row>					
 					<Col md={8} sm={12}>					
 						<Icon name="star" size="4x" spin={true} />
-						<AppRoutes />									
+						<RouterNav />
 					</Col>					
 					<Sidebar />
 				</Row>
