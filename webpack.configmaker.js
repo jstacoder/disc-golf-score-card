@@ -73,39 +73,20 @@ let getConfig = (clean_options) => {
 				},
 				{
 					test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-					use: ExtractTextPlugin.extract({
-						use:[{
-							loader: 'url-loader?limit=10000&mimetype=application/font-woff',
-							options: { importLoaders: 1 },
-						}]
-					})
+					loader: 'url-loader?limit=10000&mimetype=application/font-woff',
 				},
       			{
 					test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-					use: ExtractTextPlugin.extract({
-						use:[{
-							loader: 'url-loader?limit=10000&mimetype=application/octet-stream',
-							options: { importLoaders: 1 },
-						}]
-					})
+					loader: 'url-loader?limit=10000&mimetype=application/octet-stream',
 				},
       			{
 					test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-					use: ExtractTextPlugin.extract({
-						use:[{
-							loader: 'file-loader',
-							options: { importLoaders: 1 },
-						}]
-					})
+					loader: 'file-loader',
 				},
       			{
 					test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-					use: ExtractTextPlugin.extract({
-						use:[{
-							loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
-							options: { importLoaders: 1},
-						}]
-					})
+					loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
+					
 				}
 			]
         },
@@ -163,26 +144,26 @@ let getConfig = (clean_options) => {
 			filename: '[name].bundle.css',
 			allChunks: true,
 		}),
-		new ExtractTextPlugin({
-			filename: '[name].bundle.eot',
-			allChunks: true,
-		}),
-		new ExtractTextPlugin({
-			filename: '[name].bundle.woff',
-			allChunks: true,
-		}),
-		new ExtractTextPlugin({
-			filename: '[name].bundle.svg',
-			allChunks: true,
-		}),
-		new ExtractTextPlugin({
-			filename: '[name].bundle.ttf',
-			allChunks: true,
-		}),
-		new ExtractTextPlugin({
-			filename: '[name].bundle.woff2',
-			allChunks: true,
-		}),
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.eot',
+		// 	allChunks: true,
+		// }),``
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.woff',
+		// 	allChunks: true,
+		// }),
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.svg',
+		// 	allChunks: true,
+		// }),
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.ttf',
+		// 	allChunks: true,
+		// }),
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.woff2',
+		// 	allChunks: true,
+		// }),
 		],
 
 		devtool:'inline-source-map'

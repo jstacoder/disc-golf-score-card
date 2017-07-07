@@ -22,60 +22,77 @@ export default class AppRoutes extends Component {
         };
     }
     render(){
+        let routesToComponents = {
+            "/app/add-player": AddPlayer,
+            "/add-frisbee": AddFrisbee,
+            "/add-game": AddGameMain,
+            "/list-game": ListGames,
+            "/list-player": ListPlayer
+        };
+        let localRoutes = Object.keys(routesToComponents).map((key) => {
+            return (
+                <Route path={key} component={routesToComponents[key]} />
+            );
+        }).concat([
+            <Route path="/" component={StartPage} />,
+            <Route path="/app" component={StartPage} />,
+        ]);
         return (
             <Router>
                 <div>
                     <ul>
                         <li>
-                            <LinkContainer to="/">
+                            <LinkContainer to="/app">
                                 <reactBS.Button>
                                     start
                                 </reactBS.Button>
                             </LinkContainer>
                         </li>
                         <li>
-                        <LinkContainer to="/add-player">
+                        <LinkContainer to="/app/add-player">
                             <reactBS.Button>
                                 add new player
                             </reactBS.Button>
                         </LinkContainer>
                         </li>
                         <li>
-                        <LinkContainer to="/add-frisbee">
+                        <LinkContainer to="/app/add-frisbee">
                             <reactBS.Button>
                                 add new frisbee
                             </reactBS.Button>
                         </LinkContainer>
                         </li>
                         <li>
-                        <LinkContainer to="/add-game">
+                        <LinkContainer to="/app/add-game">
                             <reactBS.Button>
                                 new game
                             </reactBS.Button>
                         </LinkContainer>
                         </li>
                         <li>
-                        <LinkContainer to="/list-game">
+                        <LinkContainer to="/app/list-game">
                             <reactBS.Button>
                                 game history
                             </reactBS.Button>
                         </LinkContainer>
                         </li>
                         <li>
-                        <LinkContainer to="/list-player">
+                        <LinkContainer to="/app/list-player">
                             <reactBS.Button>
                                 show users
                             </reactBS.Button>
                         </LinkContainer>
                         </li>
                     </ul>
-                    <hr />
-                    <Route exact path="/" component={StartPage} />
+                    <hr />                    
+                    {localRoutes}
+                    {/*
                     <Route path="/add-player" component={AddPlayer} />
                     <Route path="/add-frisbee" component={AddFrisbee} />
                     <Route path="/add-game" component={AddGameMain} />
                     <Route path="/list-game" component={ListGames} />
                     <Route path="/list-player" component={ListPlayer} />
+                    */}
                 </div>
             </Router>
         );
