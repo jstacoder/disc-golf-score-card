@@ -33,7 +33,7 @@ class ScoreTable extends Component {
                             return (
                                 <li key={itm.id}>
                                     Name: {itm.display_name}
-                                    <ul>                            
+                                    <ul key={`${itm.id}-ul`}>                            
                                         <li key={`${itm.id}-location`}>location: {itm.location}</li>
                                         <li key={`${itm.id}-holecount`}>holes: {itm.hole_count}</li>
                                     </ul>

@@ -1,8 +1,10 @@
 'use strict';
 /* jshint esversion: 6 */
 
+const progressBar = require('progress');
 const webpack = require('webpack');
 const path = require('path');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -19,7 +21,7 @@ let clean_dirs = [DIST_PATH];
 let clean_options = {
     root:BASE_PATH,
     exclude:[],
-    verbose: true,
+    verbose: false,
     dry: false,
 }
 
@@ -28,13 +30,19 @@ let getConfig = (clean_options) => {
 		return {
 		entry: {
 			main: path.join(APP_PATH, 'app.jsx'),
-			//vendor: './node_modules',//Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
-		},
-		//target:'node',
+		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
+		 },
+		// target:'node-webkit',
+		// node: {
+		// 	fs: 'empty',
+		// 	net:'mock',
+		// 	tls:'mock',
+		//  	module:'empty',
+		// 	'../../package':'empty',
 		output: {
-			filename: '[name].[hash].min.js',
+			filename: '[name]-[hash].bundle.js',
             path: DIST_PATH,
-			chunkFilename: '[name]-[chunkhash].js',
+			chunkFilename: '[name]-[chunkhash].bundle.js',
             publicPath: '/dist/'
 
 		},
@@ -46,36 +54,45 @@ let getConfig = (clean_options) => {
 					use: {
 						loader: 'babel-loader',
 						options:{
-							presets:['react', 'stage-1']
+							presets:['react', 'stage-0']
 						}
 					}
 				},
 				{
 					test: /\.css$/,
-					use:[
+				use: ExtractTextPlugin.extract({
+					use:[{
+						loader: 'css-loader',
+						options: { importLoaders: 1},
+					}]
+				})//[
 						//{loader: ExtractTextPlugin.extract({ use:'css-loader!style-loader' })},
-						 {loader: 'style-loader'},
-						 {loader: 'css-loader'}
-					]
+						// {loader: 'style-loader'},
+						// {loader: 'css-loader'}
+					//]
 				},
 				{
 					test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/,
-					loader: 'url-loader?limit=10000&mimetype=application/font-woff'
+					loader: 'url-loader?limit=10000&mimetype=application/font-woff',
 				},
       			{
 					test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-					loader: 'url-loader?limit=10000&mimetype=application/octet-stream'
+					loader: 'url-loader?limit=10000&mimetype=application/octet-stream',
 				},
       			{
 					test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-					loader: 'file-loader'
+					loader: 'file-loader',
 				},
       			{
 					test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-					loader: 'url-loader?limit=10000&mimetype=image/svg+xml'
+					loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
+					
 				}
 			]
         },
+		resolve:{
+			extensions: [' ', '.js','.jsx','.css']
+		},
         plugins: [
             new HtmlWebpackPlugin({
                 template: 'index.template.ejs',
@@ -88,12 +105,19 @@ let getConfig = (clean_options) => {
 
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            filename: 'vendor.js',
+            filename: 'vendor.bundle.js',
             minChunks(module, count) {
                 var context = module.context;
                 return context && context.indexOf('node_modules') >= 0;
             },
         }),
+		
+		//*********** progress bar 
+		new ProgressBarPlugin({clear:false}),
+		//new webpack.ProgressPlugin(percentage => (new progressBar(":current % :bar", 100)).update(percentage)),
+		//*************
+
+
 
         //*********************************** async chunks*************************
 
@@ -116,8 +140,33 @@ let getConfig = (clean_options) => {
          //       return context && context.indexOf('node_modules') >= 0 && targets.find(t => new RegExp('\\\\' + t + '\\\\', 'i').test(context));
           //  },
 //        }),
-			//new ExtractTextPlugin({filename:  'bundle.css'})
-        ]
+		new ExtractTextPlugin({
+			filename: '[name].bundle.css',
+			allChunks: true,
+		}),
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.eot',
+		// 	allChunks: true,
+		// }),``
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.woff',
+		// 	allChunks: true,
+		// }),
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.svg',
+		// 	allChunks: true,
+		// }),
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.ttf',
+		// 	allChunks: true,
+		// }),
+		// new ExtractTextPlugin({
+		// 	filename: '[name].bundle.woff2',
+		// 	allChunks: true,
+		// }),
+		],
+
+		devtool:'inline-source-map'
 	};
 };
 

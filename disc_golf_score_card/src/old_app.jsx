@@ -17,7 +17,78 @@ require('../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import * as axios from 'axios';
 import AppRoutes from './app-routes.jsx';
-import RouterNav from './routes.jsx';
+
+const Home = () => (
+	<div>
+		<PageHeader>
+			Home
+		</PageHeader>
+	</div>
+);
+
+const About = () => (
+	<div>
+		<Well>
+			About
+		</Well>
+	</div>
+);
+
+const Topic = ({ match }) => (
+	<div>
+		<PageHeader>
+			{match.params.topicId}
+		</PageHeader>
+	</div>
+);
+
+const Topics = ({ match }) => (
+	<div>
+		<PageHeader>
+			Topics
+		</PageHeader>
+		<ul>
+			<li>
+				<Link to={`${match.url}/rendering`}>
+					Rendering
+				</Link>
+			</li>
+			<li>
+				<Link to={`${match.url}/components`}>
+					Components
+				</Link>
+			</li>
+			<li>
+				<Link to={`${match.url}/props-v-state`}>
+					props v. state
+				</Link>
+			</li>
+		</ul>
+
+		<Route path={`${match.url}/:topicId`} component={Topic}/>
+		<Route exact path={match.url} render={()=>(
+			<h3>Please select a topic</h3>
+		)}/>
+	</div>
+);
+
+const routerNav = () => (
+	<Router>
+		<div>
+			<ul>
+				<li><Link to="/app">Home</Link></li>
+				<li><Link to="/app/about">About</Link></li>
+				<li><Link to="/app/topics">Topics</Link></li>
+				<li><Link to="/app/start-page">Start</Link></li>
+			</ul>
+			<hr />
+			<Route exact path="/app" component={Home}/>
+			<Route path="/app/about" component={About} />
+			<Route path="/app/topics" component={Topics}/>
+			<Route path="/app/start-page" component={StartPage}/>
+		</div>
+	</Router>
+);
 
 class MyApp extends Component {
 	constructor(...args){
@@ -80,11 +151,25 @@ class MyApp extends Component {
 			<Grid>
 				<Heading />
 				<Clock /> 
-				
-				<Row>					
+				{routerNav()}
+				<Row>
+					<Icon name="star" size="4x" spin={true} />
 					<Col md={8} sm={12}>					
-						<Icon name="star" size="4x" spin={true} />
-						<RouterNav />
+						<AppRoutes />
+						<Panel
+							collapsible
+							expanded={this.state.open}
+							defaultExpanded={true}
+							header={panelHeader}
+						>
+						<Button onClick={ ()=> this.setState({ open: !this.state.open})}>Click to open</Button>
+						<BootstrapTable data={ this.state.courses } striped hover condensed>
+							<TableHeaderColumn isKey dataField='name'>Course Name</TableHeaderColumn>
+							<TableHeaderColumn dataField='location'>Course Location</TableHeaderColumn>
+							<TableHeaderColumn dataField='hole_count'>Holes</TableHeaderColumn>
+						</BootstrapTable>
+						<AddCourseForm onCourseSubmit={this.onCourseSubmit} />
+					</Panel>					
 					</Col>					
 					<Sidebar />
 				</Row>
