@@ -7,8 +7,10 @@ export default class ListPlayer extends Component {
         super(...props);
         this.state = {
             props: props,
-            players:[],
+            players:this.props.playerList,
+
         };
+
     }
     loadPlayers = () =>{
         axios.get("/api/player")
@@ -33,7 +35,7 @@ export default class ListPlayer extends Component {
                 <ListGroup>
                     {this.state.players.map((itm) =>{
                             return (
-                                <ListGroupItem key={itm.id}>{itm.name}</ListGroupItem>
+                                <ListGroupItem key={itm.name}>{itm.name}</ListGroupItem>
                             );
                     })
                 }

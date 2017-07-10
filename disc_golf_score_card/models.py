@@ -180,18 +180,15 @@ class DiscGolfGamePlayerScore(Model):
     player = sa.orm.relation('DiscGolfPlayer', backref=sa.orm.backref('game_scores', lazy='dynamic' ))
     player_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_players.id'))
 
-    game = sa.orm.relation('DiscGolfGame', backref=sa.orm.backref('hole_score', uselist=False))
-    game_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_games.id'))
-    
+    score_card = sa.orm.relation('DiscGolfScoreCard', backref=sa.orm.backref('game_scores', lazy='dynamic'))
+    score_card_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_score_cards.id'))
+
     value = sa.Column(sa.Integer, nullable=False)
     
 
 class DiscGolfScoreCard(Model):
     game = sa.orm.relation('DiscGolfGame', uselist=False)
-    game_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_games.id'))
-    course = sa.orm.relation('DiscGolfCourse', uselist=False)
-    course_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_courses.id'))
-    players = sa.orm.relation('DiscGolfPlayer', secondary='players_score_cards',backref='score_cards')
+    game_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_games.id'))        
 
     @cached_property
     def json(self):

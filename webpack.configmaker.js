@@ -29,7 +29,7 @@ let clean_options = {
 let getConfig = (clean_options) => {
 		return {
 		entry: {
-			main: path.join(APP_PATH, 'app.jsx'),
+			main: path.join(APP_PATH, 'disc-golf-score-card.jsx'),
 		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
 		 },
 		// target:'node-webkit',
@@ -42,7 +42,7 @@ let getConfig = (clean_options) => {
 		output: {
 			filename: '[name]-[hash].bundle.js',
             path: DIST_PATH,
-			chunkFilename: '[name]-[chunkhash].bundle.js',
+			chunkFilename: '[name]-chunk-[chunkhash].bundle.js',
             publicPath: '/dist/'
 
 		},
@@ -105,7 +105,7 @@ let getConfig = (clean_options) => {
 
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
-            filename: 'vendor.bundle.js',
+            filename: 'vendor-[hash].bundle.js',
             minChunks(module, count) {
                 var context = module.context;
                 return context && context.indexOf('node_modules') >= 0;
@@ -141,7 +141,7 @@ let getConfig = (clean_options) => {
           //  },
 //        }),
 		new ExtractTextPlugin({
-			filename: '[name].bundle.css',
+			filename: '[name]-[hash].bundle.css',
 			allChunks: true,
 		}),
 		// new ExtractTextPlugin({

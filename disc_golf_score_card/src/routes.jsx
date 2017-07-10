@@ -12,6 +12,7 @@ import AddGameMain from './add-game-main.jsx';
 import ListGames from './list-games.jsx';
 import ListPlayer from './list-player.jsx';
 import StartPage from './start-page.jsx';
+import PlayerPage from './components/player/player-page';
 
 
 /* jshint ignore:start */
@@ -101,12 +102,11 @@ export default class RouterNav extends Component {
             "/app":StartPage,
             "/app/about":About,
             "/app/topics":Topics,
-            "/app/start-page":StartPage,
-            "/app/add-player": AddPlayer,
+            "/app/start-page":StartPage,            
             "/app/add-frisbee": AddFrisbee,
             "/app/add-game": AddGameMain,
             "/app/list-game": ListGames,
-            "/app/list-player": ListPlayer,
+            "/app/player": PlayerPage,            
         };
         let localRoutes = Object.keys(routesToComponents).map((key, idx) => {
             return generateRoute(key, routesToComponents[key]);            
