@@ -25,6 +25,7 @@ export default class AddPlayer extends Component {
         this.setState({player: player});
     }
     handleSubmit = (e) => {
+        let  sendRefreshRequest = this.props.sendRefreshRequest;
         e.preventDefault();
 
         let name = this.state.player.name;
@@ -45,6 +46,7 @@ export default class AddPlayer extends Component {
         axios.post('/api/player/', player)
                 .then((res) =>{
                     console.log('good request!', res);
+                    sendRefreshRequest(player);
                 })
                 .catch((err) =>{
                     console.log('bad request!', err);
