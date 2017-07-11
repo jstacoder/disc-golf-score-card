@@ -15,4 +15,8 @@ class AddCourseForm(Form):
 class AddPlayerForm(Form):
     name = fields.StringField('name')
     frisbees = fields.IntegerField('frisbees')
+
+class AddGameForm(Form):
+    course = fields.SelectField(choices=None)
+    players = fields.SelectMultipleField(choices=None)
     

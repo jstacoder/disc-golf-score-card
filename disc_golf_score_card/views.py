@@ -13,7 +13,24 @@ class IndexView(MethodView):
     def post(self):
         return flask.make_response('{}')
 
-class BaseModelView(MethodView):
+
+class BaseView(MethodView):
+    _context = {}
+
+    def __init__(self, *args, **kwargs):
+        super(BaseView, self).__init__(*args, **kwargs)
+        self.request = flask.request
+
+    def add_to_context(self, key, val):
+        ctx = self.get_context()
+        ctx[key] = val
+        self._context = ctx
+        return self._context
+
+    def get_context(self):
+        return self._context
+
+class BaseModelView(BaseView):
     _model = None
     _routes_added = False
     _routes_to_add = None
@@ -43,6 +60,34 @@ class BaseModelView(MethodView):
         response = flask.make_response(_json)
         response.headers['Content-Type'] = 'application/json'
         return response
+
+class AddNewGameView(BaseModelView):
+    _model = models.DiscGolfGame
+    _form_class = forms.AddGameForm
+
+    def __init__(self, *args, **kwargs):
+        super(AddNewGameView, self).__init__(*args, **kwargs)
+        self._form_class.course.choices = models.DiscGolfCourse\
+                    .query\
+                    .filter(models.DiscGolfCourse.name.like("%"))\
+                    .values('id','name')
+        
+        self._form_class.players.choices = models.DiscGolfPlayer\
+                  .query\
+                  .filter(models.DiscGolfPlayer.name.like("%"))\
+                  .values('id', 'name')
+        
+
+    def post(self):
+        form = self._form_class(self.request.form)
+        course = models.DiscGolfCourse.query.get(form.course.data)
+        game = self.model(course=course).save()
+        sc = models.DiscGolfScoreCard(game=game).save()
+        players = map(lambda x: models.DiscGolfPlayer.query.get(x), form.players.data)
+        for p in players:
+            p.games.append(game)
+            p.save()
+        return self.json(dict(score_card=sc.id, game=game.id))
 
 class BaseListView(BaseModelView):
     def __init__(self, *args, **kwargs):        
