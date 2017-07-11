@@ -147,7 +147,8 @@ class DiscGolfGame(Model):
     def json(self):
         return dict(
             date=self.date,
-            score_card=self.score_card.json,                        
+            course=self.course.json,
+            id=self.id,
         )
 
 class DiscGolfHole(Model):
@@ -184,19 +185,35 @@ class DiscGolfGamePlayerScore(Model):
     score_card_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_score_cards.id'))
 
     value = sa.Column(sa.Integer, nullable=False)
+
+    @cached_property
+    def json(self):
+        return dict(
+            hole=self.hole.json,
+            player=self.player.json,
+            score_card=self.score_card_id,
+            value=self.value, 
+            id=self.id,
+        )
     
 
 class DiscGolfScoreCard(Model):
     game = sa.orm.relation('DiscGolfGame', uselist=False)
     game_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_games.id'))        
 
+    @property
+    def game_player_scores(self):
+        players = self.game.players.query.all()
+        rows = [
+            (player, player.game_scores.filter(score_card=self).all()) for player in players
+        ]
+        return rows
+
     @cached_property
     def json(self):
         return dict(
-            course=self.course.json,
-            players=map(
-                lambda player: player.name, self.players.all()
-            ),
+            game=self.game.id,
+            course=self.game.course.name,            
         )
 
 class DiscGolfPlayer(Model):
