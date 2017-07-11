@@ -13,19 +13,9 @@ export default class CoursePage extends Component {
             courses: []
         };
     }
-    loadCourses = () => {
-        let self = this;
-        axios.get('/course/').then((res) =>{
-            console.log(res);
-            this.setState({
-                courses: res.data
-            });
-        });
-    }   
-
-    componentDidMount = () =>{
-        this.loadCourses();
-    }
+    /*componentDidMount = () =>{
+     
+    }*/
 
     handleSubmit = (name, location, number_of_holes) =>{
         alert(`got ${name} ${location} ${number_of_holes}`);
@@ -36,20 +26,22 @@ export default class CoursePage extends Component {
             hole_count: number_of_holes,
             display_name: name,
         };
-        let courses = this.state.courses;
-        courses.push(newCourse);
-        this.setState({courses: courses});
-        console.log(courses);
+        //let courses = this.state.courses;
+        //courses.push(newCourse);
+        //this.setState({courses: courses});
+        //console.log(courses);
+        this.props.handleAddCourse(course);
     }
 
     render(){
-        let courses = this.state.courses;
+        let courses = this.props.courses;
+        console.log(this.props);
         return (
             <Grid>
                 <Row>
                     <Col xs={12} md={6} mdOffset={4}>
                         <LinkContainer to="/app">
-                            <Button block bsStyle="primary">Back</Button>
+                            <Button bsSize="lg" block bsStyle="primary">Back</Button>
                         </LinkContainer>
                     </Col>
                 </Row>
