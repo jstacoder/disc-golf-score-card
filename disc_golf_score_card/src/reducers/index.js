@@ -1,16 +1,17 @@
 import { combineReducers } from 'redux';
-import PlayerReducer from './players';
-import courseReducer from './courses';
-import playerNameColorReducer from './player-name-colors';
-import gameDataReducer from './current-game-data';
-import { routerReducer } from 'react-router-redux';
+import players from './players';
+import courses from './courses';
+import playerNameColor from './player-name-colors';
+import gameData from './current-game-data';
+import { routerReducer as router } from 'react-router-redux';
+import { reducer as reduxAsyncConnect } from 'redux-async-connect';
 
-const rootReducer = combineReducers({
-    players: PlayerReducer,
-    courses: courseReducer,
-    playerNameColor: playerNameColorReducer,
-    gameData:gameDataReducer,
-    router:routerReducer,
+export const rootReducer = combineReducers({
+    players,
+    courses,
+    playerNameColor,
+    gameData,
+    router,
+    reduxAsyncConnect,
 });
 
-export default rootReducer;

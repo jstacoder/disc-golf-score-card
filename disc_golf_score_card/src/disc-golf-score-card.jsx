@@ -15,6 +15,7 @@ import CurrentGameList from './components/game/current-game-list';
 import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
 import CurrentGamePage from './components/game/current-game-page';
+import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -49,109 +50,22 @@ class NewStartPage extends Component {
 }
 
 class DisGolfScoreCardApp extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-            values: {},
-            playerNameColor:{},
-            courses: [],
-            players:[],
-            courseValues:{},
-            currentGameData: {
-                game_id:null,
-                players:[],
-                course:null,
-            }
-        }
-    }
-    componentDidMount = () =>{
+    componentWillMount = () =>{
         this.props.actions.loadPlayers();
         this.props.actions.loadCourses();
         while(!this.props.players){
             let x;
         }
         this.props.actions.loadPlayerNameColors(this.props.players);        
-        //this.props.actions.fetchPlayersIfNeeded();
-        //this.props.actions.fetchCoursesIfNeeded();
-        
     }
     handleCourseSelect = (course) =>{
         this.props.actions.selectCourse(course);
-        //this.props.actions.addCourseToGame(course, this.props.gameData);
-        // let gameData = this.state.currentGameData;
-        // gameData.course = course;
-        // this.setState({currentGameData: gameData});
-        // let values = this.state.courseValues;
-        // let val = !values[course.name];
-        // values[course.name] = val;
-        // this.setState({courseValues: values});
-        alert("selected ", course.name);
+        alert("selected ", course);
     }
     handlePlayerSelect = (player) => {
         this.props.actions.selectPlayer(player);
-        //this.props.actions.togglePlayerNameColor(player, this.props.playerNameColors);
-        // let gameData = this.state.currentGameData;
-        // gameData.players.push(player);
-        // let playerNameColor = this.state.playerNameColor;
-        // let values = this.state.values;
-        // let val = !values[player.name];
-        // values[player.name] = val;
-        // console.log("VAL: ", val, values, player);
-        // playerNameColor[player.name] = val ? 'text-success' : 'text-danger'; 
-        // this.setState({values: values});
-        // this.setState({playerNameColor: playerNameColor});
-        // let players = this.state.players;
-        // players.map((itm, idx)=>{
-        //     if(itm.id===player.id){
-        //         console.log(players);
-        //         itm.selected = true;
-        //         players[idx] = itm;
-        //     }
-        // });
-        // //this.setState({players});
-        // //  this.setState({currentGameData: gameData});
+        this.props.actions.togglePlayerNameColor(player);
     }
-    handleAddCourse = (course) =>{
-        let courses = this.state.courses;
-        courses.push(course);
-        console.log('got courses!!');
-        this.setState({courses});
-    }
-    loadCourses = () => {
-        let self = this;
-        axios.get('/course/').then((res) =>{
-            console.log(res);
-            let values = {};
-            res.data.map((itm)=>{
-                values[itm.name] = false;
-            });
-            self.setState({
-                courses: res.data,
-                courseValues: values
-            });
-        }); 
-    }
-    loadPlayers = () =>{
-        let self = this;
-        axios.get("/api/player").then((res)=>{
-            let values = {};
-            let playerNameColor = {};
-            res.data.map((itm)=>{
-                    values[itm.name] =  false;
-            });
-            res.data.map((itm)=>{
-                    playerNameColor[itm.name] = 'text-danger';
-            });
-            self.setState({
-                players:res.data.map((itm)=>{
-                    itm.selected = false;
-                    return itm;
-                }),
-                values: values,
-                playerNameColor: playerNameColor
-            });
-        });
-    }   
     render(){
         let courses = this.props.courses;
         let players = this.props.players;
@@ -169,16 +83,10 @@ class DisGolfScoreCardApp extends Component{
                 ]
             }
         ];        
-        const course = {
-            name: 'twila reid',
-            holes: [1,2,3,4,5,6,7,8,9]
-        };
-        
         console.log("COURSES!! ", courses);
         return (
-            <Router history={history}> 
+            <Router history={history} render={(props) => <ReduxAsyncConnect {...props}/> } > 
                 <div>
-                    
                     <Route path="/app/players" component={PlayerPage} />
                     <Route path="/app/course" component={props =>(
                         <CoursePage handleAddCourse={this.handleAddCourse} courses={courses} {...props}/>
@@ -236,4 +144,4 @@ function mapDispatchToProps(dispatch){
     };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DisGolfScoreCardApp);
+export default asyncConnect(mapStateToProps, mapDispatchToProps)(DisGolfScoreCardApp);
