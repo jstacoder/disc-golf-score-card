@@ -15,7 +15,6 @@ export default class SelectCourse extends Component {
             <Grid>
                 <Row>
                       <Col xs={12} md={6} mdOffset={4}> 
-  
                             <ScoreTable courseValues={this.props.courseValues} courses={this.props.courses} addSelect handleCourseSelect={this.handleCourseSelect} />
                       </Col>
                 </Row>

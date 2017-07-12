@@ -146,7 +146,7 @@ class DiscGolfGame(Model):
     @cached_property
     def json(self):
         return dict(
-            date=self.date.strftime('%y-%m-%dT%h:%I:%S%Z'),
+            date=self.date.strftime('%y-%m-%dT%H:%I:%S%Z'),
             course=self.course.json,
             id=self.id,
         )

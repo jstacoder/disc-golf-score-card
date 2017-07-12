@@ -1,16 +1,31 @@
 import { createStore, compose, applyMiddleware } from 'redux';
+import { routerMiddleware } from 'react-router-redux';
+import createHistory from 'history/createBrowserHistory';
 import ReduxPromise from 'redux-promise';
 import rootReducer from '../reducers';
+import thunkMiddleware from 'redux-thunk';
 
-export default function configureStore(initialState){
+import { createLogger } from 'redux-logger';
+
+export const history = createHistory();
+
+export function configureStore(initialState){
+    
+    
     const store = createStore(
         rootReducer,
         initialState,
         compose(
-           applyMiddleware(ReduxPromise),
-           window.devToolsExtension ? window.devToolsExtension() : f => f
+           applyMiddleware(
+               ReduxPromise,
+               routerMiddleware(history),
+               createLogger(),
+               //thunkMiddleware,
+            ),
+           window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
         )        
     );
+   
 
     if(module.hot){
         module.hot.accept('../reducers', () => {

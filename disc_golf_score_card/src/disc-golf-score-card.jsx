@@ -3,7 +3,8 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
+import { ConnectedRouter as Router } from 'react-router-redux';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import * as axios from 'axios';
 
@@ -13,10 +14,13 @@ import CoursePage from './components/course/course-page';
 import CurrentGameList from './components/game/current-game-list';
 import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
+import CurrentGamePage from './components/game/current-game-page';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from './actions';
+
+import { history } from './store/configureStore';
 
 class NewStartPage extends Component {
     render(){
@@ -61,41 +65,51 @@ class DisGolfScoreCardApp extends Component{
         }
     }
     componentDidMount = () =>{
-        //this.loadCourses();
-        //this.loadPlayers();
         this.props.actions.loadPlayers();
+        this.props.actions.loadCourses();
+        while(!this.props.players){
+            let x;
+        }
+        this.props.actions.loadPlayerNameColors(this.props.players);        
+        //this.props.actions.fetchPlayersIfNeeded();
+        //this.props.actions.fetchCoursesIfNeeded();
+        
     }
     handleCourseSelect = (course) =>{
-        let gameData = this.state.currentGameData;
-        gameData.course = course;
-        this.setState({currentGameData: gameData});
-        let values = this.state.courseValues;
-        let val = !values[course.name];
-        values[course.name] = val;
-        this.setState({courseValues: values});
-        alert("selected ", course.name, gameData)
+        this.props.actions.selectCourse(course);
+        //this.props.actions.addCourseToGame(course, this.props.gameData);
+        // let gameData = this.state.currentGameData;
+        // gameData.course = course;
+        // this.setState({currentGameData: gameData});
+        // let values = this.state.courseValues;
+        // let val = !values[course.name];
+        // values[course.name] = val;
+        // this.setState({courseValues: values});
+        alert("selected ", course.name);
     }
     handlePlayerSelect = (player) => {
-        let gameData = this.state.currentGameData;
-        gameData.players.push(player);
-        let playerNameColor = this.state.playerNameColor;
-        let values = this.state.values;
-        let val = !values[player.name];
-        values[player.name] = val;
-        console.log("VAL: ", val, values, player);
-        playerNameColor[player.name] = val ? 'text-success' : 'text-danger'; 
-        this.setState({values: values});
-        this.setState({playerNameColor: playerNameColor});
-        let players = this.state.players;
-        players.map((itm, idx)=>{
-            if(itm.id===player.id){
-                console.log(players);
-                itm.selected = true;
-                players[idx] = itm;
-            }
-        });
-        //this.setState({players});
-        //  this.setState({currentGameData: gameData});
+        this.props.actions.selectPlayer(player);
+        //this.props.actions.togglePlayerNameColor(player, this.props.playerNameColors);
+        // let gameData = this.state.currentGameData;
+        // gameData.players.push(player);
+        // let playerNameColor = this.state.playerNameColor;
+        // let values = this.state.values;
+        // let val = !values[player.name];
+        // values[player.name] = val;
+        // console.log("VAL: ", val, values, player);
+        // playerNameColor[player.name] = val ? 'text-success' : 'text-danger'; 
+        // this.setState({values: values});
+        // this.setState({playerNameColor: playerNameColor});
+        // let players = this.state.players;
+        // players.map((itm, idx)=>{
+        //     if(itm.id===player.id){
+        //         console.log(players);
+        //         itm.selected = true;
+        //         players[idx] = itm;
+        //     }
+        // });
+        // //this.setState({players});
+        // //  this.setState({currentGameData: gameData});
     }
     handleAddCourse = (course) =>{
         let courses = this.state.courses;
@@ -139,7 +153,7 @@ class DisGolfScoreCardApp extends Component{
         });
     }   
     render(){
-        let courses = this.state.courses;
+        let courses = this.props.courses;
         let players = this.props.players;
         const old_players = [
             {
@@ -159,11 +173,12 @@ class DisGolfScoreCardApp extends Component{
             name: 'twila reid',
             holes: [1,2,3,4,5,6,7,8,9]
         };
+        
         console.log("COURSES!! ", courses);
         return (
-            <Router>
+            <Router history={history}> 
                 <div>
-                    <Route path="/app" exact component={NewStartPage} />
+                    
                     <Route path="/app/players" component={PlayerPage} />
                     <Route path="/app/course" component={props =>(
                         <CoursePage handleAddCourse={this.handleAddCourse} courses={courses} {...props}/>
@@ -173,19 +188,34 @@ class DisGolfScoreCardApp extends Component{
                     )} /> 
                     <Route path='/app/new-game' component={props =>(
                           <StartGamePage 
-                                    handlePlayerSelect={this.props.actions.selectPlayer} 
+                                    handlePlayerSelect={this.handlePlayerSelect} 
                                     players={this.props.players} 
-                                    values={this.state.values} 
-                                    playerNameColor={this.state.playerNameColor} 
+                                    //values={this.state.values} 
+                                    playerNameColor={this.props.playerNameColor} 
                                     {...props} 
                           />
                     )} />
-                    <Route path='/app/select-course' component={props =>(
-                        <SelectCourse courseValues={this.state.courseValues} handleCourseSelect={this.handleCourseSelect} courses={courses} addSelect players={this.state.currentGameData.players} />
-                    )} />
-                    <Route path="/" exact>
+                    <Route 
+                        path='/app/select-course' component={props =>(
+                            <SelectCourse 
+                                courseValues={this.state.courseValues} 
+                                handleCourseSelect={this.handleCourseSelect} 
+                                courses={courses} 
+                                addSelect 
+                                players={this.props.players.filter((itm)=>( itm.selected ))} 
+                                {...props} 
+                            />
+                        )} 
+                    />
+                    <Route 
+                        path='/app/current-game' component={props =>(
+                            <CurrentGamePage gameData={this.props.gameData} {...props} />
+                        )} 
+                    />
+                    <Route path="/app" exact component={NewStartPage} /> 
+                    {/*  <Route path="/" exact>
                             <Redirect path="/app"/>
-                    </Route>                                
+                    </Route>                                  */}
                 </div>
             </Router>
         );
@@ -194,7 +224,10 @@ class DisGolfScoreCardApp extends Component{
 
 function mapStateToProps(state){
     return {
-        players: state.players.data  
+        players: state.players,
+        courses: state.courses,
+        playerNameColor: state.playerNameColor,
+        gameData: state.gameData,
     };
 }
 function mapDispatchToProps(dispatch){
