@@ -32,10 +32,14 @@ export default class StartGamePage extends Component {
         console.log(this.props);
     }
     render(){
-        let playerNameColor = this.props.playerNameColor;
+        let playerNameColor = {};
+        this.props.players.map(itm => {
+            playerNameColor[itm.name] = 'text-danger';
+        });
         let players = this.props.players;
         let values = this.props.values;
         let handleChange = this.handleChange;
+        console.log('PLAYERS', playerNameColor);
         return (
             <Grid>
                 <Row>
@@ -43,7 +47,7 @@ export default class StartGamePage extends Component {
                         <PageHeader>Start Game</PageHeader>
                             <Panel header="Add Players">
                                 <ListGroup fill>
-                                    {players && players.map((p)=>{
+                                    {players &&  players.map((p)=>{
                                         let player = p.name;                                        
                                         return (
                                             <ListGroupItem key={`player-${player}`}>

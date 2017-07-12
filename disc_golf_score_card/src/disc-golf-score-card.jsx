@@ -3,7 +3,8 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom';
+import { Route, Redirect } from 'react-router-dom';
+import { ConnectedRouter as Router } from 'react-router-redux';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import * as axios from 'axios';
 
@@ -18,6 +19,8 @@ import CurrentGamePage from './components/game/current-game-page';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import * as Actions from './actions';
+
+import { history } from './store/configureStore';
 
 class NewStartPage extends Component {
     render(){
@@ -62,15 +65,19 @@ class DisGolfScoreCardApp extends Component{
         }
     }
     componentDidMount = () =>{
-        //this.loadCourses();
-        //this.loadPlayers();
         this.props.actions.loadPlayers();
         this.props.actions.loadCourses();
+        while(!this.props.players){
+            let x;
+        }
         this.props.actions.loadPlayerNameColors(this.props.players);        
+        //this.props.actions.fetchPlayersIfNeeded();
+        //this.props.actions.fetchCoursesIfNeeded();
+        
     }
     handleCourseSelect = (course) =>{
         this.props.actions.selectCourse(course);
-        this.props.actions.addCourseToGame(course, this.props.gameData);
+        //this.props.actions.addCourseToGame(course, this.props.gameData);
         // let gameData = this.state.currentGameData;
         // gameData.course = course;
         // this.setState({currentGameData: gameData});
@@ -78,11 +85,11 @@ class DisGolfScoreCardApp extends Component{
         // let val = !values[course.name];
         // values[course.name] = val;
         // this.setState({courseValues: values});
-        alert("selected ", course, gameData);
+        alert("selected ", course.name);
     }
     handlePlayerSelect = (player) => {
-        this.props.selectPlayer(player);
-        this.props.togglePlayerNameColor(player, this.props.playerNameColors);
+        this.props.actions.selectPlayer(player);
+        //this.props.actions.togglePlayerNameColor(player, this.props.playerNameColors);
         // let gameData = this.state.currentGameData;
         // gameData.players.push(player);
         // let playerNameColor = this.state.playerNameColor;
@@ -166,11 +173,12 @@ class DisGolfScoreCardApp extends Component{
             name: 'twila reid',
             holes: [1,2,3,4,5,6,7,8,9]
         };
+        
         console.log("COURSES!! ", courses);
         return (
-            <Router>
+            <Router history={history}> 
                 <div>
-                    <Route path="/app" exact component={NewStartPage} />
+                    
                     <Route path="/app/players" component={PlayerPage} />
                     <Route path="/app/course" component={props =>(
                         <CoursePage handleAddCourse={this.handleAddCourse} courses={courses} {...props}/>
@@ -180,8 +188,8 @@ class DisGolfScoreCardApp extends Component{
                     )} /> 
                     <Route path='/app/new-game' component={props =>(
                           <StartGamePage 
-                                    handlePlayerSelect={this.props.actions.selectPlayer} 
-                                    players={players} 
+                                    handlePlayerSelect={this.handlePlayerSelect} 
+                                    players={this.props.players} 
                                     //values={this.state.values} 
                                     playerNameColor={this.props.playerNameColor} 
                                     {...props} 
@@ -203,10 +211,11 @@ class DisGolfScoreCardApp extends Component{
                         path='/app/current-game' component={props =>(
                             <CurrentGamePage gameData={this.props.gameData} {...props} />
                         )} 
-                    /> 
-                    <Route path="/" exact>
+                    />
+                    <Route path="/app" exact component={NewStartPage} /> 
+                    {/*  <Route path="/" exact>
                             <Redirect path="/app"/>
-                    </Route>                                
+                    </Route>                                  */}
                 </div>
             </Router>
         );
@@ -215,10 +224,10 @@ class DisGolfScoreCardApp extends Component{
 
 function mapStateToProps(state){
     return {
-        players: state.players.data,
-        courses: state.courses.data,
-        playerNameColor: state.playerNameColors.data,
-        gameData: state.gameData.data,
+        players: state.players,
+        courses: state.courses,
+        playerNameColor: state.playerNameColor,
+        gameData: state.gameData,
     };
 }
 function mapDispatchToProps(dispatch){

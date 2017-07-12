@@ -1,109 +1,121 @@
+import fetch from 'isomorphic-fetch';
+
+export const SELECT_PLAYER = 'SELECT_PLAYER';
+
+
+export const SELECT_COURSE = 'SELECT_COURSE';
+
+export function selectCourse(course){
+    return {
+        type: SELECT_COURSE,
+        course
+    };
+}
+
+export const REQUEST_PLAYERS = 'REQUEST_PLAYERS';
+export function requestPlayers(){
+    return {
+        type: REQUEST_PLAYERS,
+    };
+}   
+
+export const LOAD_PLAYER_NAME_COLORS = 'LOAD_PLAYER_NAME_COLORS';
+
+export const REQUEST_COURSES = 'REQUEST_COURSES';
+export function requestCourses(){
+    return {
+        type: REQUEST_COURSES,
+    };
+}
+
+export const START_GAME = 'START_GAME';
+export function startGame(course, players){
+    return {
+        type: START_GAME,
+        course,
+        players,
+    };
+}
+
+// OLD CODE 
 import * as axios from 'axios';
 
 // CURRENT GAME ACTIONS
-export const ADD_PLAYERS_TO_GAME = 'ADD_PLAYERS_TO_GAME';
-export const ADD_COURSE_TO_GAME = 'ADD_COURSE_TO_GAME';
-export const START_NEW_GAME = 'START_NEW_GAME';
+export const ADD_PLAYER_TO_GAME = 'ADD_PLAYERS_TO_GAME';
+//export const ADD_COURSE_TO_GAME = 'ADD_COURSE_TO_GAME';
+//export const START_NEW_GAME = 'START_NEW_GAME';
 
-export function addPlayersToGame(players = null, gameData){
-    if(players){
-        players.map(player =>{
-            gameData.players.push(player);
-        });
-    }
+export function addPlayerToGame(player){
     return {
-        type: ADD_PLAYERS_TO_GAME,
-        payload: gameData, 
+        type: ADD_PLAYER_TO_GAME,
+        player 
     };
 }
 
-export function addCourseToGame(course = null, gameData){
-    if(course){
-        gameData.course = course;
-    }
-    return {
-        type: ADD_COURSE_TO_GAME,
-        payload: gameData,
-    };
-}
-
-export function startNewGame(gameData){
+export function startNewGame(course, players){
     return {
         type: START_NEW_GAME,
-        payload: gameData,
+        course,
+        players,
     }
 }
 
 // PLAYER ACTIONS 
-export const SELECT_PLAYER = 'SELECT_PLAYER';
 export const LOAD_PLAYERS = 'LOAD_PLAYERS';
-export const LOAD_PLAYER_NAME_COLORS = 'LOAD_PLAYER_NAME_COLORS';
 export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
 
-export function togglePlayerNameColor(player = null, playerNameColors = null){
-    let setDanger = playerNameColors[player.name] === 'text-success';
-    if(setDanger){
-        playerNameColors[player.name] = 'text-danger';
-    }else{
-        playerNameColors[player.name] = 'text-success';
-    }
+export function togglePlayerNameColor(player){
     return {
         type: TOGGLE_PLAYER_NAME_COLOR,
-        payload: playerNameColors,
+        player
     };
 }
 
 export function loadPlayerNameColors(players){
-    const data = {};
+    const playerNameColors = {};
     players.map((player)=>{
-        data[player.name] = 'text-danger';
+        playerNameColors[player.name] = 'text-danger';
     });
     return {
         type: LOAD_PLAYER_NAME_COLORS,
-        payload: data,
+        playerNameColors,
     };
 }
 
 export function loadPlayers(){
-    const data = axios.get('/api/player');
+    console.log('loading players')
+    let players = [];
+    axios.get('/api/player').then( res => {                
+        res.data.forEach(itm => players.push(itm));
+        console.log(res, players);
+    });
 
     return {
         type: LOAD_PLAYERS,
-        payload: data,
+        players,
     };
 }
 
-export function selectPlayer(player = null){
-    console.log(player);
-    if(player){
-        player.selected = !player.selected;
-    }
+export function selectPlayer(player){
+    console.log("selecting: ",player);
     return {
         type: SELECT_PLAYER,
-        payload: player
+        player
     };
 }
 
 // COURSE ACTIONS
-export const SELECT_COURSE = 'SELECT_COURSE';
 export const LOAD_COURSES = 'LOAD_COURSES';
 
 
 export function loadCourses(){
-    const data = axios.get('/course');
+    let courses = [];
+    axios.get('/course').then((res)=>{
+        res.data.forEach(itm => { console.log("COURSES: ", itm); courses.push(itm); });
+    });
 
     return {
         type: LOAD_COURSES,
-        payload: data,
+        courses,
     };
-}
-
-export function selectCourse(course = null){
-    if(course){
-        course.selected = !course.selected;
-    }
-    return {
-        type: SELECT_COURSE,
-        payload: course,
-    }
 }

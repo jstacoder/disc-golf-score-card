@@ -1,15 +1,9 @@
 import { LOAD_COURSES, SELECT_COURSE } from '../actions';
 
-const initialState = {
-    data: []
-};
-
-export default function courseReducer(state = initialState, action){
+export default function courseReducer(state = [], action){
     switch(action.type){
         case LOAD_COURSES:
-            return {
-                ...state, data: action.payload.data
-            };
+            return action.courses;
         default:
             return state;
     }
