@@ -8,7 +8,7 @@ import forms
 
 class IndexView(MethodView):
     def get(self):
-        return flask.render_template('index.html')
+        return flask.redirect(flask.url_for('app'))
     
     def post(self):
         return flask.make_response('{}')

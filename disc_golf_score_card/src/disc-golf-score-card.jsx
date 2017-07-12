@@ -13,6 +13,7 @@ import CoursePage from './components/course/course-page';
 import CurrentGameList from './components/game/current-game-list';
 import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
+import CurrentGamePage from './components/game/current-game-page';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -64,38 +65,44 @@ class DisGolfScoreCardApp extends Component{
         //this.loadCourses();
         //this.loadPlayers();
         this.props.actions.loadPlayers();
+        this.props.actions.loadCourses();
+        this.props.actions.loadPlayerNameColors(this.props.players);        
     }
     handleCourseSelect = (course) =>{
-        let gameData = this.state.currentGameData;
-        gameData.course = course;
-        this.setState({currentGameData: gameData});
-        let values = this.state.courseValues;
-        let val = !values[course.name];
-        values[course.name] = val;
-        this.setState({courseValues: values});
-        alert("selected ", course.name, gameData)
+        this.props.actions.selectCourse(course);
+        this.props.actions.addCourseToGame(course, this.props.gameData);
+        // let gameData = this.state.currentGameData;
+        // gameData.course = course;
+        // this.setState({currentGameData: gameData});
+        // let values = this.state.courseValues;
+        // let val = !values[course.name];
+        // values[course.name] = val;
+        // this.setState({courseValues: values});
+        alert("selected ", course, gameData);
     }
     handlePlayerSelect = (player) => {
-        let gameData = this.state.currentGameData;
-        gameData.players.push(player);
-        let playerNameColor = this.state.playerNameColor;
-        let values = this.state.values;
-        let val = !values[player.name];
-        values[player.name] = val;
-        console.log("VAL: ", val, values, player);
-        playerNameColor[player.name] = val ? 'text-success' : 'text-danger'; 
-        this.setState({values: values});
-        this.setState({playerNameColor: playerNameColor});
-        let players = this.state.players;
-        players.map((itm, idx)=>{
-            if(itm.id===player.id){
-                console.log(players);
-                itm.selected = true;
-                players[idx] = itm;
-            }
-        });
-        //this.setState({players});
-        //  this.setState({currentGameData: gameData});
+        this.props.selectPlayer(player);
+        this.props.togglePlayerNameColor(player, this.props.playerNameColors);
+        // let gameData = this.state.currentGameData;
+        // gameData.players.push(player);
+        // let playerNameColor = this.state.playerNameColor;
+        // let values = this.state.values;
+        // let val = !values[player.name];
+        // values[player.name] = val;
+        // console.log("VAL: ", val, values, player);
+        // playerNameColor[player.name] = val ? 'text-success' : 'text-danger'; 
+        // this.setState({values: values});
+        // this.setState({playerNameColor: playerNameColor});
+        // let players = this.state.players;
+        // players.map((itm, idx)=>{
+        //     if(itm.id===player.id){
+        //         console.log(players);
+        //         itm.selected = true;
+        //         players[idx] = itm;
+        //     }
+        // });
+        // //this.setState({players});
+        // //  this.setState({currentGameData: gameData});
     }
     handleAddCourse = (course) =>{
         let courses = this.state.courses;
@@ -139,7 +146,7 @@ class DisGolfScoreCardApp extends Component{
         });
     }   
     render(){
-        let courses = this.state.courses;
+        let courses = this.props.courses;
         let players = this.props.players;
         const old_players = [
             {
@@ -174,15 +181,29 @@ class DisGolfScoreCardApp extends Component{
                     <Route path='/app/new-game' component={props =>(
                           <StartGamePage 
                                     handlePlayerSelect={this.props.actions.selectPlayer} 
-                                    players={this.props.players} 
-                                    values={this.state.values} 
-                                    playerNameColor={this.state.playerNameColor} 
+                                    players={players} 
+                                    //values={this.state.values} 
+                                    playerNameColor={this.props.playerNameColor} 
                                     {...props} 
                           />
                     )} />
-                    <Route path='/app/select-course' component={props =>(
-                        <SelectCourse courseValues={this.state.courseValues} handleCourseSelect={this.handleCourseSelect} courses={courses} addSelect players={this.state.currentGameData.players} />
-                    )} />
+                    <Route 
+                        path='/app/select-course' component={props =>(
+                            <SelectCourse 
+                                courseValues={this.state.courseValues} 
+                                handleCourseSelect={this.handleCourseSelect} 
+                                courses={courses} 
+                                addSelect 
+                                players={this.props.players.filter((itm)=>( itm.selected ))} 
+                                {...props} 
+                            />
+                        )} 
+                    />
+                    <Route 
+                        path='/app/current-game' component={props =>(
+                            <CurrentGamePage gameData={this.props.gameData} {...props} />
+                        )} 
+                    /> 
                     <Route path="/" exact>
                             <Redirect path="/app"/>
                     </Route>                                
@@ -194,7 +215,10 @@ class DisGolfScoreCardApp extends Component{
 
 function mapStateToProps(state){
     return {
-        players: state.players.data  
+        players: state.players.data,
+        courses: state.courses.data,
+        playerNameColor: state.playerNameColors.data,
+        gameData: state.gameData.data,
     };
 }
 function mapDispatchToProps(dispatch){

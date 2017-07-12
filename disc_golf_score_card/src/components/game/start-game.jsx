@@ -29,6 +29,7 @@ export default class StartGamePage extends Component {
         // this.forceUpdate();        
         // this.setState({update: false});        
         this.props.handlePlayerSelect(player);
+        console.log(this.props);
     }
     render(){
         let playerNameColor = this.props.playerNameColor;
