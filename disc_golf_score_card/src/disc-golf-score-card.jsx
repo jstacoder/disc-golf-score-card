@@ -14,7 +14,9 @@ import CurrentGameList from './components/game/current-game-list';
 import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
 
-
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import * as Actions from './actions';
 
 class NewStartPage extends Component {
     render(){
@@ -59,8 +61,9 @@ class DisGolfScoreCardApp extends Component{
         }
     }
     componentDidMount = () =>{
-        this.loadCourses();
-        this.loadPlayers();
+        //this.loadCourses();
+        //this.loadPlayers();
+        this.props.actions.loadPlayers();
     }
     handleCourseSelect = (course) =>{
         let gameData = this.state.currentGameData;
@@ -137,7 +140,7 @@ class DisGolfScoreCardApp extends Component{
     }   
     render(){
         let courses = this.state.courses;
-        let players = this.state.players;
+        let players = this.props.players;
         const old_players = [
             {
                 name: "kyle",                
@@ -169,7 +172,13 @@ class DisGolfScoreCardApp extends Component{
                         <CurrentGameList game={333} players={old_players} course={course} {...props} />
                     )} /> 
                     <Route path='/app/new-game' component={props =>(
-                          <StartGamePage handlePlayerSelect={this.handlePlayerSelect} players={players} values={this.state.values} playerNameColor={this.state.playerNameColor} {...props} />
+                          <StartGamePage 
+                                    handlePlayerSelect={this.props.actions.selectPlayer} 
+                                    players={this.props.players} 
+                                    values={this.state.values} 
+                                    playerNameColor={this.state.playerNameColor} 
+                                    {...props} 
+                          />
                     )} />
                     <Route path='/app/select-course' component={props =>(
                         <SelectCourse courseValues={this.state.courseValues} handleCourseSelect={this.handleCourseSelect} courses={courses} addSelect players={this.state.currentGameData.players} />
@@ -182,4 +191,16 @@ class DisGolfScoreCardApp extends Component{
         );
     }
 }
-render(<DisGolfScoreCardApp />, document.getElementById('app'))
+
+function mapStateToProps(state){
+    return {
+        players: state.players.data  
+    };
+}
+function mapDispatchToProps(dispatch){
+    return {
+        actions: bindActionCreators(Actions, dispatch)
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DisGolfScoreCardApp);

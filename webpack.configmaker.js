@@ -29,7 +29,7 @@ let clean_options = {
 let getConfig = (clean_options) => {
 		return {
 		entry: {
-			main: path.join(APP_PATH, 'disc-golf-score-card.jsx'),
+			main: path.join(APP_PATH, 'index'),
 		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
 		 },
 		// target:'node-webkit',
@@ -49,13 +49,14 @@ let getConfig = (clean_options) => {
 		module: {
 			rules: [
 				{
-					test: /\.jsx$/,
+					test: /\.jsx?$/,
 					exclude: /node_modules/,
 					use: {
 						loader: 'babel-loader',
-						options:{
-							presets:['react', 'stage-0']
-						}
+						// options:{
+							// presets:['react', 'es2015', 'stage-0'],
+							// plugins:[ 'transform-es2015-destructuring','syntax-object-rest-spread', 'transform-class-properties'],
+						//}
 					}
 				},
 				{
