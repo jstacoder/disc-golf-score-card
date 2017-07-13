@@ -10,8 +10,7 @@ const FETCH_PLAYERS_FAILURE = 'FETCH_PLAYERS_FAILURE';
 const initialPlayersState = {
     playersList: {
         players: [],
-        scores: {},
-        currentPlayerIndex:0,
+        scores: {},        
         error: null,
         loading: false,
     }
@@ -20,15 +19,7 @@ const initialPlayersState = {
 export default function players(state = initialPlayersState, action){
     let newState = {...state};
 
-    switch (action.type){
-        case CHANGE_PLAYER:
-            let currIdx = newState.playersList.currentPlayerIndex;
-            if(currIdx == action.payload.players.length - 1){
-                newState.playersList.currentPlayerIndex = 0;
-            }else{
-                newState.playersList.currentPlayerIndex++;
-            }            
-            return newState;
+    switch (action.type){       
         case FETCH_PLAYERS:
             newState.playersList.loading = true;
             return newState;
@@ -42,20 +33,9 @@ export default function players(state = initialPlayersState, action){
             return newState;
 
         case UPDATE_SCORE:
-            newState
-            .playersList
-            .scores[
-                action
-                .payload
-                .player
-                .name
-            ][
-                action
-                .payload
-                .hole_id] = 
-            action
-            .payload
-            .score;       
+            newState.playersList.scores
+                [action.payload.player.name]
+                [action.payload.hole_id] = action.payload.score;       
             return newState;
         default:
             return state;

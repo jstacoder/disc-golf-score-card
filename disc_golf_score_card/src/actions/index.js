@@ -66,6 +66,19 @@ export const START_NEW_GAME = 'START_NEW_GAME';
 export const SELECT_COURSE = 'SELECT_COURSE';
 export const UPDATE_SCORE = 'UPDATE_SCORE';
 export const CHANGE_PLAYER = 'CHANGE_PLAYER';
+export const SAVE_GAME = 'SAVE_GAME';
+export const CHANGE_HOLE = 'CHANGE_HOLE';
+
+export function changeHole(holes, hole_id = null){
+    return {
+        type: CHANGE_HOLE,
+        payload: {
+            holes,
+            hole_id
+        }
+    };
+}
+
 
 export function changePlayer(players){
     return {

@@ -130,6 +130,8 @@ class DisGolfScoreCardApp extends Component{
                                 players={this.props.players} 
                                 updateScore={this.props.actions.updateScore}
                                 changePlayer={this.props.actions.changePlayer}
+                                currentTurn={this.props.currentTurn}
+                                changeHole={this.props.actions.changeHole}
                                 {...props} 
                             />
                         )} 
@@ -152,6 +154,7 @@ function mapStateToProps(state){
         courses: state.courses,
         playerNameColor: state.playerNameColor,
         gameData: state.gameData,
+        currentTurn: state.currentTurn,
     };
 }
 function mapDispatchToProps(dispatch){
