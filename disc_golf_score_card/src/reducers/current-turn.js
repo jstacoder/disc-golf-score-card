@@ -1,4 +1,4 @@
-import { CHANGE_HOLE, CHANGE_PLAYER } from '../actions';
+import { CHANGE_HOLE, CHANGE_PLAYER, START_NEW_GAME } from '../actions';
 
 const initialState = {
     currentPlayerIndex: 0,
@@ -10,6 +10,9 @@ export default function currentTurn(state = initialState, action = {}){
     let newState = {...state};
 
     switch(action.type){
+        case START_NEW_GAME:
+            newState.currentHoleId = action.payload.course.holes[0].id;
+            return newState;
         case CHANGE_HOLE:
             if(newState.lastHole){
                 return newState;
@@ -19,7 +22,6 @@ export default function currentTurn(state = initialState, action = {}){
             }else{
                 newState.currentHoleId = action.hole_id;
             }
-            
             if(newState.currentHoleId == action.payload.holes.length-1){
                 newState.lastHole = true;
             }
@@ -31,7 +33,7 @@ export default function currentTurn(state = initialState, action = {}){
                 newState.currentPlayerIndex = 0;
             }else{
                 newState.currentPlayerIndex++;
-            }            
+            }
             return newState;
         default:
             return newState;

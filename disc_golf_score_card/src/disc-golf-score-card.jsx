@@ -132,6 +132,7 @@ class DisGolfScoreCardApp extends Component{
                                 changePlayer={this.props.actions.changePlayer}
                                 currentTurn={this.props.currentTurn}
                                 changeHole={this.props.actions.changeHole}
+                                startNewGame={this.props.actions.startNewGame}
                                 {...props} 
                             />
                         )} 

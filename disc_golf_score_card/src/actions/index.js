@@ -107,11 +107,12 @@ export function togglePlayerNameColor(player){
     };
 }
 
-export function startNewGame(game_id, score_card_id){
+export function startNewGame(course){
     return {
         type: START_NEW_GAME,
-        game_id,
-        score_card_id,
+        payload: {
+            course: course
+        }
     };
 }
 

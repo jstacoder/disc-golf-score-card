@@ -6,9 +6,14 @@ export default class CurrentGamePage extends Component {
         super(props);
         this.count = 0;
     }
+    componentWillMount(){
+        this.props.startNewGame(this.props.gameData.course);
+        console.log("ABIUT TO MOIUNT!!!");
+    }
     componentDidMount(){
-        console.log(this.props.currentTurn);
-            this.props.changeHole(this.props.gameData.course.holes, this.props.gameData.course.holes[0].id);
+        console.log("MOUNTED!!! ", this.props.currentTurn);
+
+        //this.props.changeHole(this.props.gameData.course.holes, this.props.gameData.course.holes[0].id);
     }
     updateScore(...args){
         if(this.count == this.props.gameData.players.length -1){
@@ -21,7 +26,7 @@ export default class CurrentGamePage extends Component {
     renderHoles = () =>{
         const holes = this.props.gameData.course.holes;
         const players = this.props.gameData.players;
-        const scores = this.props.players.playersList.scores;        
+        const scores = this.props.players.playersList.scores;
         let player, hole;
         return (
             <div>
@@ -35,26 +40,27 @@ export default class CurrentGamePage extends Component {
                     </tr>
                 </thead>
                 <tbody>
-                    {this.props.gameData.players.map(player =>{                        
+                    {this.props.gameData.players.map(player =>{
                         return (
                             <tr>
                                 <td><bold>{player.name}</bold></td>
                                 {holes.map(hole =>{
                                     const playerScore = scores[player.name][hole.id];
                                     return (
-                                        <td>{playerScore || 0}</td>   
+                                        <td>{playerScore || 0}</td>
                                     );
                                 })}
                             </tr>
                         );
-                    })}                    
-                </tbody>                
-            </Table>    
-            <Button onClick={(e)=>{this.updateScore(this.props.gameData.players[this.props.currentTurn.currentPlayerIndex], 3, this.props.gameData.course.holes[0].id)}}>update</Button>        
+                    })}
+                </tbody>
+            </Table>
+            <Button onClick={(e)=>{this.updateScore(this.props.gameData.players[this.props.currentTurn.currentPlayerIndex], 3, this.props.gameData.course.holes[0].id)}}>update</Button>
         </div>
         );
     }
     render(){
+        console.log(this, this.props, this.props.currentTurn);
         const holes = this.props.gameData.course.holes;
         const currentHoleId = this.props.currentTurn.currentHoleId;
         const currentHole = holes.filter((hole) => {
@@ -67,13 +73,13 @@ export default class CurrentGamePage extends Component {
                 <Row>
                     <Col xs={12}>
                         <PageHeader>{this.props.gameData.course.name} <small>current player: {currentPlayer.name} current hole: {currentHole.number}</small></PageHeader>
-                        <ul>                            
+                        <ul>
                             {this.props.gameData.players.map(player => (<li key={player.name}>{player.name}</li>))}
                         </ul>
-                        {this.renderHoles()}                                        
+                        {this.renderHoles()}
                     </Col>
                 </Row>
             </Grid>
         );
     }
-} 
+}
