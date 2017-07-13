@@ -30,7 +30,7 @@ export default class PlayerPage extends Component {
                 <Row>
                     <Col xs={12} sm={12} md={6} lg={6} mdOffset={4} lgOffset={4}>
                         <LinkContainer to="/app">
-                            <Button>
+                            <Button bsStyle="primary" bsSize="lg" block>
                                 back
                             </Button>
                         </LinkContainer>

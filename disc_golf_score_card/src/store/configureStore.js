@@ -12,10 +12,14 @@ import { createLogger } from 'redux-logger';
 
 export const history = createHistory();
 
-const client = axios.create({
-    baseURL:'/',
-    responseType: 'json'
-});
+const client = {
+    default:{
+        axios:{
+            baseURL:'/',
+            responseType: 'json',
+        }
+    }
+};
 
 export function configureStore(initialState){
     const store = createStore(

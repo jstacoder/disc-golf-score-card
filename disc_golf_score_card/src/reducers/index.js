@@ -11,7 +11,7 @@ export const rootReducer = combineReducers({
     players,
     courses,
     playerNameColor,
-   // gameData,
+    gameData,
     router,
    // reduxAsyncConnect,
 });

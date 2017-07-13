@@ -53,9 +53,11 @@ class DisGolfScoreCardApp extends Component{
     componentWillMount = () =>{
         console.log(this, this.props, this.props.actions);
 
-        this.props.actions.getPlayers();
-        this.props.actions.loadCourses();
-        this.props.actions.loadPlayerNameColors(this.props.players);        
+        this.props.actions.loadCourses();        
+        this.props.actions.loadPlayers().then(res =>{
+            console.log(res);
+            this.props.actions.loadPlayerNameColors(res);        
+        });
     }
     handleCourseSelect = (course) =>{
         this.props.actions.selectCourse(course);
@@ -68,6 +70,7 @@ class DisGolfScoreCardApp extends Component{
     render(){
         let courses = this.props.courses;
         let players = this.props.players;
+        let gameData = this.props.gameData;
         const old_players = [
             {
                 name: "kyle",                
@@ -91,7 +94,9 @@ class DisGolfScoreCardApp extends Component{
                 <div>
                     <Route path="/app/players" component={PlayerPage} />
                     <Route path="/app/course" component={props =>(
-                        <CoursePage handleAddCourse={this.handleAddCourse} courses={courses} {...props}/>
+                        <CoursePage 
+                            handleAddCourse={this.handleAddCourse} 
+                            courses={courses} {...props}/>
                     )} />
                     <Route path="/app/game-list" component={props => (
                         <CurrentGameList game={333} players={old_players} course={course} {...props} />
@@ -101,25 +106,32 @@ class DisGolfScoreCardApp extends Component{
                                     handlePlayerSelect={this.handlePlayerSelect} 
                                     players={this.props.players} 
                                     //values={this.state.values} 
+                                    gameData={gameData}
                                     playerNameColor={this.props.playerNameColor} 
                                     {...props} 
                           />
                     )} />
                     <Route 
                         path='/app/select-course' component={props =>(
-                            <SelectCourse 
-                                courseValues={this.state.courseValues} 
+                            <SelectCourse                                
                                 handleCourseSelect={this.handleCourseSelect} 
                                 courses={courses} 
                                 addSelect 
-                                players={this.props.players.filter((itm)=>( itm.selected ))} 
+                                gameData={gameData}
+                                players={gameData.players} 
                                 {...props} 
                             />
                         )} 
                     />
                     <Route 
                         path='/app/current-game' component={props =>(
-                            <CurrentGamePage gameData={this.props.gameData} {...props} />
+                            <CurrentGamePage 
+                                gameData={this.props.gameData} 
+                                players={this.props.players} 
+                                updateScore={this.props.actions.updateScore}
+                                changePlayer={this.props.actions.changePlayer}
+                                {...props} 
+                            />
                         )} 
                     />
                     <Route path="/app" exact component={NewStartPage} /> 
@@ -133,8 +145,9 @@ class DisGolfScoreCardApp extends Component{
 }
 
 function mapStateToProps(state){
+    console.log(state); 
     return {
-        player: state.player,
+        //player: state.player,
         players: state.players,
         courses: state.courses,
         playerNameColor: state.playerNameColor,

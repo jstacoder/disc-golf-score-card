@@ -1,16 +1,5 @@
 import * as axios from 'axios';
-
-
-
-
-
 // import fetch from 'isomorphic-fetch';
-
-// export const SELECT_PLAYER = 'SELECT_PLAYER';
-
-
-// export const SELECT_COURSE = 'SELECT_COURSE';
-
 // export function selectCourse(course){
 //     return {
 //         type: SELECT_COURSE,
@@ -24,16 +13,12 @@ import * as axios from 'axios';
 //         type: REQUEST_PLAYERS,
 //     };
 // }   
-
-// export const LOAD_PLAYER_NAME_COLORS = 'LOAD_PLAYER_NAME_COLORS';
-
 // export const REQUEST_COURSES = 'REQUEST_COURSES';
 // export function requestCourses(){
 //     return {
 //         type: REQUEST_COURSES,
 //     };
 // }
-
 // export const START_GAME = 'START_GAME';
 // export function startGame(course, players){
 //     return {
@@ -42,15 +27,12 @@ import * as axios from 'axios';
 //         players,
 //     };
 // }
-
 // // OLD CODE 
 // import * as axios from 'axios';
-
 // // CURRENT GAME ACTIONS
 // export const ADD_PLAYER_TO_GAME = 'ADD_PLAYERS_TO_GAME';
 // //export const ADD_COURSE_TO_GAME = 'ADD_COURSE_TO_GAME';
 // //export const START_NEW_GAME = 'START_NEW_GAME';
-
 // export function addPlayerToGame(player){
 //     return {
 //         type: ADD_PLAYER_TO_GAME,
@@ -77,22 +59,78 @@ import * as axios from 'axios';
 //     };
 // }
 
-// export function loadPlayerNameColors(players){
-//     const playerNameColors = {};
-//     players.map((player)=>{
-//         playerNameColors[player.name] = 'text-danger';
-//     });
-//     return {
-//         type: LOAD_PLAYER_NAME_COLORS,
-//         playerNameColors,
-//     };
-// }
+export const LOAD_PLAYER_NAME_COLORS = 'LOAD_PLAYER_NAME_COLORS';
+export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
+export const SELECT_PLAYER = 'SELECT_PLAYER';
+export const START_NEW_GAME = 'START_NEW_GAME';
+export const SELECT_COURSE = 'SELECT_COURSE';
+export const UPDATE_SCORE = 'UPDATE_SCORE';
+export const CHANGE_PLAYER = 'CHANGE_PLAYER';
+
+export function changePlayer(players){
+    return {
+        type: CHANGE_PLAYER,
+        payload: {
+            players: players,
+        }
+    };
+}
+
+export function updateScore(player, score, hole_id){
+    return {
+        type: UPDATE_SCORE,
+        payload: {
+            player,
+            score,
+            hole_id,
+        }
+    };
+}
+
+export function togglePlayerNameColor(player){
+    return {
+        type: TOGGLE_PLAYER_NAME_COLOR,
+        player
+    };
+}
+
+export function startNewGame(game_id, score_card_id){
+    return {
+        type: START_NEW_GAME,
+        game_id,
+        score_card_id,
+    };
+}
+
+export function selectCourse(course){
+    return {
+        type: SELECT_COURSE,
+        course,
+    };
+}
+export function selectPlayer(player){
+    return {
+        type: SELECT_PLAYER,
+        player
+    };
+}
+
+export function loadPlayerNameColors(players){
+    const playerNameColors = {};
+    players.payload.data.map((player)=>{
+        playerNameColors[player.name] = 'text-danger';
+    });
+    return {
+        type: LOAD_PLAYER_NAME_COLORS,
+        playerNameColors,
+    };
+}
 
 export function loadPlayers(){
     console.log('loading players')
 
     return {
-        types: ['LOAD', 'SUCCESS', 'FAILURE'],
+        types: ['FETCH_PLAYERS', 'FETCH_PLAYERS_SUCCESS', 'FETCH_PLAYES_FAILURE'],
         payload:{
             request:{
                 url: '/api/player'
@@ -101,12 +139,28 @@ export function loadPlayers(){
     };
 }
 export function loadCourses(){
-    const courses = axios.get('/course');
+    console.log('loading courses');
+
     return {
-        type: LOAD_COURSES,
-        courses,
+        types: [
+            'FETCH_COURSES', 
+            'FETCH_COURSES_SUCCESS', 
+            'FETCH_COURSES_FAILURE'
+        ],
+        payload: {
+            request: {
+                url: '/course/'
+            }
+        }
     };
 }
+// export function loadCourses(){
+//     const courses = axios.get('/course');
+//     return {
+//         type: LOAD_COURSES,
+//         courses,
+//     };
+// }
 
 // export function selectPlayer(player){
 //     console.log("selecting: ",player);

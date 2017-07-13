@@ -1,13 +1,19 @@
-import { LOAD_PLAYER_NAME_COLORS } from '../actions';
+import { LOAD_PLAYER_NAME_COLORS, TOGGLE_PLAYER_NAME_COLOR } from '../actions';
 
-const initialState = {
-};
+const initialState = {};
 
 export default function playerNameColor(state = initialState, action){
+    let newState = {...state};
     switch(action.type){
         case LOAD_PLAYER_NAME_COLORS:
-            return action.playerNameColors;
+            return {...newState, ...action.playerNameColors};
+        case TOGGLE_PLAYER_NAME_COLOR:
+            newState[action.player.name] = 
+                newState[action.player.name] == 
+                    'text-danger' ? 
+                'text-success' : 'text-danger';
+            return newState;
         default:
-            return state;
+            return newState;
     }
 }

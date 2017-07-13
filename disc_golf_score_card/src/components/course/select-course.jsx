@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 import ScoreTable from './course-list';
 import { Grid, Row, Col, FormControl } from 'react-bootstrap';
 
-export default class SelectCourse extends Component {
-    constructor(props){
-        super(props);    
-    }
+export default class SelectCourse extends Component {    
     handleCourseSelect = (course) =>{
         this.props.handleCourseSelect(course);
     }
@@ -15,7 +12,12 @@ export default class SelectCourse extends Component {
             <Grid>
                 <Row>
                       <Col xs={12} md={6} mdOffset={4}> 
-                            <ScoreTable courseValues={this.props.courseValues} courses={this.props.courses} addSelect handleCourseSelect={this.handleCourseSelect} />
+                            <ScoreTable 
+                                 courses={this.props.courses} 
+                                 addSelect 
+                                 handleCourseSelect={this.handleCourseSelect} 
+                                 gameData={this.props.gameData}     
+                            />
                       </Col>
                 </Row>
             </Grid>            
