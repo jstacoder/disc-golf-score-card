@@ -7,10 +7,9 @@ export default function players(state = initialPlayersState, action){
     let newState = [...state];
     switch (action.type){
         case LOAD_PLAYERS:
-            action.players.forEach((itm)=>{
-                newState.push(itm);
-            });
-            return newState;
+            return state;
+        case LOAD_PLAYERS_SUCCESS:
+            return action.payload.data;
         case SELECT_PLAYER:
             let player = action.player;
             state.map((itm, idx) => {
