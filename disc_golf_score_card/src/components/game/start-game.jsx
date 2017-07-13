@@ -31,15 +31,11 @@ export default class StartGamePage extends Component {
         this.props.handlePlayerSelect(player);
         console.log(this.props);
     }
-    render(){
-        let playerNameColor = {};
-        this.props.players.map(itm => {
-            playerNameColor[itm.name] = 'text-danger';
-        });
-        let players = this.props.players;
-        let values = this.props.values;
+    render(){        
+        let players = this.props.players.playersList.players;
+        //let values = this.props.values;
         let handleChange = this.handleChange;
-        console.log('PLAYERS', playerNameColor);
+        console.log('PLAYERS', this);
         return (
             <Grid>
                 <Row>
@@ -53,10 +49,10 @@ export default class StartGamePage extends Component {
                                             <ListGroupItem key={`player-${player}`}>
                                                 <Row>
                                                 <Col xs={6}>                                                
-                                                    <h2 className={playerNameColor[player]}>{player}</h2>                                                 
+                                                    <h2 className={this.props.playerNameColor[player]}>{player}</h2>                                                 
                                                 </Col>
                                                 <Col xs={2} xsOffset={4}>
-                                                    <FormControl type="checkbox" checked={player.selected ? 1 : 0} onChange={(e)=>(this.handleChange(e.target.checked, p))} className={player} data-player={player} />
+                                                <FormControl type="checkbox" checked={this.props.gameData.players.indexOf(player) != -1 ? 1 : 0} onChange={(e)=>(this.handleChange(e.target.checked, p))} className={player} data-player={player} />
                                                 </Col>
                                                 </Row>
                                             </ListGroupItem>

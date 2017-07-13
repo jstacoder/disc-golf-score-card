@@ -1,25 +1,42 @@
 import * as axios from 'axios';
-import { SELECT_PLAYER, LOAD_PLAYERS,  TOGGLE_PLAYER_NAME_COLOR, LOAD_PLAYER_NAME_COLORS } from '../actions';
+//import { SELECT_PLAYER, LOAD_PLAYERS,  TOGGLE_PLAYER_NAME_COLOR, LOAD_PLAYER_NAME_COLORS } from '../actions';
 
-const initialPlayersState = [];
+import { UPDATE_SCORE, CHANGE_PLAYER } from '../actions';
+
+const FETCH_PLAYERS = 'FETCH_PLAYERS';
+const FETCH_PLAYERS_SUCCESS = 'FETCH_PLAYERS_SUCCESS';
+const FETCH_PLAYERS_FAILURE = 'FETCH_PLAYERS_FAILURE';
+
+const initialPlayersState = {
+    playersList: {
+        players: [],
+        scores: {},        
+        error: null,
+        loading: false,
+    }
+};
 
 export default function players(state = initialPlayersState, action){
-    let newState = [...state];
-    switch (action.type){
-        case LOAD_PLAYERS:
-            action.players.forEach((itm)=>{
-                newState.push(itm);
-            });
+    let newState = {...state};
+
+    switch (action.type){       
+        case FETCH_PLAYERS:
+            newState.playersList.loading = true;
             return newState;
-        case SELECT_PLAYER:
-            let player = action.player;
-            state.map((itm, idx) => {
-                if(itm == player){
-                    itm.selected = true;
-                }
-                newState.push(itm);
-            });             
-            return [...newState];            
+
+        case FETCH_PLAYERS_SUCCESS:
+            action.payload.data.map(itm =>{
+                newState.playersList.players.push(itm);
+                newState.playersList.scores[itm.name] = {};
+            });
+            newState.playersList.loading = false;
+            return newState;
+
+        case UPDATE_SCORE:
+            newState.playersList.scores
+                [action.payload.player.name]
+                [action.payload.hole_id] = action.payload.score;       
+            return newState;
         default:
             return state;
     }

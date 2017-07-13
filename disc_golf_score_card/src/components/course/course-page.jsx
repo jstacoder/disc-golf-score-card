@@ -7,16 +7,6 @@ import ScoreTable from './course-list';
 import * as axios from 'axios';
 
 export default class CoursePage extends Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            courses: []
-        };
-    }
-    /*componentDidMount = () =>{
-     
-    }*/
-
     handleSubmit = (name, location, number_of_holes) =>{
         alert(`got ${name} ${location} ${number_of_holes}`);
         let newCourse = {

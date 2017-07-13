@@ -6,12 +6,20 @@ import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
 import { asyncCompose, ReduxAsyncConnect } from 'redux-async-connect';
 import * as axios from 'axios';
+import axiosMiddleware from 'redux-axios';
 
 import { createLogger } from 'redux-logger';
 
 export const history = createHistory();
 
-//const asyncMiddleware = ReduxAsyncConnect(axios.create({}));
+const client = {
+    default:{
+        axios:{
+            baseURL:'/',
+            responseType: 'json',
+        }
+    }
+};
 
 export function configureStore(initialState){
     const store = createStore(
@@ -19,11 +27,11 @@ export function configureStore(initialState){
         initialState,
         compose(
            applyMiddleware(
-               ReduxPromise,
-               //ReduxAsyncConnect,
+               //ReduxPromise,
+               axiosMiddleware(client),
                routerMiddleware(history),
                createLogger(),
-               thunk,
+               //thunk,
             ),
            window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
         )

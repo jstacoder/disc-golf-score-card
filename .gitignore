@@ -8,4 +8,4 @@ venv/*
 *.db
 *~
 _venv/*
-
+venv_win/*

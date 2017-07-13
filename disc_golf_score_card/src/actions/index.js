@@ -1,83 +1,136 @@
 import * as axios from 'axios';
+// import fetch from 'isomorphic-fetch';
+// export function selectCourse(course){
+//     return {
+//         type: SELECT_COURSE,
+//         course
+//     };
+// }
 
-export const LOAD_COURSES = 'LOAD_COURSES';
-export const LOAD_PLAYERS = 'LOAD_PLAYERS';
-export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
-export const ADD_PLAYER_TO_GAME = 'ADD_PLAYERS_TO_GAME';
-export const SELECT_PLAYER = 'SELECT_PLAYER';
-export const SELECT_COURSE = 'SELECT_COURSE';
-export const REQUEST_PLAYERS = 'REQUEST_PLAYERS';
+// export const REQUEST_PLAYERS = 'REQUEST_PLAYERS';
+// export function requestPlayers(){
+//     return {
+//         type: REQUEST_PLAYERS,
+//     };
+// }   
+// export const REQUEST_COURSES = 'REQUEST_COURSES';
+// export function requestCourses(){
+//     return {
+//         type: REQUEST_COURSES,
+//     };
+// }
+// export const START_GAME = 'START_GAME';
+// export function startGame(course, players){
+//     return {
+//         type: START_GAME,
+//         course,
+//         players,
+//     };
+// }
+// // OLD CODE 
+// import * as axios from 'axios';
+// // CURRENT GAME ACTIONS
+// export const ADD_PLAYER_TO_GAME = 'ADD_PLAYERS_TO_GAME';
+// //export const ADD_COURSE_TO_GAME = 'ADD_COURSE_TO_GAME';
+// //export const START_NEW_GAME = 'START_NEW_GAME';
+// export function addPlayerToGame(player){
+//     return {
+//         type: ADD_PLAYER_TO_GAME,
+//         player 
+//     };
+// }
+
+// export function startNewGame(course, players){
+//     return {
+//         type: START_NEW_GAME,
+//         course,
+//         players,
+//     }
+// }
+
+// // PLAYER ACTIONS 
+// export const LOAD_PLAYERS = 'LOAD_PLAYERS';
+// export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
+
+// export function togglePlayerNameColor(player){
+//     return {
+//         type: TOGGLE_PLAYER_NAME_COLOR,
+//         player
+//     };
+// }
+
 export const LOAD_PLAYER_NAME_COLORS = 'LOAD_PLAYER_NAME_COLORS';
-export const REQUEST_COURSES = 'REQUEST_COURSES';
-export const START_GAME = 'START_GAME';
+export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
+export const SELECT_PLAYER = 'SELECT_PLAYER';
+export const START_NEW_GAME = 'START_NEW_GAME';
+export const SELECT_COURSE = 'SELECT_COURSE';
+export const UPDATE_SCORE = 'UPDATE_SCORE';
+export const CHANGE_PLAYER = 'CHANGE_PLAYER';
+export const SAVE_GAME = 'SAVE_GAME';
+export const CHANGE_HOLE = 'CHANGE_HOLE';
 
-export function getPlayers(){
-    return dispatch => {
-        console.log("LOADING PLAYERS");
-        axios.get('/api/player')
-            .then(res =>{
-                const people = res.data.map(person => {
-                    person.selected = false;
-                    return person;
-                });
-                dispatch(getPlayersAsync(people));
-            });
-    }
-}
-
-function getPlayersAsync(people){
+export function changeHole(holes, hole_id = null){
     return {
-        type: LOADING_PLAYERS,
-        payload: people,
+        type: CHANGE_HOLE,
+        payload: {
+            holes,
+            hole_id
+        }
     };
 }
 
 
-export function selectCourse(course){
+export function changePlayer(players){
     return {
-        type: SELECT_COURSE,
-        course
+        type: CHANGE_PLAYER,
+        payload: {
+            players: players,
+        }
     };
 }
-export function requestPlayers(){
+
+export function updateScore(player, score, hole_id){
     return {
-        type: REQUEST_PLAYERS,
-    };
-}   
-export function requestCourses(){
-    return {
-        type: REQUEST_COURSES,
-    };
-}
-export function startGame(course, players){
-    return {
-        type: START_GAME,
-        course,
-        players,
+        type: UPDATE_SCORE,
+        payload: {
+            player,
+            score,
+            hole_id,
+        }
     };
 }
-export function addPlayerToGame(player){
-    return {
-        type: ADD_PLAYER_TO_GAME,
-        player 
-    };
-}
-export function startNewGame(course, players){
-    return {
-        type: START_NEW_GAME,
-        course,
-        players,
-    }
-}
+
 export function togglePlayerNameColor(player){
     return {
         type: TOGGLE_PLAYER_NAME_COLOR,
         player
     };
 }
+
+export function startNewGame(game_id, score_card_id){
+    return {
+        type: START_NEW_GAME,
+        game_id,
+        score_card_id,
+    };
+}
+
+export function selectCourse(course){
+    return {
+        type: SELECT_COURSE,
+        course,
+    };
+}
+export function selectPlayer(player){
+    return {
+        type: SELECT_PLAYER,
+        player
+    };
+}
+
 export function loadPlayerNameColors(players){
     const playerNameColors = {};
-    players.map((player)=>{
+    players.payload.data.map((player)=>{
         playerNameColors[player.name] = 'text-danger';
     });
     return {
@@ -85,24 +138,63 @@ export function loadPlayerNameColors(players){
         playerNameColors,
     };
 }
-export function loadPlayers(players = []){
-    console.log('loading players')    
+
+export function loadPlayers(){
+    console.log('loading players')
+
     return {
-        type: LOAD_PLAYERS,
-        players,
-    };
-}
-export function selectPlayer(player){
-    console.log("selecting: ",player);
-    return {
-        type: SELECT_PLAYER,
-        player
+        types: ['FETCH_PLAYERS', 'FETCH_PLAYERS_SUCCESS', 'FETCH_PLAYES_FAILURE'],
+        payload:{
+            request:{
+                url: '/api/player'
+            }
+        }
     };
 }
 export function loadCourses(){
-    const courses = axios.get('/course');
+    console.log('loading courses');
+
     return {
-        type: LOAD_COURSES,
-        courses,
+        types: [
+            'FETCH_COURSES', 
+            'FETCH_COURSES_SUCCESS', 
+            'FETCH_COURSES_FAILURE'
+        ],
+        payload: {
+            request: {
+                url: '/course/'
+            }
+        }
     };
 }
+// export function loadCourses(){
+//     const courses = axios.get('/course');
+//     return {
+//         type: LOAD_COURSES,
+//         courses,
+//     };
+// }
+
+// export function selectPlayer(player){
+//     console.log("selecting: ",player);
+//     return {
+//         type: SELECT_PLAYER,
+//         player
+//     };
+// }
+
+// // COURSE ACTIONS
+// export const LOAD_COURSES = 'LOAD_COURSES';
+
+
+// export function loadCourses(){
+//     let courses = [];
+//     axios.get('/course').then((res)=>{
+//         res.data.forEach(itm => { console.log("COURSES: ", itm); courses.push(itm); });
+//     });
+
+//     return {
+//         type: LOAD_COURSES,
+//         courses,
+//     };
+// }
