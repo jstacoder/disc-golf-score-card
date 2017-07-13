@@ -51,11 +51,10 @@ class NewStartPage extends Component {
 
 class DisGolfScoreCardApp extends Component{
     componentWillMount = () =>{
-        this.props.actions.loadPlayers();
+        console.log(this, this.props, this.props.actions);
+
+        this.props.actions.getPlayers();
         this.props.actions.loadCourses();
-        while(!this.props.players){
-            let x;
-        }
         this.props.actions.loadPlayerNameColors(this.props.players);        
     }
     handleCourseSelect = (course) =>{
@@ -84,8 +83,11 @@ class DisGolfScoreCardApp extends Component{
             }
         ];        
         console.log("COURSES!! ", courses);
+        const renderWithRedux = (props) => (
+            <ReduxAsyncConnect {...props} helpers="" filter={item => !item.deferred} />
+        );
         return (
-            <Router history={history} render={(props) => <ReduxAsyncConnect {...props}/> } > 
+            <Router history={history} render={renderWithRedux}>
                 <div>
                     <Route path="/app/players" component={PlayerPage} />
                     <Route path="/app/course" component={props =>(
@@ -132,6 +134,7 @@ class DisGolfScoreCardApp extends Component{
 
 function mapStateToProps(state){
     return {
+        player: state.player,
         players: state.players,
         courses: state.courses,
         playerNameColor: state.playerNameColor,
@@ -144,4 +147,4 @@ function mapDispatchToProps(dispatch){
     };
 }
 
-export default asyncConnect(mapStateToProps, mapDispatchToProps)(DisGolfScoreCardApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DisGolfScoreCardApp);

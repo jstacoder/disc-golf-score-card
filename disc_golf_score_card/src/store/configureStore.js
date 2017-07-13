@@ -4,10 +4,14 @@ import createHistory from 'history/createBrowserHistory';
 import ReduxPromise from 'redux-promise';
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
+import { asyncCompose, ReduxAsyncConnect } from 'redux-async-connect';
+import * as axios from 'axios';
 
 import { createLogger } from 'redux-logger';
 
 export const history = createHistory();
+
+//const asyncMiddleware = ReduxAsyncConnect(axios.create({}));
 
 export function configureStore(initialState){
     const store = createStore(
@@ -16,6 +20,7 @@ export function configureStore(initialState){
         compose(
            applyMiddleware(
                ReduxPromise,
+               //ReduxAsyncConnect,
                routerMiddleware(history),
                createLogger(),
                thunk,

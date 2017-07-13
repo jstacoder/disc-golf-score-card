@@ -7,7 +7,7 @@ const initialState = {
         score_card_id: null,
 };
 
-export default function gameDataReducer(state = initialState, action){
+export default function gameData(state = initialState, action){
     switch(action.type){
         case ADD_PLAYERS_TO_GAME:
             return {

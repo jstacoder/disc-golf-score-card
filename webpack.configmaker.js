@@ -31,6 +31,7 @@ let getConfig = (clean_options) => {
 		entry: {
 			main: path.join(APP_PATH, 'index'),
 		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
+            vendors: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
 		 },
 		// target:'node-webkit',
 		// node: {
@@ -86,8 +87,7 @@ let getConfig = (clean_options) => {
 				},
       			{
 					test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-					loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
-					
+			    	loader: 'url-loader?limit=10000&mimetype=image/svg+xml',
 				}
 			]
         },
@@ -167,7 +167,7 @@ let getConfig = (clean_options) => {
 		// }),
 		],
 
-		devtool:'inline-source-map'
+		devtool:'eval'
 	};
 };
 

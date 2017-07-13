@@ -1,9 +1,15 @@
 import { LOAD_COURSES, SELECT_COURSE } from '../actions';
 
-export default function courseReducer(state = [], action){
+const initialCoursesState = [];
+
+export default function courses(state = initialCoursesState, action){
+    let newState = [...state];
     switch(action.type){
         case LOAD_COURSES:
-            return action.courses;
+            action.courses && action.courses.data && action.courses.data.map((itm)=>{
+                newState.push(itm);
+            });
+            return newState;
         default:
             return state;
     }
