@@ -85,13 +85,18 @@ export function loadPlayerNameColors(players){
         playerNameColors,
     };
 }
-export function loadPlayers(players = []){
-    console.log('loading players')    
+export function loadPlayers(){
+    console.log('loading players');
     return {
-        type: LOAD_PLAYERS,
-        players,
+        types: ['LOAD_PLAYERS', 'LOAD_PLAYERS_SUCCESS', 'LOAD_PLAYERS_FAILURE'],
+        payload: {
+            request: {
+                url: "/player/"
+            }
+        }
     };
 }
+
 export function selectPlayer(player){
     console.log("selecting: ",player);
     return {

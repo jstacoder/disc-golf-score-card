@@ -4,14 +4,37 @@ import createHistory from 'history/createBrowserHistory';
 import ReduxPromise from 'redux-promise';
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
-import { asyncCompose, ReduxAsyncConnect } from 'redux-async-connect';
-import * as axios from 'axios';
-
 import { createLogger } from 'redux-logger';
+import axiosRedux from 'axios-redux';
+//import { asyncCompose, ReduxAsyncConnect } from 'redux-async-connect';
+//import * as axios from 'axios';
 
 export const history = createHistory();
 
-//const asyncMiddleware = ReduxAsyncConnect(axios.create({}));
+const axiosMiddleware = axiosRedux({
+    default: {
+        axios: {
+            baseURL: '/api/',
+            responseType: 'json',
+        },
+        options: {
+            interceptors:{
+                request: [
+                    (getState, config) =>{
+                        console.log('in request interceptor', getState(), config);
+                        return config;
+                    }
+                ],
+                response:[
+                    (getState, response) =>{
+                        console.log('inside response interceptor', getState(), config);
+                        return response;
+                    }
+                ]
+            }
+        }
+    }
+})
 
 export function configureStore(initialState){
     const store = createStore(
