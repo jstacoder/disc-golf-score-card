@@ -12,6 +12,7 @@ class ScoreTable extends Component {
     }
     clickListGroup = (course) =>{                
         this.setCourse(course);
+        //this.props.startNewGame(course);
     }
     render(){
         let courses = this.props.courses.coursesList.courses;

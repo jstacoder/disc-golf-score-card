@@ -6,6 +6,7 @@ import { Grid, Row, Col, FormControl } from 'react-bootstrap';
 export default class SelectCourse extends Component {    
     handleCourseSelect = (course) =>{
         this.props.handleCourseSelect(course);
+        this.props.startNewGame(course);
     }
     render(){
         return (
