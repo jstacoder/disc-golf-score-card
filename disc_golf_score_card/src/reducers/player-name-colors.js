@@ -10,8 +10,8 @@ export default function playerNameColor(state = initialState, action){
         case TOGGLE_PLAYER_NAME_COLOR:
             newState[action.player.name] = 
                 newState[action.player.name] == 
-                    'text-danger' ? 
-                'text-success' : 'text-danger';
+                    'danger' ? 'danger' :
+                'success';
             return newState;
         default:
             return newState;

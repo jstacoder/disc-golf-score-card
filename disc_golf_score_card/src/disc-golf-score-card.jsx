@@ -50,18 +50,17 @@ class NewStartPage extends Component {
 }
 
 class DisGolfScoreCardApp extends Component{
-    componentWillMount = () =>{
-        console.log(this, this.props, this.props.actions);
-
+    isPlayerSelected = (player) =>{
+        return this.props.gameData.players.indexOf(player) > -1;
+    }
+    componentWillMount = () =>{        
         this.props.actions.loadCourses();        
-        this.props.actions.loadPlayers().then(res =>{
-            console.log(res);
+        this.props.actions.loadPlayers().then(res =>{            
             this.props.actions.loadPlayerNameColors(res);        
         });
     }
     handleCourseSelect = (course) =>{
         this.props.actions.selectCourse(course);
-        alert("selected ", course);
     }
     handlePlayerSelect = (player) => {
         this.props.actions.selectPlayer(player);
@@ -84,8 +83,7 @@ class DisGolfScoreCardApp extends Component{
                     3,3,3,4,2,0,0,0,0
                 ]
             }
-        ];        
-        console.log("COURSES!! ", courses);
+        ];                
         const renderWithRedux = (props) => (
             <ReduxAsyncConnect {...props} helpers="" filter={item => !item.deferred} />
         );
@@ -99,7 +97,11 @@ class DisGolfScoreCardApp extends Component{
                             courses={courses} {...props}/>
                     )} />
                     <Route path="/app/game-list" component={props => (
-                        <CurrentGameList game={333} players={old_players} course={course} {...props} />
+                        <CurrentGameList 
+                            game={333} 
+                            players={old_players} 
+                            course={course} 
+                            {...props} />
                     )} /> 
                     <Route path='/app/new-game' component={props =>(
                           <StartGamePage 
@@ -107,7 +109,9 @@ class DisGolfScoreCardApp extends Component{
                                     players={this.props.players} 
                                     //values={this.state.values} 
                                     gameData={gameData}
+                                    isPlayerSelected={this.isPlayerSelected}
                                     playerNameColor={this.props.playerNameColor} 
+                                    startNewGame={this.props.actions.startNewGame}
                                     {...props} 
                           />
                     )} />
@@ -117,6 +121,7 @@ class DisGolfScoreCardApp extends Component{
                                 handleCourseSelect={this.handleCourseSelect} 
                                 courses={courses} 
                                 addSelect 
+                                startNewGame={this.props.actions.startNewGame}
                                 gameData={gameData}
                                 players={gameData.players} 
                                 {...props} 
@@ -137,10 +142,7 @@ class DisGolfScoreCardApp extends Component{
                             />
                         )} 
                     />
-                    <Route path="/app" exact component={NewStartPage} /> 
-                    {/*  <Route path="/" exact>
-                            <Redirect path="/app"/>
-                    </Route>                                  */}
+                    <Route path="/app" exact component={NewStartPage} />                     
                 </div>
             </Router>
         );

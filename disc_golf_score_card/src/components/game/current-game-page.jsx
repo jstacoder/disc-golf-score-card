@@ -6,24 +6,34 @@ export default class CurrentGamePage extends Component {
         super(props);
         this.count = 0;
     }
-    componentWillMount(){
-        this.props.startNewGame(this.props.gameData.course);
-        console.log("ABIUT TO MOIUNT!!!");
-    }
+    // componentWillMount(){
+    //     let count = 0 ;
+    //     console.log("ABIUT TO MOIUNT!!!", this);
+    //     while(!this.props.gameData.course){
+    //         console.log(count);
+    //         count++;
+    //     }        
+    //     this.props.startNewGame(this.props.gameData.course);
+        
+    // }
     componentDidMount(){
         console.log("MOUNTED!!! ", this.props.currentTurn);
-
+        //this.props.startNewGame(this.props.gameData.course);
         //this.props.changeHole(this.props.gameData.course.holes, this.props.gameData.course.holes[0].id);
     }
     updateScore(...args){
-        if(this.count == this.props.gameData.players.length -1){
-            this.count = 0;
-            this.props.changeHole(this.props.gameData.course.holes);
-        }
         this.props.updateScore(...args);
+        let playerCount = this.props.gameData.players.length;
+        let playerIdx = this.props.currentTurn.currentPlayerIndex;
+
         this.props.changePlayer(this.props.gameData.players);
+
+        if(playerIdx == playerCount-1){
+            console.log("CHANGING TO NEXT HOLE");            
+            this.props.changeHole(this.props.gameData.course.holes);
+        }        
     }
-    renderHoles = () =>{
+    renderHoles = (currId) =>{
         const holes = this.props.gameData.course.holes;
         const players = this.props.gameData.players;
         const scores = this.props.players.playersList.scores;
@@ -35,7 +45,7 @@ export default class CurrentGamePage extends Component {
                     <tr>
                         <th>Player</th>
                         {holes.map(hole =>(
-                            <th key={`${hole.id}-header`}>{hole.number}</th>
+                            <th style={{textAlign: 'center'}} key={`${hole.id}-header`}>{hole.number}</th>
                         ))}
                     </tr>
                 </thead>
@@ -47,7 +57,7 @@ export default class CurrentGamePage extends Component {
                                 {holes.map(hole =>{
                                     const playerScore = scores[player.name][hole.id];
                                     return (
-                                        <td>{playerScore || 0}</td>
+                                        <td style={{textAlign:'center'}}>{playerScore || 0}</td>
                                     );
                                 })}
                             </tr>
@@ -55,16 +65,14 @@ export default class CurrentGamePage extends Component {
                     })}
                 </tbody>
             </Table>
-            <Button onClick={(e)=>{this.updateScore(this.props.gameData.players[this.props.currentTurn.currentPlayerIndex], 3, this.props.gameData.course.holes[0].id)}}>update</Button>
+            <Button onClick={(e)=>{this.updateScore(this.props.gameData.players[this.props.currentTurn.currentPlayerIndex], 3, this.props.currentTurn.currentHoleId)}}>update</Button>
         </div>
         );
     }
-    render(){
-        console.log(this, this.props, this.props.currentTurn);
+    render(){        
         const holes = this.props.gameData.course.holes;
-        const currentHoleId = this.props.currentTurn.currentHoleId;
-        const currentHole = holes.filter((hole) => {
-            console.log(hole, currentHoleId);
+        let currentHoleId = this.props.currentTurn.currentHoleId;
+        const currentHole = holes.filter((hole) => {            
              return hole.id == currentHoleId;
         })[0];
         const currentPlayer = this.props.gameData.players[this.props.currentTurn.currentPlayerIndex];
@@ -72,11 +80,11 @@ export default class CurrentGamePage extends Component {
             <Grid>
                 <Row>
                     <Col xs={12}>
-                        <PageHeader>{this.props.gameData.course.name} <small>current player: {currentPlayer.name} current hole: {currentHole.number}</small></PageHeader>
+                        <PageHeader>{this.props.gameData.course.display_name} <small>current player: {currentPlayer.name} current hole: {currentHole.number}</small></PageHeader>
                         <ul>
                             {this.props.gameData.players.map(player => (<li key={player.name}>{player.name}</li>))}
                         </ul>
-                        {this.renderHoles()}
+                        {this.renderHoles(currentHoleId)}
                     </Col>
                 </Row>
             </Grid>

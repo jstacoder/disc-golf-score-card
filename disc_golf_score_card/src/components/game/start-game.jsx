@@ -32,28 +32,37 @@ export default class StartGamePage extends Component {
         console.log(this.props);
     }
     render(){        
-        let players = this.props.players.playersList.players;
-        //let values = this.props.values;
-        let handleChange = this.handleChange;
-        console.log('PLAYERS', this);
+        const players = this.props.players.playersList.players;        
+        const handleChange = this.handleChange;
+        const isPlayerSelected = this.props.isPlayerSelected;
         return (
             <Grid>
                 <Row>
                     <Col xs={12} md={6} mdOffset={4}> 
+                    <LinkContainer to="/app">
+                        <Button bsSize="lg" bsStyle="primary" block>back</Button>
+                    </LinkContainer>
                         <PageHeader>Start Game</PageHeader>
                             <Panel header="Add Players">
                                 <ListGroup fill>
                                     {players &&  players.map((p)=>{
-                                        let player = p.name;                                        
+                                        let player = p.name;        
+                                        const textStyle = isPlayerSelected(p) ? 'success' : 'danger';                                 
                                         return (
-                                            <ListGroupItem key={`player-${player}`}>
+                                            <ListGroupItem key={`player-${player}`} onClick={(e)=>(this.handleChange(e.target.checked, p))}>
                                                 <Row>
-                                                <Col xs={6}>                                                
-                                                    <h2 className={this.props.playerNameColor[player]}>{player}</h2>                                                 
-                                                </Col>
-                                                <Col xs={2} xsOffset={4}>
-                                                <FormControl type="checkbox" checked={this.props.gameData.players.indexOf(player) != -1 ? 1 : 0} onChange={(e)=>(this.handleChange(e.target.checked, p))} className={player} data-player={player} />
-                                                </Col>
+                                                    <Col xs={6}>                                                
+                                                        <h2 className={`text-${textStyle}`}>{player}</h2>                                                 
+                                                    </Col>
+                                                    <Col xs={2} xsOffset={4}>
+                                                        <FormControl 
+                                                            type="checkbox" 
+                                                            checked={this.props.gameData.players.indexOf(p) != -1 ? 1 : 0} 
+                                                            onChange={(e)=>(this.handleChange(e.target.checked, p))} 
+                                                            className={player} 
+                                                            data-player={player} 
+                                                        />
+                                                    </Col>
                                                 </Row>
                                             </ListGroupItem>
                                         );
@@ -61,7 +70,7 @@ export default class StartGamePage extends Component {
                                 </ListGroup>
                             </Panel>
                             <LinkContainer to="/app/select-course">
-                                <Button bsSize="lg">Select Course</Button>
+                                <Button bsSize="lg" block>Select Course</Button>
                             </LinkContainer>
                     </Col>
                 </Row>
