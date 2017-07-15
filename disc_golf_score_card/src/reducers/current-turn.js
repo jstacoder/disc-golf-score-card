@@ -1,19 +1,32 @@
-import { CHANGE_HOLE, CHANGE_PLAYER, START_NEW_GAME } from '../actions';
+import { RESET_COUNT, INCREMENT_COUNT, DECREMENT_COUNT, CHANGE_HOLE, CHANGE_PLAYER, START_NEW_GAME } from '../actions';
 
 const initialState = {
     currentPlayerIndex: 0,
     currentHoleId:null,
-    lastHole:false,
-    lastTurn:false,
+    lastHole:false,    
+    currentDisplayNumber:0,
 };
 
 export default function currentTurn(state = initialState, action = {}){
     let newState = {...state};
 
     switch(action.type){
+        case INCREMENT_COUNT:
+            newState.currentDisplayNumber++;
+            return newState;
+
+        case DECREMENT_COUNT:
+            newState.currentDisplayNumber--;
+            return newState;
+
+        case RESET_COUNT:
+            newState.currentDisplayNumber = 0;
+            return newState;
+
         case START_NEW_GAME:
             newState.currentHoleId = action.payload.course.holes[0].id;
             return newState;
+
         case CHANGE_HOLE:
             if(newState.lastHole === 'true'){
                 return newState;
@@ -31,20 +44,14 @@ export default function currentTurn(state = initialState, action = {}){
         case CHANGE_PLAYER:
             let currIdx = newState.currentPlayerIndex;
             if(currIdx == action.payload.players.length - 1){
-                     newState.lastTurn = false
-            }else if(currIdx == action.payload.players.length - 2){
-                     newState.lastTurn = true 
-            }else{
-                     newState.lastTurn = false 
-            }
-            if(currIdx == action.payload.players.length - 1){
-                newState.currentPlayerIndex = 0;                
+                newState.currentPlayerIndex = 0;
+                newState.currentHoleId++;  
             }else{
                 newState.currentPlayerIndex++;
-                newState.lastTurn = false      
             }
             return newState;
+
         default:
-            return newState;
+            return newState;        
     }
 }

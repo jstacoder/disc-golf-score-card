@@ -9,7 +9,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const  BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+const chalk = require('chalk');
 const pkg = require('./package.json');
 
 const BASE_PATH = path.join(path.resolve(__dirname), 'disc_golf_score_card');
@@ -31,7 +31,7 @@ let getConfig = (clean_options) => {
 		entry: {
 			main: path.join(APP_PATH, 'index'),
 		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
-            vendors: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
+            vendor: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
 		 },
 		// target:'node-webkit',
 		// node: {
@@ -114,7 +114,19 @@ let getConfig = (clean_options) => {
         }),
 		
 		//*********** progress bar 
-		new ProgressBarPlugin({clear:false}),
+		new ProgressBarPlugin(
+			{
+				complete: chalk.bgGreen(' '),
+    			incomplete: chalk.bgWhite('+'),
+    			width: 60,
+    			total: 100,
+    			clear: false,
+				// clear:false,
+				// complete: '>',
+				// incomplete:'*',
+				format:chalk.red(':msg - ')+chalk.blue('[:current/:total]')+chalk.green(' { ') + ':bar' +chalk.green(' }')+chalk.red(':percent')
+			}
+		),
 		//new webpack.ProgressPlugin(percentage => (new progressBar(":current % :bar", 100)).update(percentage)),
 		//*************
 

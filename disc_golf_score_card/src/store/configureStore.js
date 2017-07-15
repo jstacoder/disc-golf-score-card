@@ -27,11 +27,11 @@ export function configureStore(initialState){
         initialState,
         compose(
            applyMiddleware(
-               //ReduxPromise,
+               ReduxPromise,
                axiosMiddleware(client),
                routerMiddleware(history),
                createLogger(),
-               //thunk,
+               thunk,
             ),
            window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
         )

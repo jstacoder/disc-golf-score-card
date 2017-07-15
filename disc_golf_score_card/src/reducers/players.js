@@ -7,13 +7,11 @@ const FETCH_PLAYERS = 'FETCH_PLAYERS';
 const FETCH_PLAYERS_SUCCESS = 'FETCH_PLAYERS_SUCCESS';
 const FETCH_PLAYERS_FAILURE = 'FETCH_PLAYERS_FAILURE';
 
-const initialPlayersState = {
-    playersList: {
+const initialPlayersState = {   
         players: [],
         scores: {},        
         error: null,
-        loading: false,
-    }
+        loading: false,    
 };
 
 export default function players(state = initialPlayersState, action){
@@ -21,21 +19,20 @@ export default function players(state = initialPlayersState, action){
 
     switch (action.type){       
         case FETCH_PLAYERS:
-            newState.playersList.loading = true;
+            newState.loading = true;
             return newState;
 
         case FETCH_PLAYERS_SUCCESS:
             action.payload.data.map(itm =>{
-                newState.playersList.players.push(itm);
-                newState.playersList.scores[itm.name] = {};
+                newState.players.push(itm);
+                newState.scores[itm.name] = {};
             });
-            newState.playersList.loading = false;
+            newState.loading = false;
             return newState;
 
         case UPDATE_SCORE:
-            newState.playersList.scores
-                [action.payload.player.name]
-                [action.payload.hole_id] = action.payload.score;       
+            newState.scores[action.payload.player.name][action.payload.hole_id] = action.payload.score;       
+            console.log(newState.scores[action.payload.player.name][action.payload.hole_id]);
             return newState;
         default:
             return state;

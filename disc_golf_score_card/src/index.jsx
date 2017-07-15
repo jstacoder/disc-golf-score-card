@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import DiscGolfScoreCardApp from './disc-golf-score-card';
+import DiscGolfScoreCardApp from './disc-golf-score-card-app';
 import { Provider } from 'react-redux';
 import { configureStore } from './store/configureStore';
 

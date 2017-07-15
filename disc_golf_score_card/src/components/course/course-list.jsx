@@ -14,6 +14,9 @@ class ScoreTable extends Component {
         this.setCourse(course);
         //this.props.startNewGame(course);
     }
+    isItemChecked = (itm) => {
+        return this.props.gameData.course && this.props.gameData.course.name == itm.name || '';
+    }
     render(){
         let courses = this.props.courses.coursesList.courses;
         let addSelect = this.props.addSelect;
@@ -24,7 +27,7 @@ class ScoreTable extends Component {
                 <PageHeader>Courses</PageHeader>
                 <Panel>
                     <ListGroup fill>{courses.map((itm)=>{
-                            let groupEnd = addSelect ? <FormControl id={itm.name} type="checkbox" checked={this.props.gameData.course && this.props.gameData.course.name == itm.name} onChange={e=>{this.handleChange(itm)}} /> : '';
+                            let groupEnd = addSelect ? <FormControl id={itm.name} type="checkbox" checked={this.isItemChecked(itm)} onChange={e=>{this.handleChange(itm)}} value={this.isItemChecked(itm)} /> : '';
                             return (
                                 <ListGroupItem key={itm.id} onClick={(e)=>{this.clickListGroup(itm)}} id={`${itm.id}`}>
                                     <Row>

@@ -1,17 +1,16 @@
-"""initial postgres migration
+"""initial migration
 
-Revision ID: 80ed1c3d6108
-Revises:
-Create Date: 2017-07-11 14:20:37.624155
+Revision ID: ed3cccc5ccf4
+Revises: 
+Create Date: 2017-07-15 10:44:34.754000
 
 """
-
 from alembic import op
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '80ed1c3d6108'
+revision = 'ed3cccc5ccf4'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -114,4 +113,4 @@ def downgrade():
     op.drop_table('disc_golf_players')
     op.drop_table('disc_golf_frisbees')
     op.drop_table('disc_golf_courses')
-    o# ### end Alembic commands ###
+    # ### end Alembic commands ###

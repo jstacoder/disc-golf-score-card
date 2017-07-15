@@ -4,35 +4,16 @@ import { Grid, Row, Col, Button, PageHeader, Panel, ListGroup, ListGroupItem, Fo
 
 export default class StartGamePage extends Component {
 
-    handleChange = (eventValue, player) =>{        
-        //this.setState({pdate: true});
-        // let element_id = e.target.getAttribute('id');
-        let values = this.props.values;
-        console.log("event!: ",eventValue);
-       // values[player.name] = !values[player.name];
-        //player.selected = !player.selected;
-        console.log("PLAYER!: ",player);
-        //this.setState({values: values});
-        console.log(values);
-        //let new_class = player.selected ? 'text-success' : 'text-danger';
-        let playerNameColor = this.props.playerNameColor;
-        //playerNameColor[player.name] = new_class;
-        //this.setState({playerNameColor: playerNameColor});
-        console.log(playerNameColor);
-        //let selectedPlayer = player;
-        // this.props.players.map((player)=>{
-        //     if(player.name==element_id){
-        //         player.selected = true;
-        //         this.props.handlePlayerSelect(player);
-        //     }
-        // });
-        // this.forceUpdate();        
-        // this.setState({update: false});        
+    handleChange = (eventValue, player) =>{               
+        let playerNameColor = this.props.playerNameColor;                
         this.props.handlePlayerSelect(player);
+        console.log("event!: ",eventValue);
+        console.log("PLAYER!: ",player);                
+        console.log(playerNameColor);        
         console.log(this.props);
     }
     render(){        
-        const players = this.props.players.playersList.players;        
+        const players = this.props.players.players;        
         const handleChange = this.handleChange;
         const isPlayerSelected = this.props.isPlayerSelected;
         return (
@@ -45,11 +26,11 @@ export default class StartGamePage extends Component {
                         <PageHeader>Start Game</PageHeader>
                             <Panel header="Add Players">
                                 <ListGroup fill>
-                                    {players &&  players.map((p)=>{
+                                    {players &&  players.map((p, i)=>{
                                         let player = p.name;        
                                         const textStyle = isPlayerSelected(p) ? 'success' : 'danger';                                 
                                         return (
-                                            <ListGroupItem key={`player-${player}`} onClick={(e)=>(this.handleChange(e.target.checked, p))}>
+                                            <ListGroupItem key={`${i}-player-${player}`} onClick={(e)=>(this.handleChange(e.target.checked, p))}>
                                                 <Row>
                                                     <Col xs={6}>                                                
                                                         <h2 className={`text-${textStyle}`}>{player}</h2>                                                 

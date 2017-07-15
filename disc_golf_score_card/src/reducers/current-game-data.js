@@ -5,6 +5,7 @@ import { SELECT_PLAYER, SELECT_COURSE, START_NEW_GAME } from '../actions';
 const initialState = {
         players: [],
         course: null,
+        holesById:{},
         game_id: null,
         score_card_id: null,
 };
@@ -19,8 +20,13 @@ export default function gameData(state = initialState, action){
             }else{
                 newState.players.splice(playerIdx, 1);
             }
+            break;
         case SELECT_COURSE:    
-                newState.course = action.course;        
+                newState.course = action.course;     
+                newState.course.holes.map((hole, idx) =>{
+                    newState.holesById[hole.id] = idx;
+                });
+            break;
         default:
             break;    
     }
