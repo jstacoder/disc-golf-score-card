@@ -1,7 +1,7 @@
 import { createStore, compose, applyMiddleware } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
-import ReduxPromise from 'redux-promise';
+import ReduxPromise from 'redux-promise-middleware';
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
 import { asyncCompose, ReduxAsyncConnect } from 'redux-async-connect';
@@ -27,7 +27,7 @@ export function configureStore(initialState){
         initialState,
         compose(
            applyMiddleware(
-               ReduxPromise,
+               ReduxPromise(),
                axiosMiddleware(client),
                routerMiddleware(history),
                createLogger(),
@@ -38,8 +38,8 @@ export function configureStore(initialState){
     );
     if(module.hot){
         module.hot.accept('../reducers', () => {
-            const nextRootReducer = require('../reducers').default;
-            store.replaceReducer(nextRootReducer);
+            //const nextRootReducer = require('../reducers').default;
+            store.replaceReducer(rootReducer);
         });
     }
     return store;

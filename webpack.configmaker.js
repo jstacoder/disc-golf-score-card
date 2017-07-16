@@ -29,10 +29,15 @@ let clean_options = {
 let getConfig = (clean_options) => {
 		return {
 		entry: {
-			main: path.join(APP_PATH, 'index'),
+			main: [
+				path.join(APP_PATH, 'index'),
+				'react-hot-loader/patch',
+				'webpack-dev-server/client?http://0.0.0.0:3000', // WebpackDevServer host and port
+				'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors				
 		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
-            vendor: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
-		 },
+			],
+        	vendor: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
+		},
 		// target:'node-webkit',
 		// node: {
 		// 	fs: 'empty',
@@ -96,8 +101,11 @@ let getConfig = (clean_options) => {
 		},
         plugins: [
             new HtmlWebpackPlugin({
-                template: 'index.template.ejs',
-                inject: 'body'
+                template: require('html-webpack-template'),//'index.template.ejs',
+				//inject: 'body',
+				appMountId:'app',
+				baseHref:'http://localhost:8090/',
+				devServer:'http://localhost:3000',
             }),
             new CleanWebpackPlugin(clean_dirs, clean_options),
 			 //new BundleAnalyzerPlugin({

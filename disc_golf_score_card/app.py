@@ -33,10 +33,8 @@ app.add_url_rule('/course/<int:obj_id>', view_func=views.CourseView.as_view('cou
 app.add_url_rule('/frisbee/', view_func=views.FrisbeeView.as_view('frisbee'))
 app.add_url_rule('/frisbee/<int:obj_id>', view_func=views.FrisbeeView.as_view('frisbee_id'))
 app.add_url_rule('/api/game/add', view_func=views.AddNewGameView.as_view('add_game'))
-
-with app.test_request_context():
-    app.add_url_rule('/app', 'app', view_func=lambda: flask.send_file('dist/index.html'))
-    app.add_url_rule('/app/<path:stuff>', 'app_stuff', view_func=lambda stuff=None: flask.send_file('dist/index.html'))
+app.add_url_rule('/app', 'app', view_func=views.SendFileView.as_view('send_file'))
+app.add_url_rule('/app/<path:stuff>', 'app_stuff', view_func=views.SendFileView.as_view('send_more'))
 
 if __name__ == '__main__':
     if os.environ.get('CREATE_TABLES'):

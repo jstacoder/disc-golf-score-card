@@ -251,6 +251,7 @@ class DiscGolfPlayer(Model):
     @cached_property
     def json(self):
         return dict(
+            id=self.id,
             name=self.name,
             frisbees=map(
                 lambda frisbee: frisbee.json, self.frisbees.all()

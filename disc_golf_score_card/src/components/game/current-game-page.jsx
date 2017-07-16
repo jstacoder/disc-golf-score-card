@@ -36,55 +36,67 @@ export default class CurrentGamePage extends Component {
         // }        
     }
     renderHoles = (currId) =>{
-        let front_holes, back_holes;
-        let _holes = [front_holes, back_holes];
-        const holes = front_holes = this.props.gameData.course.holes;
-        if(holes.length > 9){
-            front_holes = [];
-            for(let _i = 0; _i != 2; _i++){                
-                for(let i = 0; i < 10; i++) {
-                    _holes[_i].push(holes[i]);
-                }
-            }
-        }else{
-            _holes = [front_holes];
+        let _holes = {front_holes : [], back_holes: []};                
+        const holes = this.props.gameData.course.holes;
+        let holeCopy = [...holes];
+        while(_holes.front_holes.length != 9){
+            _holes.front_holes.push(
+                holeCopy.splice(0, 1)[0]
+            );
         }
+        if(holeCopy.length){
+            while(holeCopy.length){
+                _holes.back_holes.push(
+                    holeCopy.splice(0, 1)[0]
+                );
+            }
+        }
+
         console.log(_holes);
         const players = this.props.gameData.players;
         const scores = this.props.players.scores;
         let player, hole;
-        return (
-            <div>
-                <Table condensed bordered striped>
-                <thead>
-                    <tr>
-                        <th>Player</th>
-                        {holes.map(hole =>(
-                            <th style={{textAlign: 'center'}} key={`${hole.id}-header`}>{hole.number}</th>
-                        ))}
-                    </tr>
-                </thead>
-                <tbody>
-                    {this.props.gameData.players.map((player, pidx) =>{
-                        return (
+        return Object.keys(_holes).map( (key) =>{
+            const holes = _holes[key];    
+            const styles = {
+                textAlign:'center',
+                width:'103px',
+            };
+            return holes.length ? (
+                <div>    
+                    <Table condensed bordered striped>
+                        <thead>
                             <tr>
-                                <td><bold>{player.name}</bold></td>
-                                {holes.map((hole,hidx) =>{
-                                    const playerScore = scores[player.name][hole.id];
-                                    return (
-                                        <td key={`score-${player.name}-${pidx}-${hidx}`} style={{textAlign:'center'}}>{playerScore || 0}</td>
-                                    );
-                                })}
+                                <th>Player</th>
+                                {holes.map(hole =>(
+                                    <th style={styles} key={`${hole.id}-header`}>{hole.number}</th>
+                                ))}
                             </tr>
-                        );
-                    })}
-                </tbody>
-            </Table>
-            {/*<Button onClick={(e)=>{this.updateScore(this.props.gameData.players[this.props.currentTurn.currentPlayerIndex], 3, this.props.currentTurn.currentHoleId)}}>update</Button>*/}
-            <LinkContainer to="/app/turn/1">
-                    <Button>start</Button>
-            </LinkContainer>
-        </div>
+                        </thead>
+                        <tbody>
+                            {this.props.gameData.players.map((player, pidx) =>{
+                                return (
+                                    <tr>
+                                        <td><bold>{player.name}</bold></td>
+                                        {holes.map((hole,hidx) =>{
+                                            const playerScore = scores[player.name][hole.id];
+                                            return (
+                                                <td key={`score-${player.name}-${pidx}-${hidx}`} style={styles}>{playerScore || 0}</td>
+                                            );
+                                        })}
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </Table>                    
+                </div>
+            ) : '' ;
+        }).concat(
+            [                
+                <LinkContainer to="/app/turn/1">
+                        <Button>{this.props.gameData.game_started ? 'continue' : 'start'} game</Button>
+                </LinkContainer>
+            ]
         );
     }
     render(){   

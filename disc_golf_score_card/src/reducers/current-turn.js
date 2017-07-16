@@ -1,4 +1,4 @@
-import { RESET_COUNT, INCREMENT_COUNT, DECREMENT_COUNT, CHANGE_HOLE, CHANGE_PLAYER, START_NEW_GAME } from '../actions';
+import { START_NEW_GAME_FULFILLED, RESET_COUNT, INCREMENT_COUNT, DECREMENT_COUNT, CHANGE_HOLE, CHANGE_PLAYER, START_NEW_GAME } from '../actions';
 
 const initialState = {
     currentPlayerIndex: 0,
@@ -23,8 +23,8 @@ export default function currentTurn(state = initialState, action = {}){
             newState.currentDisplayNumber = 0;
             return newState;
 
-        case START_NEW_GAME:
-            newState.currentHoleId = action.payload.course.holes[0].id;
+        case START_NEW_GAME_FULFILLED:
+            newState.currentHoleId = action.payload.data.first_hole_id;
             return newState;
 
         case CHANGE_HOLE:

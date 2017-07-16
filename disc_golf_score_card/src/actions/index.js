@@ -63,6 +63,8 @@ export const LOAD_PLAYER_NAME_COLORS = 'LOAD_PLAYER_NAME_COLORS';
 export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
 export const SELECT_PLAYER = 'SELECT_PLAYER';
 export const START_NEW_GAME = 'START_NEW_GAME';
+export const START_NEW_GAME_PENDING = 'START_NEW_GAME_PENDING';
+export const START_NEW_GAME_FULFILLED = 'START_NEW_GAME_FULFILLED';
 export const SELECT_COURSE = 'SELECT_COURSE';
 export const UPDATE_SCORE = 'UPDATE_SCORE';
 export const CHANGE_PLAYER = 'CHANGE_PLAYER';
@@ -73,6 +75,13 @@ export const UNSET_REDIRECT = 'UNSET_REDIRECT';
 export const INCREMENT_COUNT = 'INCREMENT_COUNT';
 export const DECREMENT_COUNT = 'DECREMENT_COUNT';
 export const RESET_COUNT = 'RESET_COUNT';
+export const SET_GAME_START = 'SET_GAME_START';
+
+export function setGameStart(){
+    return {
+        type: SET_GAME_START,   
+    };
+}
 
 export function resetCount(){
     return {
@@ -143,11 +152,12 @@ export function togglePlayerNameColor(player){
     };
 }
 
-export function startNewGame(course){
+export function startNewGame(course, players){
     return {
         type: START_NEW_GAME,
         payload: {
-            course: course
+            course: course,
+            promise: Promise.resolve(axios.post('/api/game/add', {course:course.id,  players: players.map(itm => (itm.id))}))
         }
     };
 }

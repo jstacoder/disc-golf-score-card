@@ -32,7 +32,7 @@ class NewStartPage extends Component {
                     <Col xs={12} sm={12} md={6} lg={6} mdOffset={3} lgOffset={3}>
                         <PageHeader>Disc Golf Score Card</PageHeader>
                         <LinkContainer to='/app/new-game'>
-                            <Button block bsSize="lg" bsStyle="primary">Start Game</Button> 
+                            <Button block bsSize="lg" bsStyle="primary">Start Game nigga</Button> 
                         </LinkContainer>
                         <LinkContainer to="/app/game-list">
                             <Button bsSize="lg" block bsStyle="primary">Game History</Button> 
@@ -152,6 +152,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 currentTurn={this.props.currentTurn}
                                 changeHole={this.props.actions.changeHole}
                                 changePlayer={this.props.actions.changePlayer}
+                                setGameStart={this.props.actions.setGameStart}
                              />
                         )}
                     />
