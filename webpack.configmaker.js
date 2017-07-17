@@ -27,6 +27,7 @@ let clean_options = {
 let htmlPluginOptions = {
 	template: require('html-webpack-template'),	
 	appMountId:'app',
+	mobile: true
 };
 if(process.env['NODE_ENV'] !== 'production'){
 	htmlPluginOptions['baseHref'] = 'http://localhost:8090/';
