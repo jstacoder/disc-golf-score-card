@@ -8,7 +8,7 @@ import { ConnectedRouter as Router } from 'react-router-redux';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import * as axios from 'axios';
 
-import { Button, Grid, Row, Col, PageHeader, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { Button, Grid, Row, Col, PageHeader } from 'react-bootstrap';
 import PlayerPage from './components/player/player-page';
 import CoursePage from './components/course/course-page';
 import CurrentGameList from './components/game/current-game-list';
@@ -25,39 +25,24 @@ import * as Actions from './actions';
 import { history } from './store/configureStore';
 
 class NewStartPage extends Component {
-    
     render(){
-        const listGroupItemStyles = {
-            padding: '50px 27px 50px 185px',
-            fontSize: '2em',
-        };
         return (
             <Grid>
                 <Row>
                     <Col xs={12} sm={12} md={6} lg={6} mdOffset={3} lgOffset={3}>
-                        <PageHeader>Disc Golf Score Card</PageHeader>
-                        <ListGroup>
-                            <LinkContainer to='/app/new-game'>                        
-                                <ListGroupItem bsSize="lg" style={listGroupItemStyles}>                                                            
-                                    <a style={listGroupItemStyles}>Start Game</a>                                 
-                                </ListGroupItem>
-                            </LinkContainer>                        
-                            <LinkContainer to="/app/game-list">
-                                <ListGroupItem bsSize="lg" style={listGroupItemStyles}>
-                                    <a style={listGroupItemStyles}>Game History</a>
-                                </ListGroupItem>
-                            </LinkContainer>
-                            <LinkContainer to="/app/players">
-                                <ListGroupItem bsSize="lg">
-                                    <a style={listGroupItemStyles}>Players</a>
-                                </ListGroupItem> 
-                            </LinkContainer>
-                            <LinkContainer to="/app/course">
-                                <ListGroupItem bsSize="lg" style={listGroupItemStyles}>
-                                    <a style={listGroupItemStyles}>Courses</a>
-                                </ListGroupItem>                         
-                            </LinkContainer>
-                        </ListGroup>
+                        <PageHeader>Disc Golf Score Card</PageHeader>                    
+                        <LinkContainer to='/app/new-game'>
+                            <Button block bsSize="lg" bsStyle="primary">Start Game</Button> 
+                        </LinkContainer>
+                        <LinkContainer to="/app/game-list">
+                            <Button bsSize="lg" block bsStyle="primary">Game History</Button> 
+                        </LinkContainer>
+                        <LinkContainer to="/app/players">
+                            <Button bsSize="lg" block bsStyle="primary">Players</Button> 
+                        </LinkContainer>
+                        <LinkContainer to="/app/course">
+                            <Button bsSize="lg" block bsStyle="primary">Courses</Button>                         
+                        </LinkContainer>
                     </Col>
                 </Row>
             </Grid>
