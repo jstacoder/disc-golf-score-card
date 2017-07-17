@@ -16,7 +16,7 @@ import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
 import CurrentGamePage from './components/game/current-game-page';
 import TurnPage from './components/turn/turn-page';
-import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
+//import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
