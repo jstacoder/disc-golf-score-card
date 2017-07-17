@@ -4,7 +4,7 @@ import createHistory from 'history/createBrowserHistory';
 import ReduxPromise from 'redux-promise-middleware';
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
-import { asyncCompose, ReduxAsyncConnect } from 'redux-async-connect';
+//import { asyncCompose, ReduxAsyncConnect } from 'redux-async-connect';
 import * as axios from 'axios';
 import axiosMiddleware from 'redux-axios';
 import * as storage from 'redux-storage';
