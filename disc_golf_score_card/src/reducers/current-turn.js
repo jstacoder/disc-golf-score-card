@@ -1,4 +1,5 @@
 import { START_NEW_GAME_FULFILLED, RESET_COUNT, INCREMENT_COUNT, DECREMENT_COUNT, CHANGE_HOLE, CHANGE_PLAYER, START_NEW_GAME } from '../actions';
+import { actionTypes } from 'redux-localstorage';
 
 const initialState = {
     currentPlayerIndex: 0,
@@ -10,7 +11,13 @@ const initialState = {
 export default function currentTurn(state = initialState, action = {}){
     let newState = {...state};
 
+
+
     switch(action.type){
+        case actionTypes.INIT:
+            const persistedState = action.payload['reducer'];
+            console.log("STATE: ", action, persistedState);
+            return { ...newState, ...persistedState}            
         case INCREMENT_COUNT:
             newState.currentDisplayNumber++;
             return newState;

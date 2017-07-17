@@ -1,8 +1,8 @@
-"""initial migration
+"""empty message
 
-Revision ID: ed3cccc5ccf4
+Revision ID: 439cf451da16
 Revises: 
-Create Date: 2017-07-15 10:44:34.754000
+Create Date: 2017-07-16 12:44:23.776000
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'ed3cccc5ccf4'
+revision = '439cf451da16'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -47,6 +47,8 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('disc_golf_games',
+    sa.Column('complete', sa.Boolean(), nullable=True),
+    sa.Column('complete_date', sa.DateTime(), nullable=True),
     sa.Column('date', sa.Date(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),

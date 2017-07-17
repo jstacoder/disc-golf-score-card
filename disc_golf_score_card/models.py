@@ -1,3 +1,5 @@
+from datetime import datetime as dt
+
 import sqlalchemy as sa 
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
@@ -135,6 +137,8 @@ class DiscGolfFrisbee(Model):
     )
 
 class DiscGolfGame(Model):
+    complete = sa.Column(sa.Boolean, default=False)
+    complete_date = sa.Column(sa.DateTime)
     date = sa.Column(sa.Date, default=sa.func.now())
     course = sa.orm.relation(
         'DiscGolfCourse',
@@ -143,13 +147,24 @@ class DiscGolfGame(Model):
     )
     course_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_courses.id'))
 
+    @staticmethod
+    def complete_game(game):
+        game.complete = True
+        game.complete_date = dt.now()
+        return game.save()        
+
     @cached_property
     def json(self):
         return dict(
             date=self.date.strftime('%y-%m-%dT%H:%I:%S%Z'),
             course=self.course.json,
             id=self.id,
+            complete=self.complete
         )
+    
+    @classproperty
+    def has_incomplete_games(cls):
+        return any(filter(lambda x: not x.complete, cls._get_all()))
 
 class DiscGolfHole(Model):
     par = sa.Column(sa.Integer, nullable=False, default=3)
@@ -198,14 +213,14 @@ class DiscGolfGamePlayerScore(Model):
     
 
 class DiscGolfScoreCard(Model):
-    game = sa.orm.relation('DiscGolfGame', uselist=False)
+    game = sa.orm.relation('DiscGolfGame', uselist=False, backref=sa.orm.backref('score_card', uselist=False))
     game_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_games.id'))        
 
     @property
     def game_player_scores(self):
-        players = self.game.players.query.all()
+        players = self.game.players.all()
         rows = [
-            (player, player.game_scores.filter(score_card=self).all()) for player in players
+            (player, player.game_scores.filter_by(score_card=self).all()) for player in players
         ]
         return rows
 
@@ -279,6 +294,22 @@ players_frisbees = sa.Table(
     sa.Column('frisbees_id', sa.Integer, sa.ForeignKey('disc_golf_frisbees.id'))
 )
 
+def add_score(hole=None, player=None, score_card=None, value=None):
+    model_map = dict(
+        hole=DiscGolfHole,
+        player=DiscGolfPlayer,
+        score_card=DiscGolfScoreCard,
+    )
+    arg_map = dict(
+        hole=hole,
+        player=player,
+        score_card=score_card
+    )
+    for key,cls in model_map.items():
+        if type(arg_map[key]) in [str, unicode, int]:
+            arg_map[key] = cls.query.get(arg_map[key])
+    return DiscGolfGamePlayerScore(value=value, **arg_map).save()
+
 class MyDb(Model):
     created = sa.Column(sa.Boolean, default=True)
 
@@ -301,6 +332,8 @@ def create_tables():
             Model.metadata.bind = Model.engine
             Model.metadata.create_all()
             db = MyDb(created=1).save()
+
+
 
 if __name__ == "__main__":
     create_tables()

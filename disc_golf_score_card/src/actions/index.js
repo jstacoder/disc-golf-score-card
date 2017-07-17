@@ -76,6 +76,29 @@ export const INCREMENT_COUNT = 'INCREMENT_COUNT';
 export const DECREMENT_COUNT = 'DECREMENT_COUNT';
 export const RESET_COUNT = 'RESET_COUNT';
 export const SET_GAME_START = 'SET_GAME_START';
+export const UPDATE_WINNER = 'UPDATE_WINNER';
+export const CALCULATE_SCORE = 'CALCULATE_SCORE';
+
+export function updateWinner(player){
+    return {
+        type: UPDATE_WINNER,
+        payload:{
+            player
+        }
+    };
+}
+
+export function calculateScore(player, course, holes){
+    return {
+        type: CALCULATE_SCORE,
+        payload:{
+            player,
+            course,
+            holes
+        }
+    };  
+}
+
 
 export function setGameStart(){
     return {
@@ -160,6 +183,26 @@ export function startNewGame(course, players){
             promise: Promise.resolve(axios.post('/api/game/add', {course:course.id,  players: players.map(itm => (itm.id))}))
         }
     };
+}
+
+export const ADD_HOLE_SCORE = 'ADD_HOLE_SCORE';
+export const ADD_HOLE_SCORE_PENDING = 'ADD_HOLE_SCORE_PENDING';
+export const ADD_HOLE_SCORE_FULFILLED = 'ADD_HOLE_SCORE_FULFILLED';
+
+export function addNewHoleScore(score_card_id,hole_id,player,score){
+    return {
+        type: ADD_HOLE_SCORE,
+        payload: {
+            promise: Promise.resolve(
+                axios.post(
+                    `/api/add_score/${score_card_id}/${hole_id}/${player.id}`,
+                    { 
+                        value: score 
+                    }
+                )
+            )
+        }
+    }
 }
 
 export function selectCourse(course){

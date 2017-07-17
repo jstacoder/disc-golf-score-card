@@ -39,6 +39,18 @@ class BaseView(MethodView):
     def get_context(self):
         return self._context
 
+class AddHoleScoreView(BaseView):
+    def post(self, score_card_id=None,  hole_id=None, player_id=None):
+        try:
+            value = self.request.json['value']
+        except Exception as e:
+            print self.request.json
+            raise e
+        models.add_score(hole_id, player_id, score_card_id, value)
+        rtn = flask.make_response(json.dumps({'result':'success'}))
+        rtn.headers['Content-Type'] = 'application/json'
+        return rtn
+
 class BaseModelView(BaseView):
     _model = None
     _routes_added = False

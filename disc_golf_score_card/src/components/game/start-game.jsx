@@ -16,6 +16,11 @@ export default class StartGamePage extends Component {
         const players = this.props.players.players;        
         const handleChange = this.handleChange;
         const isPlayerSelected = this.props.isPlayerSelected;
+        const listGroupItemH2Styles = {
+            marginTop: '5px',
+            marginBottom: '5px',
+        };
+        
         return (
             <Grid>
                 <Row>
@@ -28,12 +33,12 @@ export default class StartGamePage extends Component {
                                 <ListGroup fill>
                                     {players &&  players.map((p, i)=>{
                                         let player = p.name;        
-                                        const textStyle = isPlayerSelected(p) ? 'success' : 'danger';                                 
+                                        const itemClass = isPlayerSelected(p) ? 'active' : '';                                 
                                         return (
-                                            <ListGroupItem key={`${i}-player-${player}`} onClick={(e)=>(this.handleChange(e.target.checked, p))}>
+                                            <ListGroupItem key={`${i}-player-${player}`} onClick={(e)=>(this.handleChange(e.target.checked, p))} className={itemClass} >
                                                 <Row>
                                                     <Col xs={6}>                                                
-                                                        <h2 className={`text-${textStyle}`}>{player}</h2>                                                 
+                                                        <h2 style={listGroupItemH2Styles}>{player}</h2>                                                 
                                                     </Col>
                                                     <Col xs={2} xsOffset={4}>
                                                         <FormControl 

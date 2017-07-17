@@ -50,6 +50,14 @@ class NewStartPage extends Component {
     }
 }
 
+function GameRoute({match}){
+    return (
+        <div>
+            <PageHeader>Game #:{match.params.game_id}</PageHeader>
+        </div>
+    );
+}
+
 export default class DisGolfScoreCardRoutes extends Component{
     isPlayerSelected = (player) =>{
         return this.props.gameData.players.indexOf(player) > -1;
@@ -140,7 +148,8 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 {...props} 
                             />
                         )} 
-                    />
+                    >                        
+                    </Route>
                     <Route
                         path='/app/turn/:turn' render={props=>(
                             <TurnPage
@@ -153,9 +162,13 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 changeHole={this.props.actions.changeHole}
                                 changePlayer={this.props.actions.changePlayer}
                                 setGameStart={this.props.actions.setGameStart}
+                                addNewHoleScore={this.props.actions.addNewHoleScore}
                              />
                         )}
                     />
+                    <Route path="/app/game">
+                        <Route path="/app/game/:game_id" component={GameRoute}/>                                                    
+                    </Route>
                     <Route path="/app" exact component={NewStartPage} />                     
                 </div>
         );
