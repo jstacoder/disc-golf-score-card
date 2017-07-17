@@ -9,7 +9,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const  BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
+const chalk = require('chalk');
 const pkg = require('./package.json');
 
 const BASE_PATH = path.join(path.resolve(__dirname), 'disc_golf_score_card');
@@ -24,15 +24,28 @@ let clean_options = {
     verbose: false,
     dry: false,
 }
-
+let htmlPluginOptions = {
+	template: require('html-webpack-template'),	
+	appMountId:'app',
+	mobile: true
+};
+if(process.env['NODE_ENV'] !== 'production'){
+	htmlPluginOptions['baseHref'] = 'http://localhost:8090/';
+	htmlPluginOptions['devServer'] = 'http://localhost:3000';
+}
 
 let getConfig = (clean_options) => {
 		return {
 		entry: {
-			main: path.join(APP_PATH, 'index'),
+			main: [
+				path.join(APP_PATH, 'index'),
+				//'react-hot-loader/patch',
+				//'webpack-dev-server/client?http://0.0.0.0:3000', // WebpackDevServer host and port
+				//'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors				
 		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
-            vendors: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
-		 },
+			],
+        	vendor: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
+		},
 		// target:'node-webkit',
 		// node: {
 		// 	fs: 'empty',
@@ -95,10 +108,7 @@ let getConfig = (clean_options) => {
 			extensions: [' ', '.js','.jsx','.css']
 		},
         plugins: [
-            new HtmlWebpackPlugin({
-                template: 'index.template.ejs',
-                inject: 'body'
-            }),
+            new HtmlWebpackPlugin(htmlPluginOptions),
             new CleanWebpackPlugin(clean_dirs, clean_options),
 			 //new BundleAnalyzerPlugin({
             //analyzerMode: 'static'
@@ -114,7 +124,19 @@ let getConfig = (clean_options) => {
         }),
 		
 		//*********** progress bar 
-		new ProgressBarPlugin({clear:false}),
+		new ProgressBarPlugin(
+			{
+				complete: chalk.bgGreen(' '),
+    			incomplete: chalk.bgWhite('+'),
+    			width: 60,
+    			total: 100,
+    			clear: false,
+				// clear:false,
+				// complete: '>',
+				// incomplete:'*',
+				format:chalk.red(':msg - ')+chalk.blue('[:current/:total]')+chalk.green(' { ') + ':bar' +chalk.green(' }')+chalk.red(':percent')
+			}
+		),
 		//new webpack.ProgressPlugin(percentage => (new progressBar(":current % :bar", 100)).update(percentage)),
 		//*************
 

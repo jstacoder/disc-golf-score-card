@@ -15,7 +15,8 @@ import CurrentGameList from './components/game/current-game-list';
 import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
 import CurrentGamePage from './components/game/current-game-page';
-import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
+import TurnPage from './components/turn/turn-page';
+//import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,7 +30,7 @@ class NewStartPage extends Component {
             <Grid>
                 <Row>
                     <Col xs={12} sm={12} md={6} lg={6} mdOffset={3} lgOffset={3}>
-                        <PageHeader>Disc Golf Score Card</PageHeader>
+                        <PageHeader>Disc Golf Score Card</PageHeader>                    
                         <LinkContainer to='/app/new-game'>
                             <Button block bsSize="lg" bsStyle="primary">Start Game</Button> 
                         </LinkContainer>
@@ -49,7 +50,15 @@ class NewStartPage extends Component {
     }
 }
 
-class DisGolfScoreCardApp extends Component{
+function GameRoute({match}){
+    return (
+        <div>
+            <PageHeader>Game #:{match.params.game_id}</PageHeader>
+        </div>
+    );
+}
+
+export default class DisGolfScoreCardRoutes extends Component{
     isPlayerSelected = (player) =>{
         return this.props.gameData.players.indexOf(player) > -1;
     }
@@ -84,26 +93,23 @@ class DisGolfScoreCardApp extends Component{
                 ]
             }
         ];                
-        const renderWithRedux = (props) => (
-            <ReduxAsyncConnect {...props} helpers="" filter={item => !item.deferred} />
-        );
+        
         return (
-            <Router history={history} render={renderWithRedux}>
                 <div>
                     <Route path="/app/players" component={PlayerPage} />
-                    <Route path="/app/course" component={props =>(
+                    <Route path="/app/course" render={props =>(
                         <CoursePage 
                             handleAddCourse={this.handleAddCourse} 
                             courses={courses} {...props}/>
                     )} />
-                    <Route path="/app/game-list" component={props => (
+                    <Route path="/app/game-list" render={props => (
                         <CurrentGameList 
                             game={333} 
                             players={old_players} 
                             course={course} 
                             {...props} />
                     )} /> 
-                    <Route path='/app/new-game' component={props =>(
+                    <Route path='/app/new-game' render={props =>(
                           <StartGamePage 
                                     handlePlayerSelect={this.handlePlayerSelect} 
                                     players={this.props.players} 
@@ -116,7 +122,7 @@ class DisGolfScoreCardApp extends Component{
                           />
                     )} />
                     <Route 
-                        path='/app/select-course' component={props =>(
+                        path='/app/select-course' render={props =>(
                             <SelectCourse                                
                                 handleCourseSelect={this.handleCourseSelect} 
                                 courses={courses} 
@@ -129,41 +135,43 @@ class DisGolfScoreCardApp extends Component{
                         )} 
                     />
                     <Route 
-                        path='/app/current-game' component={props =>(
+                        path='/app/current-game' render={props =>(
                             <CurrentGamePage 
                                 gameData={this.props.gameData} 
                                 players={this.props.players} 
                                 updateScore={this.props.actions.updateScore}
                                 changePlayer={this.props.actions.changePlayer}
                                 currentTurn={this.props.currentTurn}
+                                setRedirect={this.props.actions.setRedirect}
                                 changeHole={this.props.actions.changeHole}
                                 startNewGame={this.props.actions.startNewGame}
                                 {...props} 
                             />
                         )} 
+                    >                        
+                    </Route>
+                    <Route
+                        path='/app/turn/:turn' render={props=>(
+                            <TurnPage
+                                incrementCount={this.props.actions.incrementCount}
+                                decrementCount={this.props.actions.decrementCount}
+                                resetCount={this.props.actions.resetCount}                                
+                                gameData={this.props.gameData}
+                                updateScore={this.props.actions.updateScore}
+                                currentTurn={this.props.currentTurn}
+                                changeHole={this.props.actions.changeHole}
+                                changePlayer={this.props.actions.changePlayer}
+                                setGameStart={this.props.actions.setGameStart}
+                                addNewHoleScore={this.props.actions.addNewHoleScore}
+                             />
+                        )}
                     />
+                    <Route path="/app/game">
+                        <Route path="/app/game/:game_id" component={GameRoute}/>                                                    
+                    </Route>
                     <Route path="/app" exact component={NewStartPage} />                     
                 </div>
-            </Router>
         );
     }
 }
 
-function mapStateToProps(state){
-    console.log(state); 
-    return {
-        //player: state.player,
-        players: state.players,
-        courses: state.courses,
-        playerNameColor: state.playerNameColor,
-        gameData: state.gameData,
-        currentTurn: state.currentTurn,
-    };
-}
-function mapDispatchToProps(dispatch){
-    return {
-        actions: bindActionCreators(Actions, dispatch)
-    };
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DisGolfScoreCardApp);

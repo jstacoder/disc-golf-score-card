@@ -1,3 +1,4 @@
+import requests
 from flask.views import MethodView
 import flask
 import json
@@ -13,6 +14,13 @@ class IndexView(MethodView):
     def post(self):
         return flask.make_response('{}')
 
+class SendFileView(MethodView):
+    def get(self, stuff=None):
+        try:
+            response = flask.send_file('dist/index.html')
+        except IOError:
+            response = flask.make_response(requests.get('http://localhost:3000/dist/index.html').content)
+        return response
 
 class BaseView(MethodView):
     _context = {}
@@ -29,6 +37,18 @@ class BaseView(MethodView):
 
     def get_context(self):
         return self._context
+
+class AddHoleScoreView(BaseView):
+    def post(self, score_card_id=None,  hole_id=None, player_id=None):
+        try:
+            value = self.request.json['value']
+        except Exception as e:
+            print self.request.json
+            raise e
+        models.add_score(hole_id, player_id, score_card_id, value)
+        rtn = flask.make_response(json.dumps({'result':'success'}))
+        rtn.headers['Content-Type'] = 'application/json'
+        return rtn
 
 class BaseModelView(BaseView):
     _model = None
@@ -79,15 +99,18 @@ class AddNewGameView(BaseModelView):
         
 
     def post(self):
-        form = self._form_class(self.request.form)
+        #ipdb.set_trace()
+        form = self._form_class(**self.request.json)
+        
         course = models.DiscGolfCourse.query.get(form.course.data)
         game = self.model(course=course).save()
         sc = models.DiscGolfScoreCard(game=game).save()
+        first_hole = course.holes.first()
         players = map(lambda x: models.DiscGolfPlayer.query.get(x), form.players.data)
         for p in players:
             p.games.append(game)
             p.save()
-        return self.json(dict(score_card=sc.id, game=game.id))
+        return self.json(dict(score_card=sc.id, game=game.id, first_hole_id=first_hole.id))
 
 class BaseListView(BaseModelView):
     def __init__(self, *args, **kwargs):        

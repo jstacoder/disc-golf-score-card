@@ -1,17 +1,16 @@
-"""initial postgres migration
+"""empty message
 
-Revision ID: 80ed1c3d6108
-Revises:
-Create Date: 2017-07-11 14:20:37.624155
+Revision ID: 439cf451da16
+Revises: 
+Create Date: 2017-07-16 12:44:23.776000
 
 """
-
 from alembic import op
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '80ed1c3d6108'
+revision = '439cf451da16'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -48,6 +47,8 @@ def upgrade():
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('disc_golf_games',
+    sa.Column('complete', sa.Boolean(), nullable=True),
+    sa.Column('complete_date', sa.DateTime(), nullable=True),
     sa.Column('date', sa.Date(), nullable=True),
     sa.Column('course_id', sa.Integer(), nullable=True),
     sa.Column('id', sa.Integer(), nullable=False),
@@ -114,4 +115,4 @@ def downgrade():
     op.drop_table('disc_golf_players')
     op.drop_table('disc_golf_frisbees')
     op.drop_table('disc_golf_courses')
-    o# ### end Alembic commands ###
+    # ### end Alembic commands ###

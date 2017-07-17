@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Table, Panel, Button, ListGroup, ListGroupItem, PageHeader, FormControl } from 'react-bootstrap';
+import { Row, Col, Table, Panel, Button, ListGroup, ListGroupItem, PageHeader, FormControl, Form } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 const axios = require('axios');
 
@@ -14,21 +14,28 @@ class ScoreTable extends Component {
         this.setCourse(course);
         //this.props.startNewGame(course);
     }
+    isItemChecked = (itm) => {
+        return this.props.gameData.course && this.props.gameData.course.name == itm.name || '';
+    }
     render(){
         let courses = this.props.courses.coursesList.courses;
         let addSelect = this.props.addSelect;
+        const listGroupStyles = {
+            marginBottom: '0px'
+        };
         //let values = this.props.courseValues;
 
         return (
             <div>
                 <PageHeader>Courses</PageHeader>
                 <Panel>
-                    <ListGroup fill>{courses.map((itm)=>{
-                            let groupEnd = addSelect ? <FormControl id={itm.name} type="checkbox" checked={this.props.gameData.course && this.props.gameData.course.name == itm.name} onChange={e=>{this.handleChange(itm)}} /> : '';
+                    <Form fill>
+                    <ListGroup style={listGroupStyles} fill>{courses.map((itm)=>{
+                            let groupEnd = addSelect ? <FormControl id={itm.name} type="checkbox" checked={this.isItemChecked(itm)} onChange={e=>{this.handleChange(itm)}} value={this.isItemChecked(itm)} /> : '';
                             return (
                                 <ListGroupItem key={itm.id} onClick={(e)=>{this.clickListGroup(itm)}} id={`${itm.id}`}>
                                     <Row>
-                                        <Col xs={11}>
+                                        <Col xs={10}>
                                             <p>Name: {itm.display_name}</p>
                                             <ul key={`${itm.id}-ul`}>                            
                                                 <li key={`${itm.id}-location`}>location: {itm.location}</li>
@@ -36,7 +43,7 @@ class ScoreTable extends Component {
 
                                             </ul>                                    
                                         </Col>
-                                        <Col xs={1}>
+                                        <Col xs={2}>
                                             {groupEnd}
                                         </Col>
                                     </Row>
@@ -44,6 +51,7 @@ class ScoreTable extends Component {
                             );
                         })
                     }</ListGroup>
+                    </Form>
                 </Panel>
                 
                 <LinkContainer to="/app/current-game">

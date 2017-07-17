@@ -63,11 +63,78 @@ export const LOAD_PLAYER_NAME_COLORS = 'LOAD_PLAYER_NAME_COLORS';
 export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
 export const SELECT_PLAYER = 'SELECT_PLAYER';
 export const START_NEW_GAME = 'START_NEW_GAME';
+export const START_NEW_GAME_PENDING = 'START_NEW_GAME_PENDING';
+export const START_NEW_GAME_FULFILLED = 'START_NEW_GAME_FULFILLED';
 export const SELECT_COURSE = 'SELECT_COURSE';
 export const UPDATE_SCORE = 'UPDATE_SCORE';
 export const CHANGE_PLAYER = 'CHANGE_PLAYER';
 export const SAVE_GAME = 'SAVE_GAME';
 export const CHANGE_HOLE = 'CHANGE_HOLE';
+export const SET_REDIRECT = 'SET_REDIRECT';
+export const UNSET_REDIRECT = 'UNSET_REDIRECT';
+export const INCREMENT_COUNT = 'INCREMENT_COUNT';
+export const DECREMENT_COUNT = 'DECREMENT_COUNT';
+export const RESET_COUNT = 'RESET_COUNT';
+export const SET_GAME_START = 'SET_GAME_START';
+export const UPDATE_WINNER = 'UPDATE_WINNER';
+export const CALCULATE_SCORE = 'CALCULATE_SCORE';
+
+export function updateWinner(player){
+    return {
+        type: UPDATE_WINNER,
+        payload:{
+            player
+        }
+    };
+}
+
+export function calculateScore(player, course, holes){
+    return {
+        type: CALCULATE_SCORE,
+        payload:{
+            player,
+            course,
+            holes
+        }
+    };  
+}
+
+
+export function setGameStart(){
+    return {
+        type: SET_GAME_START,   
+    };
+}
+
+export function resetCount(){
+    return {
+        type: RESET_COUNT,
+    };
+}
+
+export function incrementCount(){
+    return {
+        type: INCREMENT_COUNT,
+    };
+}
+
+export function decrementCount(){
+    return {
+        type: DECREMENT_COUNT,
+    };
+}
+
+export function setRedirect(){
+    return {
+        type: SET_REDIRECT,
+    };
+}
+
+export function unsetRedirect(){
+    return {
+        type: UNSET_REDIRECT,
+    };
+}
 
 export function changeHole(holes, hole_id = null){
     return {
@@ -84,7 +151,8 @@ export function changePlayer(players){
     return {
         type: CHANGE_PLAYER,
         payload: {
-            players: players,
+            players,            
+
         }
     };
 }
@@ -93,9 +161,9 @@ export function updateScore(player, score, hole_id){
     return {
         type: UPDATE_SCORE,
         payload: {
-            player,
-            score,
-            hole_id,
+            player:player,
+            score:score,
+            hole_id:hole_id,
         }
     };
 }
@@ -107,13 +175,34 @@ export function togglePlayerNameColor(player){
     };
 }
 
-export function startNewGame(course){
+export function startNewGame(course, players){
     return {
         type: START_NEW_GAME,
         payload: {
-            course: course
+            course: course,
+            promise: Promise.resolve(axios.post('/api/game/add', {course:course.id,  players: players.map(itm => (itm.id))}))
         }
     };
+}
+
+export const ADD_HOLE_SCORE = 'ADD_HOLE_SCORE';
+export const ADD_HOLE_SCORE_PENDING = 'ADD_HOLE_SCORE_PENDING';
+export const ADD_HOLE_SCORE_FULFILLED = 'ADD_HOLE_SCORE_FULFILLED';
+
+export function addNewHoleScore(score_card_id,hole_id,player,score){
+    return {
+        type: ADD_HOLE_SCORE,
+        payload: {
+            promise: Promise.resolve(
+                axios.post(
+                    `/api/add_score/${score_card_id}/${hole_id}/${player.id}`,
+                    { 
+                        value: score 
+                    }
+                )
+            )
+        }
+    }
 }
 
 export function selectCourse(course){
