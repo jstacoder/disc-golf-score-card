@@ -95,14 +95,14 @@ export default class TurnPage extends Component {
                                 </RB.Col>
                             </RB.Row>
                             <RB.Row>
-                                <RB.Col xs={12} sm={2} smOffset={4}>                                
+                                <RB.Col xs={6} sm={2} smOffset={4}>                                
                                     <RB.Well onClick={this.incrementCount} bsSize="sm">
                                         <p  style={styles}>
                                             <Icon  name="plus" size="4x" prefix="glyphicon"/>
                                         </p>
                                     </RB.Well>
                                 </RB.Col>
-                                <RB.Col xs={12} sm={2} smPush={0}>
+                                <RB.Col xs={6} sm={2} smPush={0}>
                                     <RB.Well onClick={this.decrementCount} bsSize="sm">
                                         <p  style={styles}>
                                             <Icon name="minus" size="4x" prefix="glyphicon" />
@@ -119,7 +119,6 @@ export default class TurnPage extends Component {
                     </RB.Col>                    
                 </RB.Row>
             </RB.Grid>
- 
         );
     }
 }
