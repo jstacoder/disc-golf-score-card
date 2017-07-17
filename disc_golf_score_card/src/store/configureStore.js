@@ -18,8 +18,6 @@ const engine = createEngine('my-key');
 
 const storageMiddleware = storage.createMiddleware(engine/*, // any extra args should be action types to not update storage */)
 
-
-
 const client = {
     default:{
         axios:{
@@ -29,21 +27,22 @@ const client = {
     }
 };
 
+const middlewares = applyMiddleware(
+    storageMiddleware,
+    ReduxPromise(),
+    axiosMiddleware(client),
+    routerMiddleware(history),
+    createLogger(),
+    thunk
+);
+
+const composeEnhancer = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
 export function configureStore(initialState){
     const store = createStore(
         rootReducer,
         initialState,
-        compose(
-            applyMiddleware(
-                storageMiddleware,
-                ReduxPromise(),
-                axiosMiddleware(client),
-                routerMiddleware(history),
-                createLogger(),
-                thunk
-            ),
-            window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-        )
+        composeEnhancer(middlewares)
     );
     if(module.hot){
         module.hot.accept('../reducers', () => {
