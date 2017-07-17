@@ -138,10 +138,7 @@ let getConfig = (clean_options) => {
 			}
 		),
 		//new webpack.ProgressPlugin(percentage => (new progressBar(":current % :bar", 100)).update(percentage)),
-		//*************
-
-
-
+		//*************\
         //*********************************** async chunks*************************
 
         //catch all - anything used in more than one place
@@ -152,43 +149,12 @@ let getConfig = (clean_options) => {
                 return count >= 2;
             },
         }),
-
-        //specifically bundle these large things
-        //new webpack.optimize.CommonsChunkPlugin({
-            //filename: 'react-dnd.js',
-         //   async: 'react-dnd',
-         //   minChunks(module, count) {
-         //       var context = module.context;
-         //       var targets = ['react-dnd', 'react-dnd-html5-backend', 'react-dnd-touch-backend', 'dnd-core']
-         //       return context && context.indexOf('node_modules') >= 0 && targets.find(t => new RegExp('\\\\' + t + '\\\\', 'i').test(context));
-          //  },
-//        }),
+        
 		new ExtractTextPlugin({
 			filename: '[name]-[hash].bundle.css',
 			allChunks: true,
-		}),
-		// new ExtractTextPlugin({
-		// 	filename: '[name].bundle.eot',
-		// 	allChunks: true,
-		// }),``
-		// new ExtractTextPlugin({
-		// 	filename: '[name].bundle.woff',
-		// 	allChunks: true,
-		// }),
-		// new ExtractTextPlugin({
-		// 	filename: '[name].bundle.svg',
-		// 	allChunks: true,
-		// }),
-		// new ExtractTextPlugin({
-		// 	filename: '[name].bundle.ttf',
-		// 	allChunks: true,
-		// }),
-		// new ExtractTextPlugin({
-		// 	filename: '[name].bundle.woff2',
-		// 	allChunks: true,
-		// }),
+		}),	
 		],
-
 		devtool:'eval'
 	};
 };

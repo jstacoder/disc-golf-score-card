@@ -6,6 +6,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Route, Redirect } from 'react-router-dom';
 import { ConnectedRouter as Router } from 'react-router-redux';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
+import { withRouter } from 'react-router-dom';
 import * as axios from 'axios';
 
 import { Button, Grid, Row, Col, PageHeader } from 'react-bootstrap';
@@ -96,82 +97,78 @@ export default class DisGolfScoreCardRoutes extends Component{
         
         return (
                 <div>
-                    <Route path="/app/players" component={PlayerPage} />
-                    <Route path="/app/course" render={props =>(
-                        <CoursePage 
-                            handleAddCourse={this.handleAddCourse} 
-                            courses={courses} {...props}/>
-                    )} />
-                    <Route path="/app/game-list" render={props => (
-                        <CurrentGameList 
-                            game={333} 
-                            players={old_players} 
-                            course={course} 
-                            {...props} />
-                    )} /> 
-                    <Route path='/app/new-game' render={props =>(
-                          <StartGamePage 
-                                    handlePlayerSelect={this.handlePlayerSelect} 
-                                    players={this.props.players} 
-                                    //values={this.state.values} 
+                    <Redirect from='/' to='/app' />
+                    <Route path="/app" exact component={NewStartPage} />                 
+                        <Route path="/app/players" component={PlayerPage} />
+                        <Route path="/app/course" render={props =>(
+                            <CoursePage handleAddCourse={this.handleAddCourse} courses={courses} {...props} />
+                        )} />
+                        <Route path="/app/game-list" render={props => (
+                            <CurrentGameList 
+                                game={333} 
+                                players={old_players} 
+                                course={course} 
+                                {...props} />
+                        )} /> 
+                        <Route path='/app/new-game' render={props =>(
+                            <StartGamePage 
+                                        handlePlayerSelect={this.handlePlayerSelect} 
+                                        players={this.props.players} 
+                                        //values={this.state.values} 
+                                        gameData={gameData}
+                                        isPlayerSelected={this.isPlayerSelected}
+                                        playerNameColor={this.props.playerNameColor} 
+                                        startNewGame={this.props.actions.startNewGame}
+                                        {...props} 
+                            />
+                        )} />
+                        <Route path='/app/select-course' render={props =>(
+                                <SelectCourse                                
+                                    handleCourseSelect={this.handleCourseSelect} 
+                                    courses={courses} 
+                                    addSelect 
+                                    startNewGame={this.props.actions.startNewGame}
                                     gameData={gameData}
-                                    isPlayerSelected={this.isPlayerSelected}
-                                    playerNameColor={this.props.playerNameColor} 
+                                    players={gameData.players} 
+                                    {...props} 
+                                />
+                            )} 
+                        />
+                        <Route 
+                            path='/app/current-game' reder={props =>(
+                                <CurrentGamePage 
+                                    gameData={this.props.gameData} 
+                                    players={this.props.players} 
+                                    updateScore={this.props.actions.updateScore}
+                                    changePlayer={this.props.actions.changePlayer}
+                                    currentTurn={this.props.currentTurn}
+                                    changeHole={this.props.actions.changeHole}
                                     startNewGame={this.props.actions.startNewGame}
                                     {...props} 
-                          />
-                    )} />
-                    <Route 
-                        path='/app/select-course' render={props =>(
-                            <SelectCourse                                
-                                handleCourseSelect={this.handleCourseSelect} 
-                                courses={courses} 
-                                addSelect 
-                                startNewGame={this.props.actions.startNewGame}
-                                gameData={gameData}
-                                players={gameData.players} 
-                                {...props} 
-                            />
-                        )} 
-                    />
-                    <Route 
-                        path='/app/current-game' render={props =>(
-                            <CurrentGamePage 
-                                gameData={this.props.gameData} 
-                                players={this.props.players} 
-                                updateScore={this.props.actions.updateScore}
-                                changePlayer={this.props.actions.changePlayer}
-                                currentTurn={this.props.currentTurn}
-                                setRedirect={this.props.actions.setRedirect}
-                                changeHole={this.props.actions.changeHole}
-                                startNewGame={this.props.actions.startNewGame}
-                                {...props} 
-                            />
-                        )} 
-                    >                        
-                    </Route>
-                    <Route
-                        path='/app/turn/:turn' render={props=>(
-                            <TurnPage
-                                incrementCount={this.props.actions.incrementCount}
-                                decrementCount={this.props.actions.decrementCount}
-                                resetCount={this.props.actions.resetCount}                                
-                                gameData={this.props.gameData}
-                                updateScore={this.props.actions.updateScore}
-                                currentTurn={this.props.currentTurn}
-                                changeHole={this.props.actions.changeHole}
-                                changePlayer={this.props.actions.changePlayer}
-                                setGameStart={this.props.actions.setGameStart}
-                                addNewHoleScore={this.props.actions.addNewHoleScore}
-                             />
-                        )}
-                    />
-                    <Route path="/app/game">
-                        <Route path="/app/game/:game_id" component={GameRoute}/>                                                    
-                    </Route>
-                    <Route path="/app" exact component={NewStartPage} />                     
+                                />
+                            )} 
+                        />
+                
                 </div>
         );
     }
 }
 
+function mapStateToProps(state){
+    console.log(state); 
+    return {
+        //player: state.player,
+        players: state.players,
+        courses: state.courses,
+        playerNameColor: state.playerNameColor,
+        gameData: state.gameData,
+        currentTurn: state.currentTurn,
+    };
+}
+function mapDispatchToProps(dispatch){
+    return {
+        actions: bindActionCreators(Actions, dispatch)
+    };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(DisGolfScoreCardApp)

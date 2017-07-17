@@ -9,8 +9,7 @@ import forms
 
 class IndexView(MethodView):
     def get(self):
-        return flask.redirect(flask.url_for('app'))
-    
+        return flask.send_file('./dist/index.html')
     def post(self):
         return flask.make_response('{}')
 
@@ -21,6 +20,7 @@ class SendFileView(MethodView):
         except IOError:
             response = flask.make_response(requests.get('http://localhost:3000/dist/index.html').content)
         return response
+
 
 class BaseView(MethodView):
     _context = {}
@@ -91,12 +91,12 @@ class AddNewGameView(BaseModelView):
                     .query\
                     .filter(models.DiscGolfCourse.name.like("%"))\
                     .values('id','name')
-        
+
         self._form_class.players.choices = models.DiscGolfPlayer\
                   .query\
                   .filter(models.DiscGolfPlayer.name.like("%"))\
                   .values('id', 'name')
-        
+
 
     def post(self):
         #ipdb.set_trace()
@@ -113,11 +113,11 @@ class AddNewGameView(BaseModelView):
         return self.json(dict(score_card=sc.id, game=game.id, first_hole_id=first_hole.id))
 
 class BaseListView(BaseModelView):
-    def __init__(self, *args, **kwargs):        
-        super(BaseListView, self).__init__(*args, **kwargs)        
+    def __init__(self, *args, **kwargs):
+        super(BaseListView, self).__init__(*args, **kwargs)
 
     @classmethod
-    def _add_routes(cls, app):    
+    def _add_routes(cls, app):
 
         app.add_url_rule(
             '/list/{}'.format(
@@ -134,11 +134,11 @@ class BaseListView(BaseModelView):
             view_func=cls.as_view(
             'view_{}'.format(cls.model.__name__.lower())
             )
-        )        
+        )
         # for c in cls.mro():
             #     if hasattr(c, '_add_routes') and hasattr(c, '_model') and callable(getattr(c, '_add_routes')):
             #         getattr(c, '_add_routes')(app)
-            
+
 
     def get(self, obj_id=None):
         if obj_id is not None:
@@ -154,7 +154,7 @@ class BaseAddView(BaseModelView):
         super(BaseAddView, self).__init__(*args, **kwargs)
         self.request = flask.request
         self._form_class = form_class
-    
+
     @classmethod
     def add_form_arg(cls, key, val):
         cls._form_args[key] = val
@@ -181,14 +181,14 @@ class BaseAddView(BaseModelView):
         rtn.headers['Content-Type'] = 'application/json'
         return rtn
         #for item in flask.request._get_current_objectadd
-    
+
     @classmethod
-    def _add_routes(cls, app):   
-    
+    def _add_routes(cls, app):
+
         app.add_url_rule(
             '/add/{}'.format(
                 cls.model.__name__.lower()
-            ), 
+            ),
             view_func=cls.as_view(
                 'add_{}'.format(
                     cls.model.__name__.lower()
@@ -232,5 +232,5 @@ class CourseView(BaseAddView, BaseListView):
 
     def post(self, *args, **kwargs):
         return super(CourseView, self).post(*args, **kwargs)
-        
+
 
