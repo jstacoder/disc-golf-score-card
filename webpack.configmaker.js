@@ -24,7 +24,14 @@ let clean_options = {
     verbose: false,
     dry: false,
 }
-
+let htmlPluginOptions = {
+	template: require('html-webpack-template'),	
+	appMountId:'app',
+};
+if(process.env['NODE_ENV'] !== 'production'){
+	htmlPluginOptions['baseHref'] = 'http://localhost:8090/';
+	htmlPluginOptions['devServer'] = 'http://localhost:3000';
+}
 
 let getConfig = (clean_options) => {
 		return {
@@ -100,13 +107,7 @@ let getConfig = (clean_options) => {
 			extensions: [' ', '.js','.jsx','.css']
 		},
         plugins: [
-            new HtmlWebpackPlugin({
-                template: require('html-webpack-template'),//'index.template.ejs',
-				//inject: 'body',
-				appMountId:'app',
-				baseHref:'http://localhost:8090/',
-				devServer:'http://localhost:3000',
-            }),
+            new HtmlWebpackPlugin(htmlPluginOptions),
             new CleanWebpackPlugin(clean_dirs, clean_options),
 			 //new BundleAnalyzerPlugin({
             //analyzerMode: 'static'
