@@ -4,7 +4,7 @@ import DiscGolfScoreCardApp from './disc-golf-score-card-app';
 import { Provider } from 'react-redux';
 import { configureStore } from './store/configureStore';
 import { AppContainer } from 'react-hot-loader';
-import 'react-hot-loader/patch';
+
 
 const store = configureStore();
 
@@ -22,6 +22,7 @@ const render = (Component) =>{
 render(DiscGolfScoreCardApp);
 
 if(module.hot){
+    import 'react-hot-loader/patch';
     module.hot.accept('./index.jsx', () =>{
         render(DiscGolfScoreCardApp);
     });
