@@ -6,14 +6,14 @@ import RedirectRoutes from './redirect-routes';
 import { ConnectedRouter as Router } from 'react-router-redux';
 import * as Actions from './actions';
 import { history } from './store/configureStore';
-import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
+//import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
-const renderWithRedux = (props) => (
-    <ReduxAsyncConnect 
-        {...props} 
-        helpers="" 
-        filter={item => !item.deferred} />
-);
+// const renderWithRedux = (props) => (
+//     <ReduxAsyncConnect 
+//         {...props} 
+//         helpers="" 
+//         filter={item => !item.deferred} />
+// );
 
 class DiscGolfScoreCardApp extends Component {
     render(){
@@ -23,7 +23,7 @@ class DiscGolfScoreCardApp extends Component {
             ? RedirectRoutes : DiscGolfScoreCardRoutes;
 
         return (
-             <Router history={history} render={renderWithRedux}>
+             <Router history={history}>
                 <div>
                     <RouteComponent {...this.props} />        
                 </div>
