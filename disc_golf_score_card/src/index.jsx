@@ -22,7 +22,7 @@ const render = (Component) =>{
 render(DiscGolfScoreCardApp);
 
 if(module.hot){
-    import 'react-hot-loader/patch';
+    require('react-hot-loader/patch');
     module.hot.accept('./index.jsx', () =>{
         render(DiscGolfScoreCardApp);
     });
