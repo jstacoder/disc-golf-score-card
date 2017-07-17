@@ -38,9 +38,9 @@ let getConfig = (clean_options) => {
 		entry: {
 			main: [
 				path.join(APP_PATH, 'index'),
-				'react-hot-loader/patch',
-				'webpack-dev-server/client?http://0.0.0.0:3000', // WebpackDevServer host and port
-				'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors				
+				//'react-hot-loader/patch',
+				//'webpack-dev-server/client?http://0.0.0.0:3000', // WebpackDevServer host and port
+				//'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors				
 		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
 			],
         	vendor: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
