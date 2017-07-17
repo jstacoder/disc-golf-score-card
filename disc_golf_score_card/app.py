@@ -20,7 +20,7 @@ app = flask.Flask(
 )
 
 app.config.SECRET_KEY = 'secret'
-app.config.SQLALCHEMY_URI = os.environ.get('SQLALCHEMY_URI',False) or ('sqlite:///my.db' if use_sqlite else 'postgresql://dgsc:dgsc@localhost:5432/dgsc2')
+app.config.SQLALCHEMY_URI = os.environ.get('DATABASE_URL')#os.environ.get('SQLALCHEMY_URI',False) or ('sqlite:///my.db' if use_sqlite else 'postgresql://dgsc:dgsc@localhost:5432/dgsc2')
 app.config.SQLALCHEMY_ECHO = True
 
 
