@@ -7,16 +7,17 @@ import thunk from 'redux-thunk';
 //import { asyncCompose, ReduxAsyncConnect } from 'redux-async-connect';
 import * as axios from 'axios';
 import axiosMiddleware from 'redux-axios';
-import * as storage from 'redux-storage';
-import createEngine from 'redux-storage-engine-localstorage';
+//import * as storage from 'redux-storage';
+//import createEngine from 'redux-storage-engine-localstorage';
 
 import { createLogger } from 'redux-logger';
+import { saveState } from '../storage';
 
 export const history = createHistory();
 
-const engine = createEngine('my-key');
+//const engine = createEngine('my-key');
 
-const storageMiddleware = storage.createMiddleware(engine/*, // any extra args should be action types to not update storage */)
+//const storageMiddleware = storage.createMiddleware(engine/*, // any extra args should be action types to not update storage */)
 
 const client = {
     default:{
@@ -28,7 +29,7 @@ const client = {
 };
 
 const middlewares = applyMiddleware(
-    storageMiddleware,
+  //  storageMiddleware,
     ReduxPromise(),
     axiosMiddleware(client),
     routerMiddleware(history),
@@ -50,9 +51,12 @@ export function configureStore(initialState){
             store.replaceReducer(rootReducer);
         });
     }
-    const loader = storage.createLoader(engine);
-    loader(store).then( res =>{
-        console.log("PULLE FROM STORAGEL ", res);
+    //const loader = storage.createLoader(engine);
+    //loader(store).then( res =>{
+    //    console.log("PULLE FROM STORAGEL ", res);
+    //});
+    store.subscribe(() => {
+        saveState(store.getState());
     });
     return store;
 }
