@@ -1,63 +1,4 @@
 import * as axios from 'axios';
-// import fetch from 'isomorphic-fetch';
-// export function selectCourse(course){
-//     return {
-//         type: SELECT_COURSE,
-//         course
-//     };
-// }
-
-// export const REQUEST_PLAYERS = 'REQUEST_PLAYERS';
-// export function requestPlayers(){
-//     return {
-//         type: REQUEST_PLAYERS,
-//     };
-// }   
-// export const REQUEST_COURSES = 'REQUEST_COURSES';
-// export function requestCourses(){
-//     return {
-//         type: REQUEST_COURSES,
-//     };
-// }
-// export const START_GAME = 'START_GAME';
-// export function startGame(course, players){
-//     return {
-//         type: START_GAME,
-//         course,
-//         players,
-//     };
-// }
-// // OLD CODE 
-// import * as axios from 'axios';
-// // CURRENT GAME ACTIONS
-// export const ADD_PLAYER_TO_GAME = 'ADD_PLAYERS_TO_GAME';
-// //export const ADD_COURSE_TO_GAME = 'ADD_COURSE_TO_GAME';
-// //export const START_NEW_GAME = 'START_NEW_GAME';
-// export function addPlayerToGame(player){
-//     return {
-//         type: ADD_PLAYER_TO_GAME,
-//         player 
-//     };
-// }
-
-// export function startNewGame(course, players){
-//     return {
-//         type: START_NEW_GAME,
-//         course,
-//         players,
-//     }
-// }
-
-// // PLAYER ACTIONS 
-// export const LOAD_PLAYERS = 'LOAD_PLAYERS';
-// export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
-
-// export function togglePlayerNameColor(player){
-//     return {
-//         type: TOGGLE_PLAYER_NAME_COLOR,
-//         player
-//     };
-// }
 
 export const LOAD_PLAYER_NAME_COLORS = 'LOAD_PLAYER_NAME_COLORS';
 export const TOGGLE_PLAYER_NAME_COLOR = 'TOGGLE_PLAYER_NAME_COLOR';
@@ -78,6 +19,17 @@ export const RESET_COUNT = 'RESET_COUNT';
 export const SET_GAME_START = 'SET_GAME_START';
 export const UPDATE_WINNER = 'UPDATE_WINNER';
 export const CALCULATE_SCORE = 'CALCULATE_SCORE';
+export const UPDATE_TOTAL = 'UPDATE_TOTAL';
+
+export function updateTotal(player, score){
+    return {
+        type: UPDATE_TOTAL,
+        payload: {
+            score,
+            player
+        }
+    };
+}
 
 export function updateWinner(player){
     return {

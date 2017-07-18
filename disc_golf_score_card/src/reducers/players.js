@@ -1,24 +1,32 @@
 import * as axios from 'axios';
-//import { SELECT_PLAYER, LOAD_PLAYERS,  TOGGLE_PLAYER_NAME_COLOR, LOAD_PLAYER_NAME_COLORS } from '../actions';
-
-import { CALCULATE_SCORE, UPDATE_SCORE, CHANGE_PLAYER, ADD_HOLE_SCORE_FULFILLED, ADD_HOLE_SCORE_PENDING } from '../actions';
+import { UPDATE_TOTAL, CALCULATE_SCORE, UPDATE_SCORE, CHANGE_PLAYER, ADD_HOLE_SCORE_FULFILLED, ADD_HOLE_SCORE_PENDING } from '../actions';
 
 const FETCH_PLAYERS = 'FETCH_PLAYERS';
 const FETCH_PLAYERS_SUCCESS = 'FETCH_PLAYERS_SUCCESS';
 const FETCH_PLAYERS_FAILURE = 'FETCH_PLAYERS_FAILURE';
 
-const initialPlayersState = {   
+const initialPlayersState = {
         players: [],
-        scores: {},        
+        scores: {},
         error: null,
-        loading: false,    
+        loading: false,
         totalScores:{}
 };
 
 export default function players(state = initialPlayersState, action){
     let newState = {...state};
 
-    switch (action.type){       
+    switch (action.type){
+        case UPDATE_TOTAL:
+            const name = action.payload.player.name;
+            const score = action.payload.score;
+
+            newState.totalScores = {
+                [name] :
+                (newState.totalScores[name] || 0) + score,
+                ...newState.totalScores
+            };
+            return newState
         case FETCH_PLAYERS:
             newState.loading = true;
             return newState;
@@ -50,8 +58,7 @@ export default function players(state = initialPlayersState, action){
             return newState;
 
         case UPDATE_SCORE:
-            newState.scores[action.payload.player.name][action.payload.hole_id] = action.payload.score;       
-            console.log(newState.scores[action.payload.player.name][action.payload.hole_id]);
+            newState.scores[action.payload.player.name][action.payload.hole_id] = action.payload.score;
             return newState;
         default:
             return state;

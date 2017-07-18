@@ -2,7 +2,9 @@
 'use strict';
 
 import React, { Component } from 'react';
-import * as fontAwesome from '../../../../node_modules/font-awesome/css/font-awesome.css';
+//import * as fontAwesome from '../../../../node_modules/font-awesome/css/font-awesome.css';
+import 'font-awesome/css/font-awesome.css';
+//import 'bootstrap/dist/css/bootstrap.css';
 //require('font-awesome-webpack');
 import classnames from 'classnames';
 function getIcon(name, size, spin, prefix = 'fa'){    

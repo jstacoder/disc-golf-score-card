@@ -44,7 +44,12 @@ let getConfig = (clean_options) => {
 				//'webpack/hot/only-dev-server', // "only" prevents reload on syntax errors				
 		// 	vendor: Object.keys(pkg.dependencies),//Object.keys(pkg.devDependencies).concat()
 			],
-        	vendor: ['react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk']
+        	vendor: [
+				'react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk',
+				'react-bootstrap', 'react-router-dom','react-dom','redux-storage-engine-localstorage',
+				'redux-storage', 'redux-promise', 'redux-logger', 'react-bootstrap-table', 'isomorphic-fetch',
+				'history', 'classnames', 'bootstrap/dist/css/bootstrap.css','font-awesome/css/font-awesome.css','jquery'
+			]
 		},
 		// target:'node-webkit',
 		// node: {
@@ -134,7 +139,7 @@ let getConfig = (clean_options) => {
 				// clear:false,
 				// complete: '>',
 				// incomplete:'*',
-				format:chalk.red(':msg - ')+chalk.blue('[:current/:total]')+chalk.green(' { ') + ':bar' +chalk.green(' }')+chalk.red(':percent')
+				format:chalk.bgGreen(chalk.black(':elapsed secs')+'  ')+'\t'+chalk.blue('[:current/:total]')+chalk.green(' { ') + ':bar' +chalk.green(' }')+chalk.red(':percent')+'\t'+chalk.red(' :msg')
 			}
 		),
 		//new webpack.ProgressPlugin(percentage => (new progressBar(":current % :bar", 100)).update(percentage)),
@@ -142,20 +147,23 @@ let getConfig = (clean_options) => {
         //*********************************** async chunks*************************
 
         //catch all - anything used in more than one place
-        new webpack.optimize.CommonsChunkPlugin({
-            //filename: 'used-twice.js',
-            async: 'used-twice',
-            minChunks(module, count) {
-                return count >= 2;
-            },
-        }),
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     //filename: 'used-twice.js',
+        //     async: 'used-twice',
+        //     minChunks(module, count) {
+        //         return count >= 2;
+        //     },
+        // }),
         
 		new ExtractTextPlugin({
 			filename: '[name]-[hash].bundle.css',
 			allChunks: true,
 		}),	
 		],
-		devtool:'eval'
+		devtool:'cheap-eval-source-map',
+		stats: {
+			colors: true
+		}
 	};
 };
 

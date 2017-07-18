@@ -8,20 +8,9 @@ export default class CurrentGamePage extends Component {
         super(props);
         this.count = 0;
     }
-    // componentWillMount(){
-    //     let count = 0 ;
-    //     console.log("ABIUT TO MOIUNT!!!", this);
-    //     while(!this.props.gameData.course){
-    //         console.log(count);
-    //         count++;
-    //     }        
-    //     this.props.startNewGame(this.props.gameData.course);
-        
-    // }
+
     componentDidMount(){
         console.log("MOUNTED!!! ", this.props.currentTurn);
-        //this.props.startNewGame(this.props.gameData.course);
-        //this.props.changeHole(this.props.gameData.course.holes, this.props.gameData.course.holes[0].id);
     }
     updateScore(...args){
         this.props.updateScore(...args);
@@ -29,18 +18,12 @@ export default class CurrentGamePage extends Component {
         let playerIdx = this.props.currentTurn.currentPlayerIndex;
 
         this.props.changePlayer(this.props.gameData.players);
-
-        // if(playerIdx == playerCount-1){
-        //     console.log("CHANGING TO NEXT HOLE");            
-        //     this.props.changeHole(this.props.gameData.course.holes);
-        // }        
     }
     formatNameForDisplay = (name) =>{
         let [start, end ] = name.split('_');
 
         let fixFirst = (word) =>{
-            let [first, ...rest] = word.split('');
-            //rest.splice(0,1);
+            let [first, ...rest] = word.split('');            
             return first.toUpperCase() + rest.join('');
         }
         return [start, end].map(fixFirst).join(' ')
@@ -61,13 +44,15 @@ export default class CurrentGamePage extends Component {
                 );
             }
         }
-
-        console.log(_holes);
         const players = this.props.gameData.players;
         const scores = this.props.players.scores;
+        const totals = this.props.players.totalScores;
         let player, hole;
         return Object.keys(_holes).map( (key) =>{
             const holes = _holes[key];    
+            let parTotal = holes.reduce( (a, b) => (
+                a.par + b.par
+            ));
             const styles = {
                 textAlign:'center',
                 width:'103px',
@@ -82,7 +67,6 @@ export default class CurrentGamePage extends Component {
                  WebkitBoxShadow: 'none', 
                  boxShadow: 'none' 
             };
-
             const moreStyles = {
                 position: 'relative',
                 padding: '10px 15px 0px',
@@ -100,23 +84,32 @@ export default class CurrentGamePage extends Component {
                         <caption>{this.formatNameForDisplay(key)}</caption>
                         <thead>
                             <tr>
-                                <th>Player</th>
+                                <th>Hole num</th>
                                 {holes.map(hole =>(
                                     <th style={styles} key={`${hole.id}-header`}>{hole.number}</th>
                                 ))}
                             </tr>
+                            <tr>
+                                <th>Par</th>
+                                {holes.map(hole =>(
+                                    <th style={styles} key={`${hole.id}-par-header`}>{hole.par}</th>
+                                ))}
+                                <th>{parTotal}</th>
+                            </tr>
                         </thead>
                         <tbody>
                             {this.props.gameData.players.map((player, pidx) =>{
-                                return (
+                                const playerTotal = totals[player.name];
+                                return (                                    
                                     <tr key={`tr-${player-name}-${pidx}`}>
                                         <td><bold>{player.name}</bold></td>
                                         {holes.map((hole,hidx) =>{
-                                            const playerScore = scores[player.name][hole.id];
+                                            const playerScore = scores[player.name][hole.id];                                            
                                             return (
                                                 <td key={`score-${player.name}-${pidx}-${hidx}`} style={styles}>{playerScore || 0}</td>
                                             );
                                         })}
+                                        <td>{playerTotal}</td>
                                     </tr>
                                 );
                             })}
