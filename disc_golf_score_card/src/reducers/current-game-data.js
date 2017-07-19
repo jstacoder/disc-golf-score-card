@@ -3,7 +3,7 @@
 import { 
     SELECT_PLAYER, SELECT_COURSE, START_NEW_GAME, 
     START_NEW_GAME_PENDING, START_NEW_GAME_FULFILLED,
-    SET_GAME_START, UPDATE_WINNER, CALCULATE_SCORE,
+    SET_GAME_START, UPDATE_WINNER, CALCULATE_SCORE
 } from '../actions';
 
 const initialState = {
@@ -27,6 +27,8 @@ export default function gameData(state = initialState, action){
         case SET_GAME_START:
             newState.game_started = true;            
             break;
+        case START_NEW_GAME_PENDING:
+            window.localStorage.setItem('game_started', 1);
         case START_NEW_GAME:
             console.log("PAYLOAD: ", action);            
             break;

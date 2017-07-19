@@ -96,6 +96,8 @@ export default class DisGolfScoreCardRoutes extends Component{
         
         return (
                 <div>
+                    
+
                     <Route path="/app/players" component={PlayerPage} />
                     <Route path="/app/course" render={props =>(
                         <CoursePage 
@@ -172,6 +174,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                         <Route path="/app/game/:game_id" component={GameRoute}/>                                                    
                     </Route>
                     <Route path="/app" exact component={NewStartPage} />                     
+                    
                 </div>
         );
     }

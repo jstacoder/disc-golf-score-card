@@ -21,6 +21,7 @@ export const UPDATE_WINNER = 'UPDATE_WINNER';
 export const CALCULATE_SCORE = 'CALCULATE_SCORE';
 export const UPDATE_TOTAL = 'UPDATE_TOTAL';
 
+
 export function updateTotal(player, score){
     return {
         type: UPDATE_TOTAL,

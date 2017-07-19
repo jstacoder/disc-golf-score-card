@@ -6,6 +6,7 @@ import RedirectRoutes from './redirect-routes';
 import { ConnectedRouter as Router } from 'react-router-redux';
 import * as Actions from './actions';
 import { history } from './store/configureStore';
+import CurrentGamePage from './components/game/current-game-page';
 //import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 // const renderWithRedux = (props) => (
@@ -19,8 +20,9 @@ class DiscGolfScoreCardApp extends Component {
     render(){
         console.log(history);
         const needsRedirect = this.props.redirect.needsRedirect;
-        const RouteComponent = (needsRedirect && history.location.pathname.split('/app/')[1] !== "")
-            ? RedirectRoutes : DiscGolfScoreCardRoutes;
+        //const RouteComponent = (needsRedirect && history.location.pathname.split('/app/')[1] !== "")
+        //    ? RedirectRoutes : DiscGolfScoreCardRoutes;
+        const RouteComponent = window.localStorage.getItem('game_started') !== '1' ?  DiscGolfScoreCardRoutes : CurrentGamePage;
 
         return (
              <Router history={history}>

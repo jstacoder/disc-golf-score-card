@@ -45,11 +45,11 @@ export default class TurnPage extends Component {
         this.handleFinish(false, true);
     }
     render(){
-        if(this.props.gameData && !this.props.gameData.course){           
-            return (
-                <Redirect to='/app' />
-            );
-        }             
+        // if(this.props.gameData && !this.props.gameData.course){           
+        //     return (
+        //         <Redirect to='/app' />
+        //     );
+        // }             
         const player = this.props.gameData.players[this.props.currentTurn.currentPlayerIndex];        
         console.log(this.props);
         const currHoleId = this.props.currentTurn.currentHoleId;        

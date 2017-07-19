@@ -4,9 +4,9 @@ import DiscGolfScoreCardApp from './disc-golf-score-card-app';
 import { Provider } from 'react-redux';
 import { configureStore } from './store/configureStore';
 import { AppContainer } from 'react-hot-loader';
+import { loadState } from './middleware/localStorage';
 
-
-const store = configureStore();
+const store = configureStore(loadState());
 
 const render = (Component) =>{
     return ReactDOM.render(

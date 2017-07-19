@@ -12,6 +12,8 @@ import createEngine from 'redux-storage-engine-localstorage';
 
 import { createLogger } from 'redux-logger';
 
+import { saveState, loadState } from '../middleware/localStorage';
+
 export const history = createHistory();
 
 const engine = createEngine('my-key');
@@ -50,9 +52,12 @@ export function configureStore(initialState){
             store.replaceReducer(rootReducer);
         });
     }
-    const loader = storage.createLoader(engine);
-    loader(store).then( res =>{
-        console.log("PULLE FROM STORAGEL ", res);
+    // const loader = storage.createLoader(engine);
+    // loader(store).then( res =>{
+    //     console.log("PULLED FROM STORAGE ", res);
+    // });
+    store.subscribe(() =>{
+        saveState(store.getState());
     });
     return store;
 }

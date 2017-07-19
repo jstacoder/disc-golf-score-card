@@ -43,8 +43,10 @@ export default function players(state = initialPlayersState, action){
 
         case FETCH_PLAYERS_SUCCESS:
             action.payload.data.map(itm =>{
-                newState.players.push(itm);
-                newState.scores[itm.name] = {};
+                if(!newState.players.filter(i =>(i.id === itm.id )).length){
+                    newState.players.push(itm);
+                    newState.scores[itm.name] = {};
+                }
             });
             newState.loading = false;
             return newState;
