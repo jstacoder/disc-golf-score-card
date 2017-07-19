@@ -17,6 +17,7 @@ export const INCREMENT_COUNT = 'INCREMENT_COUNT';
 export const DECREMENT_COUNT = 'DECREMENT_COUNT';
 export const RESET_COUNT = 'RESET_COUNT';
 export const SET_GAME_START = 'SET_GAME_START';
+export const UNSET_GAME_START = 'SET_GAME_START';
 export const UPDATE_WINNER = 'UPDATE_WINNER';
 export const CALCULATE_SCORE = 'CALCULATE_SCORE';
 export const UPDATE_TOTAL = 'UPDATE_TOTAL';
@@ -49,21 +50,21 @@ export function calculateScore(player, course, holes){
             course,
             holes
         }
-    };  
-}
-
-
-export function setGameStart(){
-    return {
-        type: SET_GAME_START,   
     };
 }
 
-export function resetCount(){
-    return {
-        type: RESET_COUNT,
-    };
-}
+
+export const setGameStart = () =>({
+    type: SET_GAME_START,
+});
+
+export const unsetGameStart = () =>({
+    type: UNSET_GAME_START,
+});
+
+export const resetCount = () =>({
+    type: RESET_COUNT,
+});
 
 export function incrementCount(){
     return {

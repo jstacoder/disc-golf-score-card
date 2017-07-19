@@ -5,6 +5,7 @@ import courses from './courses';
 import playerNameColor from './player-name-colors';
 import gameData from './current-game-data';
 import currentTurn from './current-turn';
+import started from './started';
 import { routerReducer as router } from 'react-router-redux';
 //import { reducer as reduxAsyncConnect } from 'redux-async-connect';
 import redirect from './redirect-reducer';
@@ -19,6 +20,7 @@ const rootReducer = storage.reducer(
         router,
         currentTurn,
         redirect,
+        starter,
         // reduxAsyncConnect,
     })
 );
