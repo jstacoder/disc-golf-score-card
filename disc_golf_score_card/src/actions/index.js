@@ -21,8 +21,22 @@ export const UNSET_GAME_START = 'SET_GAME_START';
 export const UPDATE_WINNER = 'UPDATE_WINNER';
 export const CALCULATE_SCORE = 'CALCULATE_SCORE';
 export const UPDATE_TOTAL = 'UPDATE_TOTAL';
+export const RESET_GAME_DATA = 'RESET_CURRENT_GAME_DATA';
+export const SET_COUNT = 'SET_COUNT';
+
+export const setCount = (number) =>({
+    type: SET_COUNT,
+    payload:{
+        number,
+    }
+});
 
 
+export function resetGameData(){
+    return {
+        type: RESET_GAME_DATA,
+    };
+}
 export function updateTotal(player, score){
     return {
         type: UPDATE_TOTAL,
@@ -90,34 +104,34 @@ export function unsetRedirect(){
     };
 }
 
-export function changeHole(holes, hole_id = null){
+export function changeHole(holes, direction = 'next', hole_id = null){
     return {
         type: CHANGE_HOLE,
         payload: {
             holes,
+            direction,
             hole_id
         }
     };
 }
 
 
-export function changePlayer(players){
-    return {
-        type: CHANGE_PLAYER,
-        payload: {
-            players,            
-
-        }
-    };
-}
+export const changePlayer = (players, goToNext, goToLast) =>({    
+    type: CHANGE_PLAYER,
+    payload: {
+        players,            
+        goToNext,
+        goToLast,
+    }
+})
 
 export function updateScore(player, score, hole_id){
     return {
         type: UPDATE_SCORE,
         payload: {
-            player:player,
-            score:score,
-            hole_id:hole_id,
+            player,
+            score,
+            hole_id,
         }
     };
 }

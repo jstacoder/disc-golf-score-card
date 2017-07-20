@@ -160,7 +160,7 @@ let getConfig = (clean_options) => {
 			allChunks: true,
 		}),	
 		],
-		devtool:'#cheap-eval-source-map',
+		devtool:'source-map',
 		stats: {
 			colors: true
 		}

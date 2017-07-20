@@ -62,7 +62,8 @@ export default class DisGolfScoreCardRoutes extends Component{
     isPlayerSelected = (player) =>{
         return this.props.gameData.players.indexOf(player) > -1;
     }
-    componentWillMount = () =>{        
+    componentWillMount = () =>{       
+        this.props.actions.resetGameData(); 
         this.props.actions.loadCourses();        
         this.props.actions.loadPlayers().then(res =>{            
             this.props.actions.loadPlayerNameColors(res);        
@@ -114,8 +115,8 @@ export default class DisGolfScoreCardRoutes extends Component{
                     <Route path='/app/new-game' render={props =>(
                           <StartGamePage 
                                     handlePlayerSelect={this.handlePlayerSelect} 
-                                    players={this.props.players} 
-                                    //values={this.state.values} 
+                                    players={this.props.players}                                 
+                                    resetGameData={this.props.actions.resetGameData}
                                     gameData={gameData}
                                     isPlayerSelected={this.isPlayerSelected}
                                     playerNameColor={this.props.playerNameColor} 
@@ -147,6 +148,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 setRedirect={this.props.actions.setRedirect}
                                 changeHole={this.props.actions.changeHole}
                                 startNewGame={this.props.actions.startNewGame}
+                                setCount={this.props.actions.setCount}
                                 {...props} 
                             />
                         )} 
@@ -166,7 +168,10 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 setGameStart={this.props.actions.setGameStart}
                                 addNewHoleScore={this.props.actions.addNewHoleScore}
                                 updateTotal={this.props.actions.updateTotal}
+                                scores={this.props.players.scores}
                                 totals={this.props.players.totalScores}
+                                currentStroke={this.props.currentTurn.currentDisplayNumber}
+                                setCount={this.props.actions.setCount}
                              />
                         )}
                     />

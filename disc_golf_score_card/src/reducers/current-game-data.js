@@ -3,7 +3,7 @@
 import { 
     SELECT_PLAYER, SELECT_COURSE, START_NEW_GAME, 
     START_NEW_GAME_PENDING, START_NEW_GAME_FULFILLED,
-    SET_GAME_START, UPDATE_WINNER, CALCULATE_SCORE
+    SET_GAME_START, UPDATE_WINNER, CALCULATE_SCORE, RESET_GAME_DATA
 } from '../actions';
 
 const initialState = {
@@ -21,6 +21,9 @@ const initialState = {
 export default function gameData(state = initialState, action){
     let newState = {...state};    
     switch(action.type){
+        case RESET_GAME_DATA:
+            newState = {...initialState};
+            break;
         case UPDATE_WINNER:
             newState.currentWinnerIndex = state.players.indexOf(action.payload.player);
             break;        

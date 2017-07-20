@@ -22,7 +22,7 @@ class DiscGolfScoreCardApp extends Component {
         const needsRedirect = this.props.redirect.needsRedirect;
         //const RouteComponent = (needsRedirect && history.location.pathname.split('/app/')[1] !== "")
         //    ? RedirectRoutes : DiscGolfScoreCardRoutes;
-        const RouteComponent = window.localStorage.getItem('game_started') !== '1' ?  DiscGolfScoreCardRoutes : CurrentGamePage;
+        const RouteComponent = /*window.localStorage.getItem('game_started') !== '1' ?  */DiscGolfScoreCardRoutes;// : CurrentGamePage;
 
         return (
              <Router history={history}>
@@ -44,6 +44,7 @@ function mapStateToProps(state){
         gameData: state.gameData,
         currentTurn: state.currentTurn,
         redirect: state.redirect,
+        started: state.started,
     };
 }
 function mapDispatchToProps(dispatch){

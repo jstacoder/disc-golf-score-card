@@ -13,8 +13,6 @@ import axiosMiddleware from 'redux-axios';
 import { createLogger } from 'redux-logger';
 import { saveState } from '../storage';
 
-import { saveState, loadState } from '../middleware/localStorage';
-
 export const history = createHistory();
 
 //const engine = createEngine('my-key');

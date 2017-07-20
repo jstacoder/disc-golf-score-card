@@ -20,9 +20,9 @@ const rootReducer = storage.reducer(
         router,
         currentTurn,
         redirect,
-        starter,
+        started,
         // reduxAsyncConnect,
     })
 );
 
-export default rootReducer;
+export default rootReducer; 

@@ -10,7 +10,15 @@ export default class CurrentGamePage extends Component {
     }
 
     componentDidMount(){
-        console.log("MOUNTED!!! ", this.props.currentTurn);
+        const course = this.props.gameData.course;        
+        const holes = this.props.gameData.course.holes;
+        const currHoleId = this.props.currentTurn.currentHoleId || holes[0].id;                  
+        const currentPlayerIndex = this.props.currentTurn.currentPlayerIndex;
+        const currentPlayer = this.props.gameData.players[currentPlayerIndex];
+        const currentPlayerScores = this.props.players.scores[currentPlayer.name];
+        const currentPlayerHoleScore = currentPlayerScores[currHoleId];
+        this.props.setCount(currentPlayerHoleScore);
+        console.log("MOUNTED!!! ", this.props.currentTurn, currentPlayerHoleScore);
     }
     formatNameForDisplay = (name) =>{
         let [start, end ] = name.split('_');
@@ -109,12 +117,13 @@ export default class CurrentGamePage extends Component {
                                 let currScore = 0;//scores[player.name][currHoleId];
                                 if(currScore){
                                     playerTotal += currScore;
-                                }
+                                 }
                                 return (                                    
                                     <tr key={`tr-${player-name}-${pidx}`}>
                                         <td><bold>{player.name}</bold></td>
                                         {holes.map((hole,hidx) =>{
-                                            const playerScore = scores[player.name][hole.id];                                                                                        
+                                            console.log('hole: ', hole, 'hole_index ', hidx, 'holes: ', holes);
+                                            const playerScore = this.props.players.scores[player.name][hole.id];                                                                                        
                                             playerTotal += (playerScore || 0);
                                             return (
                                                 <td key={`score-${player.name}-${pidx}-${hidx}`} style={styles}>{playerScore || 0}</td>

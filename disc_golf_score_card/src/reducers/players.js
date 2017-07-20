@@ -1,5 +1,5 @@
 import * as axios from 'axios';
-import { UPDATE_TOTAL, CALCULATE_SCORE, UPDATE_SCORE, CHANGE_PLAYER, ADD_HOLE_SCORE_FULFILLED, ADD_HOLE_SCORE_PENDING } from '../actions';
+import { SELECT_COURSE, SELECT_PLAYER, RESET_GAME_DATA, UPDATE_TOTAL, CALCULATE_SCORE, UPDATE_SCORE, CHANGE_PLAYER, ADD_HOLE_SCORE_FULFILLED, ADD_HOLE_SCORE_PENDING } from '../actions';
 
 const FETCH_PLAYERS = 'FETCH_PLAYERS';
 const FETCH_PLAYERS_SUCCESS = 'FETCH_PLAYERS_SUCCESS';
@@ -17,6 +17,24 @@ export default function players(state = initialPlayersState, action){
     let newState = {...state};
 
     switch (action.type){
+        case SELECT_PLAYER:
+            newState.scores[action.player.name] = {};
+            return newState;
+
+        case SELECT_COURSE:
+            Object.keys(newState.scores).map((itm, idx) =>{
+                newState.scores[itm] = {};
+            });
+            action.course.holes.map(hole =>{
+                Object.keys(newState.scores).map((itm, idx) =>{
+                    console.log(itm, idx);
+                    newState.scores[itm][hole.id] = 0;
+                });
+            });
+            return newState;
+        case RESET_GAME_DATA:
+            return {...initialPlayersState};
+
         case UPDATE_TOTAL:
             const name = action.payload.player.name;
             const score = action.payload.score;
