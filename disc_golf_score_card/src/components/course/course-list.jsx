@@ -9,6 +9,7 @@ class ScoreTable extends Component {
     }
     setCourse = (course) =>{        
         this.props.handleCourseSelect(course);
+        this.props.setGameStart(course);
     }
     clickListGroup = (course) =>{                
         this.setCourse(course);

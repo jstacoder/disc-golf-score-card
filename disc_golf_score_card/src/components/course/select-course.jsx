@@ -18,6 +18,7 @@ export default class SelectCourse extends Component {
                                  addSelect 
                                  handleCourseSelect={this.handleCourseSelect} 
                                  gameData={this.props.gameData}     
+                                 setGameStart={this.props.setGameStart}
                             />
                       </Col>
                 </Row>

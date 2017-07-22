@@ -1,4 +1,4 @@
-import { START_NEW_GAME_FULFILLED, RESET_COUNT, INCREMENT_COUNT, SET_COUNT, DECREMENT_COUNT, CHANGE_HOLE, CHANGE_PLAYER, START_NEW_GAME } from '../actions';
+import { START_NEW_GAME_FULFILLED, RESET_COUNT,SET_GAME_START, INCREMENT_COUNT, SET_COUNT, DECREMENT_COUNT, CHANGE_HOLE, CHANGE_PLAYER, START_NEW_GAME } from '../actions';
 import { actionTypes } from 'redux-localstorage';
 
 const initialState = {
@@ -29,8 +29,9 @@ export default function currentTurn(state = initialState, action = {}){
             newState.currentDisplayNumber = action.payload.number;
             return newState;
 
-        case START_NEW_GAME_FULFILLED:
-            newState.currentHoleId = action.payload.data.first_hole_id;
+        case SET_GAME_START:
+            newState.currentHoleId = action.payload.course.holes[0].id;
+            newState.currentPlayerIndex = 0;
             return newState;
 
         case CHANGE_HOLE:
@@ -59,19 +60,13 @@ export default function currentTurn(state = initialState, action = {}){
             const direction = action.payload.goToNext ? 'next' : 'last';
             if(direction === 'next'){
                 if(currIdx == action.payload.players.length - 1){
-                    newState.currentPlayerIndex = 0;
-                    if(action.payload.changeHole){
-                        newState.currentHoleId++;  
-                    }
+                    newState.currentPlayerIndex = 0;                   
                 }else{
                     newState.currentPlayerIndex++;
                 }
             }else{
                 if(currIdx == 0){
-                    newState.currentPlayerIndex = action.payload.players.length - 1;
-                    if(action.payload.changeHole){
-                        newState.currentHoleId--;
-                    }
+                    newState.currentPlayerIndex = action.payload.players.length - 1;                    
                 }else{
                     newState.currentPlayerIndex--;
                 }

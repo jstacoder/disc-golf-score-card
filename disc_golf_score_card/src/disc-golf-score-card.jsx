@@ -30,7 +30,22 @@ class NewStartPage extends Component {
             <Grid>
                 <Row>
                     <Col xs={12} sm={12} md={6} lg={6} mdOffset={3} lgOffset={3}>
-                        <PageHeader>Disc Golf Score Card</PageHeader>                    
+                        <PageHeader>
+                            <Row>
+                                <Col 
+                                    xsOffset={3} xs={12} 
+                                    smOffset={1} sm={3} 
+                                    md={5} lg={4}>
+                                    Disc Golf
+                                </Col>
+                                <Col 
+                                    xsOffset={3} xs={12} 
+                                    smOffset={0} sm={4} 
+                                    md={6} lg={5}>
+                                     Score Card
+                                </Col>
+                            </Row>
+                        </PageHeader>                    
                         <LinkContainer to='/app/new-game'>
                             <Button block bsSize="lg" bsStyle="primary">Start Game</Button> 
                         </LinkContainer>
@@ -130,6 +145,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 handleCourseSelect={this.handleCourseSelect} 
                                 courses={courses} 
                                 addSelect 
+                                setGameStart={this.props.actions.setGameStart}
                                 startNewGame={this.props.actions.startNewGame}
                                 gameData={gameData}
                                 players={gameData.players} 
@@ -172,6 +188,9 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 totals={this.props.players.totalScores}
                                 currentStroke={this.props.currentTurn.currentDisplayNumber}
                                 setCount={this.props.actions.setCount}
+                                started={this.props.started}
+                                setGameStart={this.props.actions.setGameStart}
+                                unsetGameStart={this.props.actions.unsetGameStart}
                              />
                         )}
                     />

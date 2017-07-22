@@ -68,8 +68,11 @@ export function calculateScore(player, course, holes){
 }
 
 
-export const setGameStart = () =>({
+export const setGameStart = (course) =>({
     type: SET_GAME_START,
+    payload: {
+        course,
+    }
 });
 
 export const unsetGameStart = () =>({

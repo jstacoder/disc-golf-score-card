@@ -8,15 +8,32 @@ import Icon from '../widgets/icon';
 
 export default class TurnPage extends Component {
     handleFinish = (goToNext = true, goToLast = false) => {
+        
         const currentPlayerIndex = this.props.currentTurn.currentPlayerIndex;
         const players = this.props.gameData.players;
         const course = this.props.gameData.course;
         const holes = course.holes;
         
         const player = players[currentPlayerIndex];         
-        const changeHole = goToNext ? (currentPlayerIndex === (players.length -1)) : (currentPlayerIndex === 0);                
+        let _changeHole;
+        if(goToNext){
+            if(currentPlayerIndex === (players.length -1)){
+                _changeHole = true;
+             }else{
+                 _changeHole = false;                 
+             }
+         }else if(currentPlayerIndex === 0){
+            _changeHole = true;
+        }else{
+            _changeHole = false;
+        }
+        const changeHole = _changeHole;
         const score = this.props.currentTurn.currentDisplayNumber;
         const holeId = this.props.currentTurn.currentHoleId;
+
+        const isFirstHole = holeId == course.holes[0].id;
+        console.log('is first hole: ', isFirstHole);
+   
         const score_card_id = this.props.gameData.score_card_id;
         this.props.updateScore(player, score, holeId);
         this.props.updateTotal(player, score);
@@ -56,11 +73,49 @@ export default class TurnPage extends Component {
             return num-par;
         }
     }
-    goToNextTurn = () =>{
-        this.handleFinish(true, false);
+    goToNextTurn = (holeId) =>{
+        this.handleFinish(true, false, holeId);
     }
-    goToLastTurn = () =>{
-        this.handleFinish(false, true);
+    goToLastTurn = (holeId) =>{
+        this.handleFinish(false, true, holeId);
+    }
+    getNextButton = () =>{
+        const course = this.props.gameData.course;
+        const holes = course.holes;
+        const currHoleId = this.props.currentTurn.currentHoleId;
+        const currPlayerIdx = this.props.currentTurn.currentPlayerIndex;
+        const playersLength = this.props.gameData.players.length - 1;
+        if((currHoleId == holes[holes.length-1].id) && (currPlayerIdx == playersLength )){
+            return (
+                <LinkContainer to="/app/current-game">
+                    <RB.Button bsSize="lg" bsStyle="primary" block>Next Turn</RB.Button>            
+                </LinkContainer>                
+            );
+        }
+        else{
+
+            return (
+                <RB.Button onClick={e =>{this.goToNextTurn(this.props.currentTurn.currentHoleId)}} bsSize="lg" bsStyle="primary" block>Next Turn</RB.Button>
+            );
+        }
+    }
+    getLastButton = () =>{
+        const course = this.props.gameData.course;
+        const holes = course.holes;
+        const currHoleId = this.props.currentTurn.currentHoleId;
+        const currPlayerIdx = this.props.currentTurn.currentPlayerIndex;
+
+        if((currHoleId == holes[0].id) && (currPlayerIdx == 0)){
+            return (                
+                <LinkContainer to="/app/current-game">
+                    <RB.Button bsSize="lg" bsStyle="primary" block>Last Turn</RB.Button>
+                </LinkContainer>
+            );
+        }else{
+            return (
+                <RB.Button onClick={e =>{this.goToLastTurn(this.props.currentTurn.currentHoleId)}} bsSize="lg" bsStyle="primary" block>Last Turn</RB.Button>
+            );
+        }            
     }
     render(){
         // if(this.props.gameData && !this.props.gameData.course){           
@@ -73,10 +128,7 @@ export default class TurnPage extends Component {
         
         const course = this.props.gameData.course;
         let currHoleId = this.props.currentTurn.currentHoleId;
-        if(!currHoleId){
-            currHoleId = course.holes[0].id
-            this.props.changeHole(course.holes, null, currHoleId);             
-        }
+
         const hole = course.holes[this.props.gameData.holesById[currHoleId]];        
         const playerScore = this.props.scores[player.name];        
         //console.log(playerScore[currHoleId]);
@@ -102,8 +154,12 @@ export default class TurnPage extends Component {
         const panelStyles = {
             marginBottom:'0px'
         };
-        
-        console.log(this, player);
+        const isFirstHole = currHoleId == course.holes[0].id;
+
+        let STARTED = isFirstHole ? 'first hole' : 'after first hole';
+        let ENDED = currHoleId == course.holes[course.holes.length-1].id ? 'on last hole' : 'not on last hole';
+        let isFirstPlayer = this.props.currentTurn.currentPlayerIndex == 0 ? 'first player' : 'after first player';
+        console.log(isFirstPlayer);
         return (
             <RB.Grid style={{marginTop:"5%"}}>
                 <RB.Row>
@@ -117,7 +173,7 @@ export default class TurnPage extends Component {
                         </RB.Row>
                         <RB.Panel style={panelStyles}>
                             <RB.PageHeader className='text-center'>{course.display_name}</RB.PageHeader>
-                            <h2 className='text-center'><small>hole {hole.number}</small></h2>
+                            <h2 className='text-center'>{STARTED} - {ENDED}<small>hole {hole.number}</small></h2>
                             <RB.Row>
                                 <RB.Col xs={12}>
                                     <h2 className="text-center"><small>par {hole.par}</small></h2>
@@ -164,10 +220,10 @@ export default class TurnPage extends Component {
                         </RB.Panel>
                         <RB.Row>
                             <RB.Col xs={6}>
-                                <RB.Button onClick={this.goToLastTurn} bsSize="lg" block>Last Turn</RB.Button>                   
+                                {this.getLastButton()}
                             </RB.Col>
                             <RB.Col xs={6}>
-                                <RB.Button onClick={this.goToNextTurn} bsSize="lg" block>Next Turn</RB.Button>                   
+                                {this.getNextButton(currHoleId == course.holes[0].id)}
                             </RB.Col>
                         </RB.Row>
                     </RB.Col>                    
