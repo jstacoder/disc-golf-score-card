@@ -151,6 +151,11 @@ export default class TurnPage extends Component {
             'undefined': '',
             'null': '',
         };
+        const labelStyle = {
+            marginLeft:'46%',
+            padding: '.6em .6em .6em',
+            fontSize: '94%',
+        };
         const panelStyles = {
             marginBottom:'0px'
         };
@@ -173,7 +178,9 @@ export default class TurnPage extends Component {
                         </RB.Row>
                         <RB.Panel style={panelStyles}>
                             <RB.PageHeader className='text-center'>{course.display_name}</RB.PageHeader>
-                            <h2 className='text-center'>{STARTED} - {ENDED}<small>hole {hole.number}</small></h2>
+                            <RB.Label bsSize='lg' style={labelStyle} bsStyle="success">
+                                hole {hole.number}
+                            </RB.Label>
                             <RB.Row>
                                 <RB.Col xs={12}>
                                     <h2 className="text-center"><small>par {hole.par}</small></h2>
@@ -216,16 +223,16 @@ export default class TurnPage extends Component {
                                         </RB.Col>
                                     </RB.Row>
                                 </RB.Col>
-                            </RB.Row>                                                                                                                       
-                        </RB.Panel>
-                        <RB.Row>
+                            </RB.Row>            
+                            <RB.Row>
                             <RB.Col xs={6}>
                                 {this.getLastButton()}
                             </RB.Col>
                             <RB.Col xs={6}>
                                 {this.getNextButton(currHoleId == course.holes[0].id)}
                             </RB.Col>
-                        </RB.Row>
+                        </RB.Row>                                                                                                           
+                        </RB.Panel>                        
                     </RB.Col>                    
                 </RB.Row>
             </RB.Grid>
