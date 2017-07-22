@@ -58,6 +58,10 @@ class BaseModel(object):
         self.__class__.session.commit()
         return self
 
+    def delete(self):
+        self.__class__.session.delete(self)
+        self.__class__.session.commit()
+
     @classmethod
     def _get_all(cls):
         return cls.query.all()
@@ -271,9 +275,7 @@ class DiscGolfPlayer(Model):
             frisbees=map(
                 lambda frisbee: frisbee.json, self.frisbees.all()
             ),
-            games=map(
-                lambda game: game.json, self.games.all()
-            ),
+            games=self.games.count(),
         )
 
 players_score_cards = sa.Table(

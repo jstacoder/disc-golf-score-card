@@ -1,6 +1,7 @@
 import { combineReducers } from 'redux';
 import players from './players';
 import getPlayers from './player';
+import player from './player';
 import courses from './courses';
 import playerNameColor from './player-name-colors';
 import gameData from './current-game-data';
@@ -21,6 +22,7 @@ const rootReducer = storage.reducer(
         currentTurn,
         redirect,
         started,
+        player,
         // reduxAsyncConnect,
     })
 );

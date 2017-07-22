@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
 import { Table, Grid, Row, Col, Button, PageHeader, Caption } from 'react-bootstrap';
-import { LinkContainer } from 'react-router-bootstrap';
+import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 
 export default class CurrentGamePage extends Component {
     constructor(props){
@@ -28,6 +28,25 @@ export default class CurrentGamePage extends Component {
             return first.toUpperCase() + rest.join('');
         }
         return [start, end].map(fixFirst).join(' ')
+    }
+    renderEndButtons = () =>{
+        const course = this.props.gameData.course;                               
+        const holes = course.holes;  
+        const currHoleId = this.props.currentTurn.currentHoleId || holes[0].id;          
+        const isLastHole = (currHoleId == holes[holes.length-1].id);       
+        let rtn = [
+        (<LinkContainer key={'my-link'} to="/app/turn/1">
+            <Button>{(currHoleId == holes[0].id) ? 'start' : 'continue'} game</Button>
+</LinkContainer>)
+        ];
+        if(isLastHole){
+            rtn.push(
+                <IndexLinkContainer key={'my-link-2'} to="/app">
+                        <Button>Finish Game</Button>
+                </IndexLinkContainer>
+            );
+        }
+        return rtn;
     }
     renderHoles = (currId) =>{
         const course = this.props.gameData.course;        
@@ -138,11 +157,7 @@ export default class CurrentGamePage extends Component {
                 </div>
             ) : '' ;
         }).concat(
-            [                
-                <LinkContainer key={'my-link'} to="/app/turn/1">
-                        <Button>{this.props.gameData.game_started ? 'continue' : 'start'} game</Button>
-                </LinkContainer>
-            ]
+            this.renderEndButtons()
         );
     }
     render(){   

@@ -1,5 +1,5 @@
 import * as axios from 'axios';
-import { SELECT_COURSE, SELECT_PLAYER, RESET_GAME_DATA, UPDATE_TOTAL, CALCULATE_SCORE, UPDATE_SCORE, CHANGE_PLAYER, ADD_HOLE_SCORE_FULFILLED, ADD_HOLE_SCORE_PENDING } from '../actions';
+import { REMOVE_PLAYER, ADD_PLAYER_FULFILLED, SELECT_COURSE, SELECT_PLAYER, RESET_GAME_DATA, UPDATE_TOTAL, CALCULATE_SCORE, UPDATE_SCORE, CHANGE_PLAYER, ADD_HOLE_SCORE_FULFILLED, ADD_HOLE_SCORE_PENDING } from '../actions';
 
 const FETCH_PLAYERS = 'FETCH_PLAYERS';
 const FETCH_PLAYERS_SUCCESS = 'FETCH_PLAYERS_SUCCESS';
@@ -17,6 +17,15 @@ export default function players(state = initialPlayersState, action){
     let newState = {...state};
 
     switch (action.type){
+        case REMOVE_PLAYER:
+            const idx = newState.players.indexOf(action.payload.player);
+            newState.players.splice(idx, 1);
+            return newState;
+        case ADD_PLAYER_FULFILLED:
+            newState.players.push(
+                action.payload.data.result
+            );
+            return newState;
         case SELECT_PLAYER:
             newState.scores[action.player.name] = {};
             return newState;

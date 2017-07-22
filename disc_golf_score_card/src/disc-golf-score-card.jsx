@@ -91,6 +91,18 @@ export default class DisGolfScoreCardRoutes extends Component{
         this.props.actions.selectPlayer(player);
         this.props.actions.togglePlayerNameColor(player);
     }
+    removePlayer = (player) =>{
+        this.props.actions.removePlayer(player);
+        this.props.actions.removePlayerRequest(player);
+    }
+    handleAddCourse = (course) => {
+        this.props.actions.addCourse(course);
+        this.props.actions.addCourseRequest(course);
+    }
+    removeCourse = (course) =>{
+        this.props.actions.removeCourseRequest(course);
+        this.props.actions.removeCourse(course);
+    }
     render(){
         let courses = this.props.courses;
         let players = this.props.players;
@@ -114,11 +126,19 @@ export default class DisGolfScoreCardRoutes extends Component{
                 <div>
                     
 
-                    <Route path="/app/players" component={PlayerPage} />
+                    <Route path="/app/players" render={props =>(
+                        <PlayerPage
+                            addPlayer={this.props.actions.addPlayer}
+                            playerList={this.props.players.players}
+                            removePlayer={this.removePlayer}                            
+                         />
+                    )} />
                     <Route path="/app/course" render={props =>(
                         <CoursePage 
                             handleAddCourse={this.handleAddCourse} 
-                            courses={courses} {...props}/>
+                            courses={courses} {...props}
+                            removeCourse={this.removeCourse}
+                            />
                     )} />
                     <Route path="/app/game-list" render={props => (
                         <CurrentGameList 
@@ -156,6 +176,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                     <Route 
                         path='/app/current-game' render={props =>(
                             <CurrentGamePage 
+                                gameOver={this.props.gameData.game_over}
                                 gameData={this.props.gameData} 
                                 players={this.props.players} 
                                 updateScore={this.props.actions.updateScore}
@@ -173,6 +194,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                     <Route
                         path='/app/turn/:turn' render={props=>(
                             <TurnPage
+                                setGameOver={this.props.actions.setGameOver}
                                 incrementCount={this.props.actions.incrementCount}
                                 decrementCount={this.props.actions.decrementCount}
                                 resetCount={this.props.actions.resetCount}                                
@@ -197,7 +219,8 @@ export default class DisGolfScoreCardRoutes extends Component{
                     <Route path="/app/game">
                         <Route path="/app/game/:game_id" component={GameRoute}/>                                                    
                     </Route>
-                    <Route path="/app" exact component={NewStartPage} />                     
+                    <Route path="/app" exact component={NewStartPage} />             
+                    
                     
                 </div>
         );

@@ -33,24 +33,24 @@ export default class AddPlayer extends Component {
 
         console.log("name: ", name, "frisbees: ", frisbees);
 
-        let player = {
+        const player = {
             name: name,
             frisbees: frisbees,
         };
-
+        this.props.addPlayer(player);
         this.setState({ player: {
             name: '',
             frisbees:[]
         }});
 
-        axios.post('/api/player/', player)
-                .then((res) =>{
-                    console.log('good request!', res);
-                    sendRefreshRequest(player);
-                })
-                .catch((err) =>{
-                    console.log('bad request!', err);
-                });
+        // axios.post('/api/player/', player)
+        //         .then((res) =>{
+        //             console.log('good request!', res);
+        //             sendRefreshRequest(player);
+        //         })
+        //         .catch((err) =>{
+        //             console.log('bad request!', err);
+        //         });
     }
     render(){
         let setState = this.setState;

@@ -1,5 +1,10 @@
 import { 
-    SELECT_COURSE 
+    SELECT_COURSE,
+    ADD_COURSE,
+    REMOVE_COURSE,
+    REMOVE_COURSE_REQUEST_ERROR,
+    REMOVE_COURSE_REQUEST_FULFILLED,
+    REMOVE_COURSE_REQUEST_PENDING
 } from '../actions';
 
 const FETCH_COURSES = 'FETCH_COURSES'; 
@@ -17,6 +22,13 @@ const initialCoursesState = {
 export default function courses(state = initialCoursesState, action){
     let newState = {...state};
     switch(action.type){
+        case REMOVE_COURSE:
+            const index = newState.coursesList.courses.indexOf(action.payload.course);
+            newState.coursesList.courses.splice(index, 1);
+            return newState;
+        case ADD_COURSE:
+            newState.coursesList.courses.push(action.payload.course);
+            return newState;
         case FETCH_COURSES:
             newState.loading = true;
             return newState;

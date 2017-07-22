@@ -85,7 +85,7 @@ export default class TurnPage extends Component {
         const currHoleId = this.props.currentTurn.currentHoleId;
         const currPlayerIdx = this.props.currentTurn.currentPlayerIndex;
         const playersLength = this.props.gameData.players.length - 1;
-        if((currHoleId == holes[holes.length-1].id) && (currPlayerIdx == playersLength )){
+        if((currHoleId == holes[holes.length-1].id) && (currPlayerIdx == playersLength )){            
             return (
                 <LinkContainer to="/app/current-game">
                     <RB.Button bsSize="lg" bsStyle="primary" block>Next Turn</RB.Button>            
@@ -117,26 +117,22 @@ export default class TurnPage extends Component {
             );
         }            
     }
-    render(){
-        // if(this.props.gameData && !this.props.gameData.course){           
-        //     return (
-        //         <Redirect to='/app' />
-        //     );
-        // }             
-        const player = this.props.gameData.players[this.props.currentTurn.currentPlayerIndex];        
-        console.log(this.props);
-        
+    componentWillMount(){
+        const currHoleId = this.props.currentTurn.currentHoleId;
         const course = this.props.gameData.course;
+        const ended = currHoleId == course.holes[course.holes.length-1].id;
+        ended && this.props.setGameOver();
+    }
+    render(){
+        const course = this.props.gameData.course;
+        const holes = course.holes;             
+        const player = this.props.gameData.players[this.props.currentTurn.currentPlayerIndex];                
+                
         let currHoleId = this.props.currentTurn.currentHoleId;
-
         const hole = course.holes[this.props.gameData.holesById[currHoleId]];        
-        const playerScore = this.props.scores[player.name];        
-        //console.log(playerScore[currHoleId]);
-        //this.props.setCount(playerScore[currHoleId]);
+        const playerScore = this.props.scores[player.name];                
         const currDisplayNumber = this.props.currentTurn.currentDisplayNumber;
-
-        const currDisplayOffset = this.getCurrOffset(currDisplayNumber, hole.par);
-        console.log('#############################',currDisplayNumber, playerScore, this);
+        const currDisplayOffset = this.getCurrOffset(currDisplayNumber, hole.par);        
         const styles = {
                 position: 'relative',
                 left: '14px',
@@ -162,7 +158,7 @@ export default class TurnPage extends Component {
         const isFirstHole = currHoleId == course.holes[0].id;
 
         let STARTED = isFirstHole ? 'first hole' : 'after first hole';
-        let ENDED = currHoleId == course.holes[course.holes.length-1].id ? 'on last hole' : 'not on last hole';
+        let ENDED = currHoleId == course.holes[course.holes.length-1].id ? 'on last hole' : 'not on last hole';        
         let isFirstPlayer = this.props.currentTurn.currentPlayerIndex == 0 ? 'first player' : 'after first player';
         console.log(isFirstPlayer);
         return (

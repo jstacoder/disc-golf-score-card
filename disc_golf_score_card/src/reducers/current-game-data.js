@@ -3,7 +3,8 @@
 import { 
     SELECT_PLAYER, SELECT_COURSE, START_NEW_GAME, 
     START_NEW_GAME_PENDING, START_NEW_GAME_FULFILLED,
-    SET_GAME_START, UPDATE_WINNER, CALCULATE_SCORE, RESET_GAME_DATA
+    SET_GAME_START, UPDATE_WINNER, CALCULATE_SCORE, RESET_GAME_DATA,
+    SET_GAME_OVER
 } from '../actions';
 
 const initialState = {
@@ -12,6 +13,7 @@ const initialState = {
         holesById:{},
         game_id: null,
         game_started: false,
+        game_over: false,
         score_card_id: null,
         currentWinnerIndex:null,
         currentCoursePar:null,
@@ -21,6 +23,9 @@ const initialState = {
 export default function gameData(state = initialState, action){
     let newState = {...state};    
     switch(action.type){
+        case SET_GAME_OVER:
+            newState.game_over = true;
+            break;
         case RESET_GAME_DATA:
             newState = {...initialState};
             break;
@@ -38,7 +43,7 @@ export default function gameData(state = initialState, action){
         case START_NEW_GAME_FULFILLED:
             console.log("PAYLOAD: ", action);            
             newState.score_card_id = action.payload.data.score_card;
-            newState.game_id = action.payload.data.game;            
+            newState.game_id = action.payload.data.game;                        
             break;
         case SELECT_PLAYER:
             let playerIdx = newState.players.indexOf(action.player);

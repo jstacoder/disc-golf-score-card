@@ -7,7 +7,7 @@ import { AppContainer } from 'react-hot-loader';
 import { loadState } from  './storage';
 
 
-const store = configureStore(loadState('gameData', 'players', 'currentTurn'));
+const store = configureStore(loadState('gameData', 'players', 'currentTurn', 'router'));
 
 const render = (Component) =>{
     return ReactDOM.render(

@@ -19,15 +19,18 @@ import CurrentGamePage from './components/game/current-game-page';
 class DiscGolfScoreCardApp extends Component {
     render(){
         console.log(history);
-        const needsRedirect = this.props.redirect.needsRedirect;
+        const needsRedirect = history.location.pathname === '/';
         //const RouteComponent = (needsRedirect && history.location.pathname.split('/app/')[1] !== "")
         //    ? RedirectRoutes : DiscGolfScoreCardRoutes;
-        const RouteComponent = /*window.localStorage.getItem('game_started') !== '1' ?  */DiscGolfScoreCardRoutes;// : CurrentGamePage;
-
+        const RouteComponent =  needsRedirect ? Redirect : DiscGolfScoreCardRoutes;
+        let routeArgs = {};
+        if(needsRedirect){
+            routeArgs.to = '/app';
+        }
         return (
              <Router history={history}>
                 <div>
-                    <RouteComponent {...this.props} />        
+                    <RouteComponent {...this.props} {...routeArgs} />        
                 </div>
             </Router>
         );
@@ -45,6 +48,7 @@ function mapStateToProps(state){
         currentTurn: state.currentTurn,
         redirect: state.redirect,
         started: state.started,
+        player: state.player,
     };
 }
 function mapDispatchToProps(dispatch){
