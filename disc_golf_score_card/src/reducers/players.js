@@ -58,22 +58,21 @@ export default function players(state = initialPlayersState, action){
             newState.loading = true;
             return newState;
 
-        case CALCULATE_SCORE:
-            let currScore = Oject.values(state.scores[action.payload.player.name]).reduce((a,b) =>(
-                 a + b
-            ));
-            let currPar = action.payload.holes.reduce((a,b) =>(
-                a.par + b.par
-            ));
-            newState.totalScores[action.payload.player.name] = currScore - currPar;
-            return newState;
-
         case FETCH_PLAYERS_SUCCESS:
+            console.log(newState.players);
             action.payload.data.map(itm =>{
-                if(!newState.players.filter(i =>(i.id === itm.id )).length){
+                let addPlayer = true;
+                for(let i = 0; i < newState.players.length; i++){
+                    const curr = newState.players[i];
+                    if(curr.id == itm.id){
+                        addPlayer = false;
+                    }
+                }
+                if(addPlayer){
+                    console.log("ADDDING: ", itm);
                     newState.players.push(itm);
                     newState.scores[itm.name] = {};
-                }
+                }                
             });
             newState.loading = false;
             return newState;

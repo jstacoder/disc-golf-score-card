@@ -6,6 +6,7 @@ import { configureStore } from './store/configureStore';
 import { AppContainer } from 'react-hot-loader';
 import { loadState } from  './storage';
 
+console.log(loadState('gameData', 'players', 'currentTurn', 'router'));
 
 const store = configureStore(loadState('gameData', 'players', 'currentTurn', 'router'));
 

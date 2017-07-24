@@ -16,7 +16,6 @@ import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
 import CurrentGamePage from './components/game/current-game-page';
 import TurnPage from './components/turn/turn-page';
-//import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,7 +28,7 @@ class NewStartPage extends Component {
         return (
             <Grid>
                 <Row>
-                    <Col xs={12} sm={12} md={6} lg={6} mdOffset={3} lgOffset={3}>
+                    <Col xs={12} md={10} mdOffset={1}>
                         <PageHeader>
                             <Row>
                                 <Col 
@@ -77,8 +76,7 @@ export default class DisGolfScoreCardRoutes extends Component{
     isPlayerSelected = (player) =>{
         return this.props.gameData.players.indexOf(player) > -1;
     }
-    componentWillMount = () =>{       
-        this.props.actions.resetGameData(); 
+    componentWillMount = () =>{               
         this.props.actions.loadCourses();        
         this.props.actions.loadPlayers().then(res =>{            
             this.props.actions.loadPlayerNameColors(res);        

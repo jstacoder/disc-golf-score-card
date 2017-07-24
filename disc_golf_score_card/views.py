@@ -212,8 +212,44 @@ class BaseAddView(BaseModelView):
             #     if hasattr(c, '_add_routes') and hasattr(c, '_model') and callable(getattr(c, '_add_routes')):
             #         getattr(c, '_add_routes')(app)
 
+from json import JSONEncoder
+class ModelEncoder(JSONEncoder):
+    def default(self, o):
+        try:
+            return o.json
+        except Exception as e:
+
+            return super(ModelEncoder, self).default(o)
+
 class GameView(BaseListView):
     _model = models.DiscGolfGame
+
+    def get(self, game_id=None, player_id=None, game_list=None):
+        result = []
+        if game_list is not None:
+            result = self._model._get_all()
+        if game_id is not None:
+            result.append(
+                self._model.query.get(game_id)
+            )
+        if player_id is not None:
+            map(
+                result.append, 
+                models
+                .DiscGolfPlayer
+                .query
+                .get(player_id)
+                .games
+            )
+        rtn = [
+            (
+                game,            
+                models.DiscGolfScoreCard.get_game_scores(game_id=game.id),   
+            ) for game in result
+        ]
+        response = flask.make_response(json.dumps(rtn, cls=ModelEncoder ))
+        response.headers['Content-Type'] = 'application/json'
+        return response
 
 class PlayerView(BaseListView, BaseAddView, BaseRemoveView):
     _model = models.DiscGolfPlayer

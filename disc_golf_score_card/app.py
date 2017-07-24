@@ -25,7 +25,10 @@ app.config.SQLALCHEMY_ECHO = True
 
 
 app.add_url_rule('/', 'index', view_func=views.IndexView.as_view('index'))
-app.add_url_rule('/game/', view_func=views.GameView.as_view('game'))
+app.add_url_rule('/api/game/', view_func=views.GameView.as_view('game'))
+app.add_url_rule('/api/game/<int:game_id>', view_func=views.GameView.as_view('game_id'))
+app.add_url_rule('/api/game/player/<int:player_id>', view_func=views.GameView.as_view('game_player_id')) 
+app.add_url_rule('/api/gamelist/<int:game_list>', view_func=views.GameView.as_view('game_list')) 
 app.add_url_rule('/api/player/', view_func=views.PlayerView.as_view('player'))
 app.add_url_rule('/api/player/<int:obj_id>', view_func=views.PlayerView.as_view('player_id'))
 app.add_url_rule('/api/course/', view_func=views.CourseView.as_view('course'))
