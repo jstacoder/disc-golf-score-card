@@ -49,6 +49,7 @@ function mapStateToProps(state){
         redirect: state.redirect,
         started: state.started,
         player: state.player,
+        gameHistory:state.gameHistory,
     };
 }
 function mapDispatchToProps(dispatch){

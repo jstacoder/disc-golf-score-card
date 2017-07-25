@@ -228,7 +228,7 @@ class GameView(BaseListView):
         result = []
         if game_list is not None:
             result = self._model._get_all()
-        if game_id is not None:
+        if game_id is not None: 
             result.append(
                 self._model.query.get(game_id)
             )

@@ -231,7 +231,7 @@ class DiscGolfScoreCard(Model):
         players = self.game.players.all()
         rows = [
             {
-                player.id: player.game_scores.filter_by(score_card=self).all()
+                player.name: player.game_scores.filter_by(score_card=self).all()
             } for player in players
         ]
         return rows

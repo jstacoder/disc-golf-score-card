@@ -33,7 +33,7 @@ const middlewares = applyMiddleware(
     ReduxPromise(),
     axiosMiddleware(client),
     routerMiddleware(history),
-    createLogger(),
+    //createLogger(),
     thunk
 );
 
