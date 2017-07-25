@@ -145,6 +145,18 @@ class BaseListView(BaseModelView):
             return self.json(self.model.query.get(obj_id).json)
         return self.json(map(lambda x: x.json, self.model.query.all()))
 
+class BaseRemoveView(BaseModelView):
+    def __init__(self, *args, **kwargs):
+        super(BaseRemoveView, self).__init__(*args, **kwargs)
+        self.request = flask.request
+    
+    def delete(self, obj_id=None):
+        itm = self._model.query.get(obj_id)
+        itm.delete()
+        response = flask.make_response(json.dumps(dict(result='success')))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
 class BaseAddView(BaseModelView):
     _form_args = {}
     _form_class = None
@@ -173,7 +185,8 @@ class BaseAddView(BaseModelView):
         _form = self.__class__._form_class(**self.request.json)
         new_model = self.__class__.model(**_form.data).save()
         if new_model.id:
-            rtn = dict(success=True, error=None)
+            rtn = dict(success=True, error=None, result=new_model.json)
+
         else:
             rtn = dict(success=False, error='could not create new model')
         rtn = flask.make_response(json.dumps(rtn))
@@ -199,10 +212,46 @@ class BaseAddView(BaseModelView):
             #     if hasattr(c, '_add_routes') and hasattr(c, '_model') and callable(getattr(c, '_add_routes')):
             #         getattr(c, '_add_routes')(app)
 
+from json import JSONEncoder
+class ModelEncoder(JSONEncoder):
+    def default(self, o):
+        try:
+            return o.json
+        except Exception as e:
+
+            return super(ModelEncoder, self).default(o)
+
 class GameView(BaseListView):
     _model = models.DiscGolfGame
 
-class PlayerView(BaseListView, BaseAddView):
+    def get(self, game_id=None, player_id=None, game_list=None):
+        result = []
+        if game_list is not None:
+            result = self._model._get_all()
+        if game_id is not None:
+            result.append(
+                self._model.query.get(game_id)
+            )
+        if player_id is not None:
+            map(
+                result.append, 
+                models
+                .DiscGolfPlayer
+                .query
+                .get(player_id)
+                .games
+            )
+        rtn = [
+            (
+                game,            
+                models.DiscGolfScoreCard.get_game_scores(game_id=game.id),   
+            ) for game in result
+        ]
+        response = flask.make_response(json.dumps(rtn, cls=ModelEncoder ))
+        response.headers['Content-Type'] = 'application/json'
+        return response
+
+class PlayerView(BaseListView, BaseAddView, BaseRemoveView):
     _model = models.DiscGolfPlayer
     _form_class = forms.AddPlayerForm
 
@@ -211,6 +260,9 @@ class PlayerView(BaseListView, BaseAddView):
 
     def post(self, *args, **kwargs):
         return super(PlayerView, self).post(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        return super(PlayerView, self).delete(*args, **kwargs)
 
 
 class FrisbeeView(BaseAddView, BaseListView):
@@ -223,7 +275,7 @@ class FrisbeeView(BaseAddView, BaseListView):
     def post(self, *args, **kwargs):
         return super(FrisbeeView, self).post(*args, **kwargs)
 
-class CourseView(BaseAddView, BaseListView):
+class CourseView(BaseAddView, BaseListView, BaseRemoveView):
     _model = models.DiscGolfCourse
     _form_class = forms.AddCourseForm
 
@@ -233,4 +285,6 @@ class CourseView(BaseAddView, BaseListView):
     def post(self, *args, **kwargs):
         return super(CourseView, self).post(*args, **kwargs)
 
+    def delete(self, *args, **kwargs):
+        return super(CourseView, self).delete(*args, **kwargs)
 

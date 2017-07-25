@@ -16,7 +16,6 @@ import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
 import CurrentGamePage from './components/game/current-game-page';
 import TurnPage from './components/turn/turn-page';
-//import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -29,8 +28,23 @@ class NewStartPage extends Component {
         return (
             <Grid>
                 <Row>
-                    <Col xs={12} sm={12} md={6} lg={6} mdOffset={3} lgOffset={3}>
-                        <PageHeader>Disc Golf Score Card</PageHeader>                    
+                    <Col xs={12} md={10} mdOffset={1}>
+                        <PageHeader>
+                            <Row>
+                                <Col 
+                                    xsOffset={3} xs={12} 
+                                    smOffset={1} sm={3} 
+                                    md={5} lg={4}>
+                                    Disc Golf
+                                </Col>
+                                <Col 
+                                    xsOffset={3} xs={12} 
+                                    smOffset={0} sm={4} 
+                                    md={6} lg={5}>
+                                     Score Card
+                                </Col>
+                            </Row>
+                        </PageHeader>                    
                         <LinkContainer to='/app/new-game'>
                             <Button block bsSize="lg" bsStyle="primary">Start Game</Button> 
                         </LinkContainer>
@@ -62,7 +76,7 @@ export default class DisGolfScoreCardRoutes extends Component{
     isPlayerSelected = (player) =>{
         return this.props.gameData.players.indexOf(player) > -1;
     }
-    componentWillMount = () =>{        
+    componentWillMount = () =>{               
         this.props.actions.loadCourses();        
         this.props.actions.loadPlayers().then(res =>{            
             this.props.actions.loadPlayerNameColors(res);        
@@ -74,6 +88,18 @@ export default class DisGolfScoreCardRoutes extends Component{
     handlePlayerSelect = (player) => {
         this.props.actions.selectPlayer(player);
         this.props.actions.togglePlayerNameColor(player);
+    }
+    removePlayer = (player) =>{
+        this.props.actions.removePlayer(player);
+        this.props.actions.removePlayerRequest(player);
+    }
+    handleAddCourse = (course) => {
+        this.props.actions.addCourse(course);
+        this.props.actions.addCourseRequest(course);
+    }
+    removeCourse = (course) =>{
+        this.props.actions.removeCourseRequest(course);
+        this.props.actions.removeCourse(course);
     }
     render(){
         let courses = this.props.courses;
@@ -96,11 +122,21 @@ export default class DisGolfScoreCardRoutes extends Component{
         
         return (
                 <div>
-                    <Route path="/app/players" component={PlayerPage} />
+                    
+
+                    <Route path="/app/players" render={props =>(
+                        <PlayerPage
+                            addPlayer={this.props.actions.addPlayer}
+                            playerList={this.props.players.players}
+                            removePlayer={this.removePlayer}                            
+                         />
+                    )} />
                     <Route path="/app/course" render={props =>(
                         <CoursePage 
                             handleAddCourse={this.handleAddCourse} 
-                            courses={courses} {...props}/>
+                            courses={courses} {...props}
+                            removeCourse={this.removeCourse}
+                            />
                     )} />
                     <Route path="/app/game-list" render={props => (
                         <CurrentGameList 
@@ -112,8 +148,8 @@ export default class DisGolfScoreCardRoutes extends Component{
                     <Route path='/app/new-game' render={props =>(
                           <StartGamePage 
                                     handlePlayerSelect={this.handlePlayerSelect} 
-                                    players={this.props.players} 
-                                    //values={this.state.values} 
+                                    players={this.props.players}                                 
+                                    resetGameData={this.props.actions.resetGameData}
                                     gameData={gameData}
                                     isPlayerSelected={this.isPlayerSelected}
                                     playerNameColor={this.props.playerNameColor} 
@@ -127,6 +163,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 handleCourseSelect={this.handleCourseSelect} 
                                 courses={courses} 
                                 addSelect 
+                                setGameStart={this.props.actions.setGameStart}
                                 startNewGame={this.props.actions.startNewGame}
                                 gameData={gameData}
                                 players={gameData.players} 
@@ -137,6 +174,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                     <Route 
                         path='/app/current-game' render={props =>(
                             <CurrentGamePage 
+                                gameOver={this.props.gameData.game_over}
                                 gameData={this.props.gameData} 
                                 players={this.props.players} 
                                 updateScore={this.props.actions.updateScore}
@@ -145,6 +183,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 setRedirect={this.props.actions.setRedirect}
                                 changeHole={this.props.actions.changeHole}
                                 startNewGame={this.props.actions.startNewGame}
+                                setCount={this.props.actions.setCount}
                                 {...props} 
                             />
                         )} 
@@ -153,6 +192,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                     <Route
                         path='/app/turn/:turn' render={props=>(
                             <TurnPage
+                                setGameOver={this.props.actions.setGameOver}
                                 incrementCount={this.props.actions.incrementCount}
                                 decrementCount={this.props.actions.decrementCount}
                                 resetCount={this.props.actions.resetCount}                                
@@ -164,14 +204,22 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 setGameStart={this.props.actions.setGameStart}
                                 addNewHoleScore={this.props.actions.addNewHoleScore}
                                 updateTotal={this.props.actions.updateTotal}
+                                scores={this.props.players.scores}
                                 totals={this.props.players.totalScores}
+                                currentStroke={this.props.currentTurn.currentDisplayNumber}
+                                setCount={this.props.actions.setCount}
+                                started={this.props.started}
+                                setGameStart={this.props.actions.setGameStart}
+                                unsetGameStart={this.props.actions.unsetGameStart}
                              />
                         )}
                     />
                     <Route path="/app/game">
                         <Route path="/app/game/:game_id" component={GameRoute}/>                                                    
                     </Route>
-                    <Route path="/app" exact component={NewStartPage} />                     
+                    <Route path="/app" exact component={NewStartPage} />             
+                    
+                    
                 </div>
         );
     }

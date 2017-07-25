@@ -58,6 +58,10 @@ class BaseModel(object):
         self.__class__.session.commit()
         return self
 
+    def delete(self):
+        self.__class__.session.delete(self)
+        self.__class__.session.commit()
+
     @classmethod
     def _get_all(cls):
         return cls.query.all()
@@ -157,7 +161,7 @@ class DiscGolfGame(Model):
     def json(self):
         return dict(
             date=self.date.strftime('%y-%m-%dT%H:%I:%S%Z'),
-            course=self.course.json,
+            course=self.course.name,
             id=self.id,
             complete=self.complete
         )
@@ -204,8 +208,9 @@ class DiscGolfGamePlayerScore(Model):
     @cached_property
     def json(self):
         return dict(
-            hole=self.hole.json,
-            player=self.player.json,
+            hole=self.hole.number,
+            #course=self.hole.course.name,
+            player=self.player.id,
             score_card=self.score_card_id,
             value=self.value, 
             id=self.id,
@@ -216,11 +221,18 @@ class DiscGolfScoreCard(Model):
     game = sa.orm.relation('DiscGolfGame', uselist=False, backref=sa.orm.backref('score_card', uselist=False))
     game_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_games.id'))        
 
+    @classmethod
+    def get_game_scores(cls, game_id):
+        sc = cls.query.filter_by(game_id=game_id).one()
+        return sc.game_player_scores
+
     @property
     def game_player_scores(self):
         players = self.game.players.all()
         rows = [
-            (player, player.game_scores.filter_by(score_card=self).all()) for player in players
+            {
+                player.id: player.game_scores.filter_by(score_card=self).all()
+            } for player in players
         ]
         return rows
 
@@ -230,6 +242,7 @@ class DiscGolfScoreCard(Model):
             game=self.game.id,
             course=self.game.course.name,            
         )
+        
 
 class DiscGolfPlayer(Model):
     name = sa.Column(sa.String(255))
@@ -269,11 +282,9 @@ class DiscGolfPlayer(Model):
             id=self.id,
             name=self.name,
             frisbees=map(
-                lambda frisbee: frisbee.json, self.frisbees.all()
+                lambda frisbee: frisbee.name, self.frisbees.all()
             ),
-            games=map(
-                lambda game: game.json, self.games.all()
-            ),
+            games=self.games.count(),
         )
 
 players_score_cards = sa.Table(

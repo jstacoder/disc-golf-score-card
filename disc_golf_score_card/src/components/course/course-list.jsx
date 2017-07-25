@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Table, Panel, Button, ListGroup, ListGroupItem, PageHeader, FormControl, Form } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
+import Icon from '../widgets/icon';
 const axios = require('axios');
 
 class ScoreTable extends Component {    
@@ -8,7 +9,8 @@ class ScoreTable extends Component {
         this.setCourse(name);
     }
     setCourse = (course) =>{        
-        this.props.handleCourseSelect(course);
+        this.props.handleCourseSelect && this.props.handleCourseSelect(course);        
+        this.props.setGameStart(course);
     }
     clickListGroup = (course) =>{                
         this.setCourse(course);
@@ -17,6 +19,9 @@ class ScoreTable extends Component {
     isItemChecked = (itm) => {
         return this.props.gameData.course && this.props.gameData.course.name == itm.name || '';
     }
+    removeCourse = (course) =>{
+        this.props.removeCourse(course);
+    }
     render(){
         let courses = this.props.courses.coursesList.courses;
         let addSelect = this.props.addSelect;
@@ -24,14 +29,19 @@ class ScoreTable extends Component {
             marginBottom: '0px'
         };
         //let values = this.props.courseValues;
-
+        let lstend = addSelect ? (            
+                <LinkContainer to="/app/current-game">
+                    <Button block bsSize="lg">Confirm</Button>
+                </LinkContainer>
+        ) : (<p></p>);
         return (
             <div>
                 <PageHeader>Courses</PageHeader>
                 <Panel>
                     <Form fill>
                     <ListGroup style={listGroupStyles} fill>{courses.map((itm)=>{
-                            let groupEnd = addSelect ? <FormControl id={itm.name} type="checkbox" checked={this.isItemChecked(itm)} onChange={e=>{this.handleChange(itm)}} value={this.isItemChecked(itm)} /> : '';
+                            let groupEnd = addSelect ? (<FormControl id={itm.name} type="checkbox" checked={this.isItemChecked(itm)} onChange={e=>{this.handleChange(itm)}} value={this.isItemChecked(itm)} />) :
+                             ( <div onClick={e =>{ this.removeCourse(itm)}}><Icon name="close" size="2x"/></div> );
                             return (
                                 <ListGroupItem key={itm.id} onClick={(e)=>{this.clickListGroup(itm)}} id={`${itm.id}`}>
                                     <Row>
@@ -53,10 +63,7 @@ class ScoreTable extends Component {
                     }</ListGroup>
                     </Form>
                 </Panel>
-                
-                <LinkContainer to="/app/current-game">
-                    <Button block bsSize="lg">Confirm</Button>
-                </LinkContainer>
+                {lstend}
             </div>
         );
     }

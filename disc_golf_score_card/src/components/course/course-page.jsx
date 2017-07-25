@@ -20,7 +20,7 @@ export default class CoursePage extends Component {
         //courses.push(newCourse);
         //this.setState({courses: courses});
         //console.log(courses);
-        this.props.handleAddCourse(course);
+        this.props.handleAddCourse(newCourse);
     }
 
     render(){
@@ -29,20 +29,25 @@ export default class CoursePage extends Component {
         return (
             <Grid>
                 <Row>
-                    <Col xs={12} md={6} mdOffset={4}>
-                        <LinkContainer to="/app">
-                            <Button bsSize="lg" block bsStyle="primary">Back</Button>
-                        </LinkContainer>
+                    <Col xs={12} sm={12} md={10} lg={10} mdOffset={1} lgOffset={1}>
+                        <Row>                    
+                            <Col xs={12}>
+                                <LinkContainer to="/app">
+                                    <Button bsSize="lg" block bsStyle="primary">Back</Button>
+                                </LinkContainer>
+                            </Col>
+                        </Row>
+                   
+                        <Row>
+                            <Col xs={12} md={8}>                        
+                                <ScoreTable removeCourse={this.props.removeCourse} courses={courses}/>    
+                            </Col>
+                            <Col xs={12} md={4}>
+                                <AddCourseForm onCourseSubmit={this.handleSubmit} />
+                            </Col>
+                        </Row>
                     </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} md={6} mdOffset={0}>                        
-                        <ScoreTable courses={courses}/>    
-                    </Col>
-                    <Col xs={12} md={6} mdOffset={0}>
-                        <AddCourseForm onCourseSubmit={this.handleSubmit} />
-                    </Col>
-                </Row>
+                </Row>    
             </Grid>
         );
     }

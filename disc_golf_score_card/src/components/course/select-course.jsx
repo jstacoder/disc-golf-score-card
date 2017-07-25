@@ -12,12 +12,13 @@ export default class SelectCourse extends Component {
         return (
             <Grid>
                 <Row>
-                      <Col xs={12} md={6} mdOffset={4}> 
+                      <Col xs={12} md={10} mdOffset={1}> 
                             <ScoreTable 
                                  courses={this.props.courses} 
                                  addSelect 
                                  handleCourseSelect={this.handleCourseSelect} 
                                  gameData={this.props.gameData}     
+                                 setGameStart={this.props.setGameStart}
                             />
                       </Col>
                 </Row>

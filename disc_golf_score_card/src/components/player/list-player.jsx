@@ -1,41 +1,37 @@
 import React, { Component } from 'react';
 import * as reactBS from 'react-bootstrap';
-import * as axios from 'axios';
-
-export default class ListPlayer extends Component {
-    constructor(...props){
-        super(...props);
-        this.state = {
-            props: props,
-            players:this.props.playerList,
-
-        };
-
-    }
-    loadPlayers = () =>{
-        axios.get("/api/player")
-              .then((res)=>{
-                this.setState({players:res.data});
-              });
-    }
-    addPlayer = (player) => {
-        let players = this.state.players;
-        players.push(player);
-        this.setState({players: players});
-    }
-    componentDidMount = () =>{
-        console.log(arguments);
-        this.loadPlayers();
+import Icon from '../widgets/icon';
+ 
+export default class ListPlayer extends Component {        
+    remove = (player) => {
+        this.props.removePlayer(player);
     }
     render(){
         let ListGroupItem = reactBS.ListGroupItem;
         let ListGroup = reactBS.ListGroup;
+        let {Grid, Row, Col} = reactBS;
+        const divStyle = {
+            cursor: 'pointer'
+        };
         let loadPlayerElements = () => {
             return (
                 <ListGroup>
-                    {this.state.players.map((itm) =>{
+                    {this.props.playerList.map((itm) =>{
                             return (
-                                <ListGroupItem key={itm.name}>{itm.name}</ListGroupItem>
+                                <ListGroupItem key={itm.id}>
+                                    <Row>
+                                        <Col xs={2}>
+                                            {itm.name} 
+                                        </Col>
+                                        <Col xs={8}>                                        
+                                        </Col>
+                                        <Col xs={1}>                                        
+                                            <div style={divStyle} className="text-danger" onClick={e=> {this.remove(itm)}}>
+                                                <Icon name="close" size="2x"  />
+                                            </div>                                            
+                                        </Col>
+                                    </Row>
+                                </ListGroupItem>
                             );
                     })
                 }

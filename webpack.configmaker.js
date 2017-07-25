@@ -29,7 +29,7 @@ let htmlPluginOptions = {
 	appMountId:'app',
 	mobile: true
 };
-if(process.env['NODE_ENV'] !== 'production'){
+if(process.env['NODE_ENV'] === 'dev'){
 	htmlPluginOptions['baseHref'] = 'http://localhost:8090/';
 	htmlPluginOptions['devServer'] = 'http://localhost:3000';
 }
@@ -47,8 +47,8 @@ let getConfig = (clean_options) => {
         	vendor: [
 				'react', 'redux', 'react-redux', 'react-router-redux', 'axios', 'redux-thunk',
 				'react-bootstrap', 'react-router-dom','react-dom','redux-storage-engine-localstorage',
-				'redux-storage', 'redux-promise', 'redux-logger', 'react-bootstrap-table', 'isomorphic-fetch',
-				'history', 'classnames', 'bootstrap/dist/css/bootstrap.css','font-awesome/css/font-awesome.css','jquery'
+			//	'redux-storage', 'redux-promise', 'redux-logger', 'react-bootstrap-table', 'isomorphic-fetch',
+			//	'history', 'classnames', 'bootstrap/dist/css/bootstrap.css','font-awesome/css/font-awesome.css','jquery'
 			]
 		},
 		// target:'node-webkit',
@@ -160,7 +160,7 @@ let getConfig = (clean_options) => {
 			allChunks: true,
 		}),	
 		],
-		devtool:'cheap-eval-source-map',
+		devtool:'source-map',
 		stats: {
 			colors: true
 		}

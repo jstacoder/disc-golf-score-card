@@ -21,7 +21,122 @@ export const UNSET_GAME_START = 'SET_GAME_START';
 export const UPDATE_WINNER = 'UPDATE_WINNER';
 export const CALCULATE_SCORE = 'CALCULATE_SCORE';
 export const UPDATE_TOTAL = 'UPDATE_TOTAL';
+export const RESET_GAME_DATA = 'RESET_CURRENT_GAME_DATA';
+export const SET_COUNT = 'SET_COUNT';
+export const ADD_PLAYER = 'ADD_PLAYER';
+export const ADD_PLAYER_PENDING = 'ADD_PLAYER_PENDING';
+export const ADD_PLAYER_FULFILLED = 'ADD_PLAYER_FULFILLED';
+export const REMOVE_PLAYER = 'REMOVE_PLAYER';
+export const REMOVE_PLAYER_REQUEST = 'REMOVE_PLAYER_REQUEST';
+export const REMOVE_PLAYER_REQUEST_PENDING = 'REMOVE_PLAYER_REQUEST_PENDING';
+export const REMOVE_PLAYER_REQUEST_FULFILLED = 'REMOVE_PLAYER_REQUEST_FULFILLED';
+export const ADD_COURSE = 'ADD_COURSE';
+export const ADD_COURSE_REQUEST = 'ADD_COURSE_REQUEST';
+export const ADD_COURSE_REQUEST_PENDING = 'ADD_COURSE_REQUEST_PENDING';
+export const ADD_COURSE_REQUEST_FULFILLED = 'ADD_COURSE_REQUEST_FULFILLED';
+export const REMOVE_COURSE = 'REMOVE_COURSE';
+export const REMOVE_COURSE_REQUEST_ERROR = 'REMOVE_COURSE_REQUEST_ERROR';
+export const REMOVE_COURSE_REQUEST_PENDING = 'REMOVE_COURSE_REQUEST_PENDING';
+export const REMOVE_COURSE_REQUEST_FULFILLED = 'REMOVE_COURSE_REQUEST_FULFILLED';
+export const SET_GAME_OVER = 'SET_GAME_OVER';
 
+export const setGameOver = () =>({
+    type: SET_GAME_OVER,
+    payload:{}
+});
+
+export const removeCourse = (course) =>({
+    type: REMOVE_COURSE,
+    payload: {
+        course,
+    }
+});
+
+export const removeCourseRequest = (course) =>({
+    types:[
+        REMOVE_COURSE_REQUEST_PENDING,
+        REMOVE_COURSE_REQUEST_FULFILLED,
+        REMOVE_COURSE_REQUEST_ERROR
+    ],
+    payload:{
+        request:{
+            url:`/api/course/${course.id}/`,
+            method:'DELETE'            
+        }
+    }
+});
+
+export const addCourse = (course) =>({
+    type: ADD_COURSE,
+    payload:{
+        course,
+    }
+});
+
+export const addCourseRequest = (course) =>({
+    types :[
+        ADD_COURSE_REQUEST,
+        ADD_COURSE_REQUEST_FULFILLED,
+        ADD_COURSE_REQUEST_PENDING,
+    ],
+    payload:{
+        request:{
+            url:'/api/course/',
+            method:'POST',
+            data: course,
+        }
+    }
+});
+
+export const removePlayerRequest = (player) =>({
+    types:[
+        REMOVE_PLAYER_REQUEST,
+        REMOVE_PLAYER_REQUEST_FULFILLED,
+        REMOVE_PLAYER_REQUEST_PENDING,
+    ],
+    payload: {
+        request: {
+            url: `/api/player/${player.id}`,
+            method: 'DELETE',
+        }
+    }
+});
+
+export const removePlayer = (player) =>({
+    type: REMOVE_PLAYER,
+    payload:{
+        player,
+    }
+});
+
+export const addPlayer = (player) =>({
+    types: [
+        ADD_PLAYER,         
+        ADD_PLAYER_FULFILLED,
+        ADD_PLAYER_PENDING, 
+    ],
+    payload:{
+        request:{
+            url: '/api/player/',
+            data: player,
+            method: 'POST',
+        }
+    }
+});
+
+export const setCount = (number) =>({
+    type: SET_COUNT,
+    payload:{
+        number,
+    }
+});
+
+
+export function resetGameData(){
+    return {
+        type: RESET_GAME_DATA,
+    };
+}
 export function updateTotal(player, score){
     return {
         type: UPDATE_TOTAL,
@@ -53,8 +168,11 @@ export function calculateScore(player, course, holes){
 }
 
 
-export const setGameStart = () =>({
+export const setGameStart = (course) =>({
     type: SET_GAME_START,
+    payload: {
+        course,
+    }
 });
 
 export const unsetGameStart = () =>({
@@ -89,34 +207,34 @@ export function unsetRedirect(){
     };
 }
 
-export function changeHole(holes, hole_id = null){
+export function changeHole(holes, direction = 'next', hole_id = null){
     return {
         type: CHANGE_HOLE,
         payload: {
             holes,
+            direction,
             hole_id
         }
     };
 }
 
 
-export function changePlayer(players){
-    return {
-        type: CHANGE_PLAYER,
-        payload: {
-            players,            
-
-        }
-    };
-}
+export const changePlayer = (players, goToNext, goToLast) =>({    
+    type: CHANGE_PLAYER,
+    payload: {
+        players,            
+        goToNext,
+        goToLast,
+    }
+})
 
 export function updateScore(player, score, hole_id){
     return {
         type: UPDATE_SCORE,
         payload: {
-            player:player,
-            score:score,
-            hole_id:hole_id,
+            player,
+            score,
+            hole_id,
         }
     };
 }
@@ -194,6 +312,9 @@ export function loadPlayers(){
         }
     };
 }
+
+
+
 export function loadCourses(){
     console.log('loading courses');
 
@@ -205,39 +326,9 @@ export function loadCourses(){
         ],
         payload: {
             request: {
-                url: '/course/'
+                url: '/api/course/'
             }
         }
     };
 }
-// export function loadCourses(){
-//     const courses = axios.get('/course');
-//     return {
-//         type: LOAD_COURSES,
-//         courses,
-//     };
-// }
 
-// export function selectPlayer(player){
-//     console.log("selecting: ",player);
-//     return {
-//         type: SELECT_PLAYER,
-//         player
-//     };
-// }
-
-// // COURSE ACTIONS
-// export const LOAD_COURSES = 'LOAD_COURSES';
-
-
-// export function loadCourses(){
-//     let courses = [];
-//     axios.get('/course').then((res)=>{
-//         res.data.forEach(itm => { console.log("COURSES: ", itm); courses.push(itm); });
-//     });
-
-//     return {
-//         type: LOAD_COURSES,
-//         courses,
-//     };
-// }

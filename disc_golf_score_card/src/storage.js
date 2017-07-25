@@ -9,6 +9,7 @@ export const loadState = (...keys) => {
         keys.map(key =>{
             rtn = { [key] : objState[key], ...rtn};
         });
+        console.log('loaded: ', rtn);
         return rtn;
     }catch(err){
         return undefined;

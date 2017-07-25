@@ -9,3 +9,7 @@ venv/*
 *~
 _venv/*
 venv_win/*
+clrtype.py
+dgsc2.dump
+sample.py
+x.json

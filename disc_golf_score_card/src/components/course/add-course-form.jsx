@@ -52,12 +52,12 @@ class AddCourseForm extends Component {
     render(){    
         let formControls = this.state.items.map((itm) => {
             return (
-                <FormGroup key={itm.id}>
+                <FormGroup key={`fg-${itm}`}> 
                     <ControlLabel>
                         {itm}
                     </ControlLabel>
                     <FormControl 
-                        key={`${itm.id}-contyrol`}
+                        key={`${itm}-contyrol`}
                         name={itm.toLowerCase()} 
                         type="text" 
                         value={this.state[itm.toLowerCase()]} 

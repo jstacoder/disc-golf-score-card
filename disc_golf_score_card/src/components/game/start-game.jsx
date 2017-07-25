@@ -3,7 +3,9 @@ import { LinkContainer } from 'react-router-bootstrap'
 import { Grid, Row, Col, Button, PageHeader, Panel, ListGroup, ListGroupItem, FormControl, Checkbox } from 'react-bootstrap' 
 
 export default class StartGamePage extends Component {
-
+    componentDidMount = () =>{
+        this.props.resetGameData();
+    }
     handleChange = (eventValue, player) =>{               
         let playerNameColor = this.props.playerNameColor;                
         this.props.handlePlayerSelect(player);
