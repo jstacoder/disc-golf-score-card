@@ -8,7 +8,7 @@ import { ConnectedRouter as Router } from 'react-router-redux';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import * as axios from 'axios';
 
-import { Button, Grid, Row, Col, PageHeader, Panel } from 'react-bootstrap';
+import { Button, Grid, Row, Col, PageHeader, Panel,ListGroup, ListGroupItem } from 'react-bootstrap';
 import PlayerPage from './components/player/player-page';
 import CoursePage from './components/course/course-page';
 import CurrentGameList from './components/game/current-game-list';
@@ -27,6 +27,22 @@ class GameHistory extends Component{
     componentWillMount = () =>{
         this.props.loadHistory();
     }
+    createListGroup = (children) =>{
+        return (
+            <ListGroup fill>
+                {children}
+            </ListGroup>
+        );
+    }
+    createListGroupItem = (content, url) =>{
+        return (
+            <LinkContainer to={url}>            
+                <ListGroupItem>
+                    {content}
+                </ListGroupItem>
+            </LinkContainer>
+        );
+    }
     render(){
         let game, playerHistorys;
         const history = this.props.history.map((itm)=>{
@@ -35,104 +51,38 @@ class GameHistory extends Component{
             let rtn = [
                 <p>{game.date} - {game.course}</p>
             ];
+            
             let gamePlayerScores = {};
             const gamePlayers = playerHistorys.map(itm =>{
                 const name = Object.keys(itm)[0];
                 gamePlayerScores[name] = itm[name];
                 return name;
             });
-            
-             rtn.push(
-                    <table className="table table-condensed table-hover table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Player</th>
-                                <th>1</th>
-                                <th>2</th>
-                                <th>3</th>
-                                <th>4</th>
-                                <th>5</th>
-                                <th>6</th>
-                                <th>7</th>
-                                <th>8</th>
-                                <th>9</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                                {gamePlayers.map(n =>(
-                                    <tr>
-                                        <td>{n}</td>
-                                        {gamePlayerScores[n].map(row =>{                                            
-                                            return(
-                                                <td>{row.hole} - {row.value}</td>                                        
-                                            );
-                                        })}
-                                    </tr>
-                                ))}                                                            
-                        </tbody>
-                    </table>
-            );
-            
-            // playerHistorys.map((current)=>{
-            //     const playerNames = Object.keys(current);
-            //     console.log("CURREENT:  ", current);
-            //     console.log("PLAYER HIST:" , playerHistorys)
-            //     console.log("GAME: ", game);
-                
-            //     rtn.push(
-            //         <table className="table table-condensed table-hover table-bordered">
-            //             <thead>
-            //                 <tr>
-            //                     {playerNames.map(name =>(
-            //                         <th>{name}</th>
-            //                     ))}
-            //                 </tr>
-            //             </thead>
-            //             <tbody>
-            //                     {playerNames.map(name =>(
-            //                         <tr>
-            //                             {current[name].map(row =>(
-            //                                 <td>{row.hole} - {row.value}</td>
-            //                             ))}
-            //                         </tr>
-            //                     ))}
-            //             </tbody>
-            //         </table>
-            //     )
-            // });
-            // playerHistorys.map((o)=>{
-            //     console.log(o[Object.keys(o)[0]]);
-            //     console.log(o);
-            //     console.log(Object.keys(o)[0]);
-            //     const playerNames = Object.keys(o);
-            //     playerNames.map(name =>{
-
-            //     })
-            //    rtn.push(
-            //        <h2>
-            //             {playerNames.map((itm, idx) =>{
-            //                 return( <span>- {itm} -</span>);
-            //             })}
-            //        </h2>
-            //    )
-            //     playerNames.map((name) =>{
-            //         rtn.push(
-            //             <ul>
-            //                 {o[name].map( x=>(
-            //                     <li>{x.hole} - {x.value}</li>
-            //                 ))}
-            //             </ul>
-            //         );
-            //     });                
-            // });
-            return rtn;
+            const players = gamePlayers.map( (itm, idx) =>{
+                const playerStyle = {
+                    display:'inline-block',
+                    marginRight:'3px'
+                };
+                const lineEnd = (gamePlayers.length - 1) == idx ? '' : ', ';
+                return (
+                    <p style={playerStyle}>{itm}{lineEnd} </p>
+                );
+            });            
+            rtn.push(players);
+            const gameUrl = `/app/game/${game.id}`;                    
+            return this.createListGroupItem(rtn, gameUrl);
         });
         return (            
             <Grid>
                 <Row>
                     <Col xs={12}>
-                        <Panel>
-                            <div>history{history}</div>  
+                        <PageHeader>
+                            History
+                        </PageHeader>
+                    </Col>
+                    <Col xs={12}>                        
+                        <Panel>                            
+                            {this.createListGroup(history)}                    
                         </Panel>                    
                     </Col>
                 </Row>
