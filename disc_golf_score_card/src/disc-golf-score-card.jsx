@@ -8,7 +8,7 @@ import { ConnectedRouter as Router } from 'react-router-redux';
 import { LinkContainer, IndexLinkContainer } from 'react-router-bootstrap';
 import * as axios from 'axios';
 
-import { Button, Grid, Row, Col, PageHeader } from 'react-bootstrap';
+import { Button, Grid, Row, Col, PageHeader, Panel,ListGroup, ListGroupItem } from 'react-bootstrap';
 import PlayerPage from './components/player/player-page';
 import CoursePage from './components/course/course-page';
 import CurrentGameList from './components/game/current-game-list';
@@ -22,6 +22,74 @@ import { bindActionCreators } from 'redux';
 import * as Actions from './actions';
 
 import { history } from './store/configureStore';
+
+class GameHistory extends Component{    
+    componentWillMount = () =>{
+        this.props.loadHistory();
+    }
+    createListGroup = (children) =>{
+        return (
+            <ListGroup fill>
+                {children}
+            </ListGroup>
+        );
+    }
+    createListGroupItem = (content, url) =>{
+        return (
+            <LinkContainer to={url}>            
+                <ListGroupItem>
+                    {content}
+                </ListGroupItem>
+            </LinkContainer>
+        );
+    }
+    render(){
+        let game, playerHistorys;
+        const history = this.props.history.map((itm)=>{
+            [game, playerHistorys] = itm;
+            console.log("PLAYER HIST: ",playerHistorys);
+            let rtn = [
+                <p>{game.date} - {game.course}</p>
+            ];
+            
+            let gamePlayerScores = {};
+            const gamePlayers = playerHistorys.map(itm =>{
+                const name = Object.keys(itm)[0];
+                gamePlayerScores[name] = itm[name];
+                return name;
+            });
+            const players = gamePlayers.map( (itm, idx) =>{
+                const playerStyle = {
+                    display:'inline-block',
+                    marginRight:'3px'
+                };
+                const lineEnd = (gamePlayers.length - 1) == idx ? '' : ', ';
+                return (
+                    <p style={playerStyle}>{itm}{lineEnd} </p>
+                );
+            });            
+            rtn.push(players);
+            const gameUrl = `/app/game/${game.id}`;                    
+            return this.createListGroupItem(rtn, gameUrl);
+        });
+        return (            
+            <Grid>
+                <Row>
+                    <Col xs={12}>
+                        <PageHeader>
+                            History
+                        </PageHeader>
+                    </Col>
+                    <Col xs={12}>                        
+                        <Panel>                            
+                            {this.createListGroup(history)}                    
+                        </Panel>                    
+                    </Col>
+                </Row>
+            </Grid>
+        );
+    }
+}
 
 class NewStartPage extends Component {
     render(){
@@ -76,6 +144,13 @@ export default class DisGolfScoreCardRoutes extends Component{
     isPlayerSelected = (player) =>{
         return this.props.gameData.players.indexOf(player) > -1;
     }
+    resetGameData = () =>{
+        this.props.actions.resetGameData();
+        this.props.actions.loadCourses();        
+        this.props.actions.loadPlayers().then(res =>{            
+            this.props.actions.loadPlayerNameColors(res);        
+        });
+    }
     componentWillMount = () =>{               
         this.props.actions.loadCourses();        
         this.props.actions.loadPlayers().then(res =>{            
@@ -119,11 +194,31 @@ export default class DisGolfScoreCardRoutes extends Component{
                 ]
             }
         ];                
-        
+        const renderStartGame = (props) =>{            
+            //this.props.actions.resetGameData();
+            return (
+             <StartGamePage 
+                    handlePlayerSelect={this.handlePlayerSelect} 
+                    players={this.props.players}                                                 
+                    gameData={gameData}
+                    isPlayerSelected={this.isPlayerSelected}
+                    playerNameColor={this.props.playerNameColor} 
+                    resetGameData={this.resetGameData}
+                    startNewGame={this.props.actions.startNewGame}
+                    {...props} 
+                    />                    
+            );
+        }
+        const renderHistPage = (props) =>{
+            
+            return (
+                <GameHistory history={this.props.gameHistory.games} loadHistory={this.props.actions.loadAllGamesHistory} />
+            );
+        }
         return (
                 <div>
                     
-
+                
                     <Route path="/app/players" render={props =>(
                         <PlayerPage
                             addPlayer={this.props.actions.addPlayer}
@@ -138,24 +233,8 @@ export default class DisGolfScoreCardRoutes extends Component{
                             removeCourse={this.removeCourse}
                             />
                     )} />
-                    <Route path="/app/game-list" render={props => (
-                        <CurrentGameList 
-                            game={333} 
-                            players={old_players} 
-                            course={course} {...props} />
-                    )} /> 
-                    <Route path='/app/new-game' render={props =>(
-                          <StartGamePage 
-                                    handlePlayerSelect={this.handlePlayerSelect} 
-                                    players={this.props.players}                                 
-                                    resetGameData={this.props.actions.resetGameData}
-                                    gameData={gameData}
-                                    isPlayerSelected={this.isPlayerSelected}
-                                    playerNameColor={this.props.playerNameColor} 
-                                    startNewGame={this.props.actions.startNewGame}
-                                    {...props} 
-                          />
-                    )} />
+                    <Route path="/app/game-list" render={renderHistPage} /> 
+                    <Route path='/app/new-game' render={renderStartGame} />
                     <Route 
                         path='/app/select-course' render={props =>(
                             <SelectCourse                                

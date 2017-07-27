@@ -39,6 +39,38 @@ export const REMOVE_COURSE_REQUEST_ERROR = 'REMOVE_COURSE_REQUEST_ERROR';
 export const REMOVE_COURSE_REQUEST_PENDING = 'REMOVE_COURSE_REQUEST_PENDING';
 export const REMOVE_COURSE_REQUEST_FULFILLED = 'REMOVE_COURSE_REQUEST_FULFILLED';
 export const SET_GAME_OVER = 'SET_GAME_OVER';
+export const LOAD_ALL_GAMES_HISTORY = 'LOAD_ALL_GAMES_HISTORY';
+export const LOAD_ALL_GAMES_HISTORY_SUCCESS = 'LOAD_ALL_GAMES_HISTORY_SUCCESS';
+export const LOAD_ALL_GAMES_HISTORY_FAILURE = 'LOAD_ALL_GAMES_HISTORY_FAILURE';
+export const LOAD_GAME_HISTORY = 'LOAD_ALL_GAMES_HISTORY';
+export const LOAD_GAME_HISTORY_SUCCESS = 'LOAD_ALL_GAMES_HISTORY_SUCCESS';
+export const LOAD_GAME_HISTORY_FAILURE = 'LOAD_ALL_GAMES_HISTORY_FAILURE';
+
+export const loadGameHistory = (gameId) =>({
+    types:[
+        LOAD_GAME_HISTORY,
+        LOAD_GAME_HISTORY_SUCCESS,
+        LOAD_GAME_HISTORY_FAILURE,
+    ],
+    payload:{
+        request:{
+            url:`/api/game/${gameId}/`
+        }
+    }
+});
+
+export const loadAllGamesHistory = () =>({
+    types:[
+        LOAD_ALL_GAMES_HISTORY,
+        LOAD_ALL_GAMES_HISTORY_SUCCESS,
+        LOAD_ALL_GAMES_HISTORY_FAILURE
+    ],    
+    payload:{
+        request:{
+            url:'/api/gamelist/1',
+        }
+    }
+});
 
 export const setGameOver = () =>({
     type: SET_GAME_OVER,
