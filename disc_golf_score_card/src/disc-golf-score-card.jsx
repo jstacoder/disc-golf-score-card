@@ -142,8 +142,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                         <CurrentGameList 
                             game={333} 
                             players={old_players} 
-                            course={course} 
-                            {...props} />
+                            course={course} {...props} />
                     )} /> 
                     <Route path='/app/new-game' render={props =>(
                           <StartGamePage 
@@ -187,7 +186,7 @@ export default class DisGolfScoreCardRoutes extends Component{
                                 {...props} 
                             />
                         )} 
-                    >                        
+                   />                        
                     </Route>
                     <Route
                         path='/app/turn/:turn' render={props=>(
@@ -218,8 +217,10 @@ export default class DisGolfScoreCardRoutes extends Component{
                         <Route path="/app/game/:game_id" component={GameRoute}/>                                                    
                     </Route>
                     <Route path="/app" exact component={NewStartPage} />             
-                    
-                    
+                    <Route path="/" exact render={props =>(
+                            <Redirect to='/app' />
+                        )}
+                   /> 
                 </div>
         );
     }
