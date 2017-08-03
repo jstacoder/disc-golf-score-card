@@ -8,18 +8,22 @@ const initialState = {
     loading : false
 };
 
-const playerReducer = (state = initialState, action = {}) =>{
-    let newState = {...state};
+const playerReducer = (state = initialState, action = {}) =>{    
     switch(action.type){
         case ADD_PLAYER_PENDING:    
-            newState.loading = true;
-            return newState;
+            return {
+                ...state,
+                loading: true,
+            };
         case ADD_PLAYER_FULFILLED:
-            newState.loading = false;
-            return newState;
+           return {
+                ...state,
+                loading: false,
+                player: action.payload.data
+            };
         default:
-            return newState;
+            return state;
     }
-}
+};
 
-export default playerReducer;
+export default playerReducer

@@ -11,20 +11,42 @@ const initialState = {
 const gameHistory = (state = initialState, action = {}) =>{
     switch(action.type){
         case LOAD_ALL_GAMES_HISTORY:
-            return { loading: true, games: state.games, currentGame: state.currentGame};
+            return { 
+                ...state,
+                loading: true, 
+            };
         case LOAD_ALL_GAMES_HISTORY_SUCCESS:
-            return { loading: false, games: action.payload.data, currentGame: state.currentGame};
+            return { 
+                ...state,
+                loading: false, 
+                games: [
+                    ...state.games, action.payload.data
+                ], 
+            };
         case LOAD_ALL_GAMES_HISTORY_FAILURE:
-            return { loading: false, games: state.games, currentGame: state.currentGame};
+            return { 
+                ...state,
+                loading: false, 
+            };
         case LOAD_GAME_HISTORY_FAILURE:
-            return { loading: false, games: state.games, currentGame: state.currentGame};
+            return { 
+                ...state,
+                loading: false,     
+            };
         case LOAD_GAME_HISTORY:
-            return { loading: true, games: state.games, currentGame: state.currentGame};
+            return {
+                ...state, 
+                loading: true,                 
+            };
         case LOAD_GAME_HISTORY_SUCCESS:
-            return { loading: false, games: state.games, currentGame: action.payload.data};
+            return { 
+                ...state,
+                loading: false,                 
+                currentGame: action.payload.data
+            };
         default:
             return state;
     }    
-}
+};
 
 export default gameHistory
