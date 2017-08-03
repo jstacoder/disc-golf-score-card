@@ -9,7 +9,7 @@ import forms
 
 class IndexView(MethodView):
     def get(self):
-        return flask.send_file('./dist/index.html')
+        return flask.redirect('/app')
     def post(self):
         return flask.make_response('{}')
 

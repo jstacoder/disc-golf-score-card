@@ -4,9 +4,11 @@ import { connect } from 'react-redux';
 import DiscGolfScoreCardRoutes from './disc-golf-score-card';
 import RedirectRoutes from './redirect-routes';
 import { ConnectedRouter as Router } from 'react-router-redux';
-import * as Actions from './actions';
+import * as mainActions from './actions';
+import * as turnActions from './actions/current-turn';
 import { history } from './store/configureStore';
 import CurrentGamePage from './components/game/current-game-page';
+const Actions = {...mainActions, ...turnActions};
 //import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 // const renderWithRedux = (props) => (
@@ -22,7 +24,7 @@ class DiscGolfScoreCardApp extends Component {
         const needsRedirect = history.location.pathname === '/';
         //const RouteComponent = (needsRedirect && history.location.pathname.split('/app/')[1] !== "")
         //    ? RedirectRoutes : DiscGolfScoreCardRoutes;
-        const RouteComponent =  needsRedirect ? Redirect : DiscGolfScoreCardRoutes;
+        const RouteComponent = DiscGolfScoreCardRoutes;
         let routeArgs = {};
         if(needsRedirect){
             routeArgs.to = '/app';

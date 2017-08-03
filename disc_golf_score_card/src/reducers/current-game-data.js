@@ -20,47 +20,47 @@ const initialState = {
         currentWinningScore:null
 };
 
-export default function gameData(state = initialState, action){
-    let newState = {...state};    
+export default function gameData(state = initialState, action){    
     switch(action.type){
         case SET_GAME_OVER:
-            newState.game_over = true;
-            break;
+            return {...state, 
+                game_over: true,
+            };
         case RESET_GAME_DATA:
-            newState = {...initialState};
-            break;
+            return {...initialState};            
         case UPDATE_WINNER:
-            newState.currentWinnerIndex = state.players.indexOf(action.payload.player);
-            break;        
+            return {...state, 
+                currentWinnerIndex: state.players.indexOf(action.payload.player)
+            };            
         case SET_GAME_START:
-            newState.game_started = true;            
-            break;
-        case START_NEW_GAME_PENDING:
-            window.localStorage.setItem('game_started', 1);
-        case START_NEW_GAME:
-            console.log("PAYLOAD: ", action);            
-            break;
+            return {...state, 
+                game_started: true,
+            };                            
         case START_NEW_GAME_FULFILLED:
-            console.log("PAYLOAD: ", action);            
-            newState.score_card_id = action.payload.data.score_card;
-            newState.game_id = action.payload.data.game;                        
-            break;
+            return {...state, 
+                score_card_id: action.payload.data.score_card,
+                game_id: action.payload.data.game,
+            };                    
         case SELECT_PLAYER:
-            let playerIdx = newState.players.indexOf(action.player);
-            if(playerIdx == -1){
-                newState.players.push(action.player);
-            }else{
-                newState.players.splice(playerIdx, 1);
-            }
-            break;
-        case SELECT_COURSE:    
-                newState.course = action.course;     
-                newState.course.holes.map((hole, idx) =>{
-                    newState.holesById[hole.id] = idx;
+            let playerIdx = state.players.indexOf(action.player);            
+            return {...state,
+                players: playerIdx == -1 ?
+                    [...state.players, action.player] :
+                    state.players.filter(player =>(player.id!=action.player.id))                        
+            };            
+        case SELECT_COURSE:
+            const getHolesById = holes =>{
+                let rtn = {};
+                holes.map((hole, idx) =>{
+                    rtn[hole.id] = idx;
                 });
-            break;
+                return rtn;
+            }
+            return {...state,
+                course: action.course,
+                holesById:getHolesById(action.course.holes),
+            }; 
         default:
-            break;    
-    }
-    return newState;
+            return state;
+    }    
 }

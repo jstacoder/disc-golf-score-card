@@ -1,10 +1,13 @@
 import { 
     SELECT_COURSE,
     ADD_COURSE,
+    ADD_COURSE_REQUEST,
+    ADD_COURSE_REQUEST_FULFILLED,
     REMOVE_COURSE,
     REMOVE_COURSE_REQUEST_ERROR,
     REMOVE_COURSE_REQUEST_FULFILLED,
-    REMOVE_COURSE_REQUEST_PENDING
+    REMOVE_COURSE_REQUEST_PENDING,
+    REMOVE_COURSE_REQUEST,
 } from '../actions';
 
 const FETCH_COURSES = 'FETCH_COURSES'; 
@@ -12,6 +15,7 @@ const FETCH_COURSES_SUCCESS = 'FETCH_COURSES_SUCCESS';
 const FETCH_COURSES_FAILURE = 'FETCH_COURSES_FAILURE';  
 
 const initialCoursesState = {
+    pendingCourses: [],
     coursesList: {
         courses: [],
         error: null,
@@ -19,30 +23,75 @@ const initialCoursesState = {
     }
 };
 
-export default function courses(state = initialCoursesState, action){
-    let newState = {...state};
+export default function courses(state = initialCoursesState, action){    
     switch(action.type){
-        case REMOVE_COURSE:
-            const index = newState.coursesList.courses.indexOf(action.payload.course);
-            newState.coursesList.courses.splice(index, 1);
-            return newState;
-        case ADD_COURSE:
-            newState.coursesList.courses.push(action.payload.course);
-            return newState;
+        case REMOVE_COURSE_REQUEST_FULFILLED:            
+            return { ...state, 
+                coursesList: 
+                    {...state.coursesList, 
+                        courses: 
+                            state.pendingCourses.map(course => (course)),
+                        loading: false
+                    },
+                pendingCourses: [],
+
+            };
+        case REMOVE_COURSE:            
+            return { ...state,
+                coursesList: 
+                    {...state.coursesList,                                                                     
+                        loading: false
+                    },
+                pendingCourses: state.coursesList.courses.filter(course => (course != action.payload.course)) 
+            };
+        case REMOVE_COURSE_REQUEST_PENDING:
+            return {...state, 
+                coursesList:
+                    {...state.coursesList, 
+                        loading: true,                    
+                    },
+                pendingCourses:[]
+            };
+        case ADD_COURSE_REQUEST:
+            return {...state, 
+                coursesList:
+                    {...state.coursesList, 
+                        loading: true
+                    }
+            };
         case FETCH_COURSES:
-            newState.loading = true;
-            return newState;
+            return {...state, 
+                coursesList:
+                    {...state.coursesList, 
+                        loading: true
+                    }
+            };
         case FETCH_COURSES_SUCCESS:
-            newState.loading = false;
-            newState.error = null;
-            action.payload.data.map(itm =>{
-                newState.coursesList.courses.push(itm);
-            });
-            return newState;
+            return {...state, 
+                    coursesList: 
+                        {...state.coursesList, 
+                                courses: action.payload.data,
+                                loading: false,
+                        }
+            }
+        case ADD_COURSE_REQUEST_FULFILLED:
+            const course = action.payload.data.result;
+            return {...state, 
+                    coursesList: 
+                        {...state.coursesList, 
+                                courses:
+                                    [...state.coursesList.courses, course],
+                                loading: false,                                
+                        }                        
+            }
         case FETCH_COURSES_FAILURE:
-            newState.loading = false;
-            newState.error = 'Error loading courses';
-            return newState;
+            return {...state, 
+                coursesList:
+                    {...state.coursesList, 
+                        loading: false,
+                        error: action.payload.data
+                    }
+            };
         default:
             return state;
     }

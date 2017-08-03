@@ -45,131 +45,104 @@ export const LOAD_ALL_GAMES_HISTORY_FAILURE = 'LOAD_ALL_GAMES_HISTORY_FAILURE';
 export const LOAD_GAME_HISTORY = 'LOAD_ALL_GAMES_HISTORY';
 export const LOAD_GAME_HISTORY_SUCCESS = 'LOAD_ALL_GAMES_HISTORY_SUCCESS';
 export const LOAD_GAME_HISTORY_FAILURE = 'LOAD_ALL_GAMES_HISTORY_FAILURE';
+export const RESET_TOTALS = 'RESET_TOTALS';
 
-export const loadGameHistory = (gameId) =>({
-    types:[
-        LOAD_GAME_HISTORY,
-        LOAD_GAME_HISTORY_SUCCESS,
-        LOAD_GAME_HISTORY_FAILURE,
+export const resetTotals = () => ({type: RESET_TOTALS})
+
+export const loadGameHistory = (gameId) => ({
+    types: [
+        LOAD_GAME_HISTORY, LOAD_GAME_HISTORY_SUCCESS, LOAD_GAME_HISTORY_FAILURE
     ],
-    payload:{
-        request:{
-            url:`/api/game/${gameId}/`
-        }
-    }
-});
-
-export const loadAllGamesHistory = () =>({
-    types:[
-        LOAD_ALL_GAMES_HISTORY,
-        LOAD_ALL_GAMES_HISTORY_SUCCESS,
-        LOAD_ALL_GAMES_HISTORY_FAILURE
-    ],    
-    payload:{
-        request:{
-            url:'/api/gamelist/1',
-        }
-    }
-});
-
-export const setGameOver = () =>({
-    type: SET_GAME_OVER,
-    payload:{}
-});
-
-export const removeCourse = (course) =>({
-    type: REMOVE_COURSE,
     payload: {
-        course,
-    }
-});
-
-export const removeCourseRequest = (course) =>({
-    types:[
-        REMOVE_COURSE_REQUEST_PENDING,
-        REMOVE_COURSE_REQUEST_FULFILLED,
-        REMOVE_COURSE_REQUEST_ERROR
-    ],
-    payload:{
-        request:{
-            url:`/api/course/${course.id}/`,
-            method:'DELETE'            
+        request: {
+            url: `/api/game/${gameId}/`
         }
     }
 });
 
-export const addCourse = (course) =>({
-    type: ADD_COURSE,
-    payload:{
-        course,
-    }
-});
-
-export const addCourseRequest = (course) =>({
-    types :[
-        ADD_COURSE_REQUEST,
-        ADD_COURSE_REQUEST_FULFILLED,
-        ADD_COURSE_REQUEST_PENDING,
+export const loadAllGamesHistory = () => ({
+    types: [
+        LOAD_ALL_GAMES_HISTORY, LOAD_ALL_GAMES_HISTORY_SUCCESS, LOAD_ALL_GAMES_HISTORY_FAILURE
     ],
-    payload:{
-        request:{
-            url:'/api/course/',
-            method:'POST',
-            data: course,
+    payload: {
+        request: {
+            url: '/api/gamelist/1'
         }
     }
 });
 
-export const removePlayerRequest = (player) =>({
-    types:[
-        REMOVE_PLAYER_REQUEST,
-        REMOVE_PLAYER_REQUEST_FULFILLED,
-        REMOVE_PLAYER_REQUEST_PENDING,
+export const setGameOver = () => ({type: SET_GAME_OVER, payload: {}});
+
+export const removeCourse = (course) => ({type: REMOVE_COURSE, payload: {
+        course
+    }});
+
+export const removeCourseRequest = (course) => ({
+    types: [
+        REMOVE_COURSE_REQUEST_PENDING, REMOVE_COURSE_REQUEST_FULFILLED, REMOVE_COURSE_REQUEST_ERROR
+    ],
+    payload: {
+        request: {
+            url: `/api/course/${course.id}/`,
+            method: 'DELETE'
+        }
+    }
+});
+
+export const addCourse = (course) => ({type: ADD_COURSE, payload: {
+        course
+    }});
+
+export const addCourseRequest = (course) => ({
+    types: [
+        ADD_COURSE_REQUEST, ADD_COURSE_REQUEST_FULFILLED, ADD_COURSE_REQUEST_PENDING
+    ],
+    payload: {
+        request: {
+            url: '/api/course/',
+            method: 'POST',
+            data: course
+        }
+    }
+});
+
+export const removePlayerRequest = (player) => ({
+    types: [
+        REMOVE_PLAYER_REQUEST, REMOVE_PLAYER_REQUEST_FULFILLED, REMOVE_PLAYER_REQUEST_PENDING
     ],
     payload: {
         request: {
             url: `/api/player/${player.id}`,
-            method: 'DELETE',
+            method: 'DELETE'
         }
     }
 });
 
-export const removePlayer = (player) =>({
-    type: REMOVE_PLAYER,
-    payload:{
-        player,
-    }
-});
+export const removePlayer = (player) => ({type: REMOVE_PLAYER, payload: {
+        player
+    }});
 
-export const addPlayer = (player) =>({
+export const addPlayer = (player) => ({
     types: [
-        ADD_PLAYER,         
-        ADD_PLAYER_FULFILLED,
-        ADD_PLAYER_PENDING, 
+        ADD_PLAYER, ADD_PLAYER_FULFILLED, ADD_PLAYER_PENDING
     ],
-    payload:{
-        request:{
+    payload: {
+        request: {
             url: '/api/player/',
             data: player,
-            method: 'POST',
+            method: 'POST'
         }
     }
 });
 
-export const setCount = (number) =>({
-    type: SET_COUNT,
-    payload:{
-        number,
-    }
-});
+export const setCount = (number) => ({type: SET_COUNT, payload: {
+        number
+    }});
 
-
-export function resetGameData(){
-    return {
-        type: RESET_GAME_DATA,
-    };
+export function resetGameData() {
+    return {type: RESET_GAME_DATA};
 }
-export function updateTotal(player, score){
+export function updateTotal(player, score) {
     return {
         type: UPDATE_TOTAL,
         payload: {
@@ -179,19 +152,16 @@ export function updateTotal(player, score){
     };
 }
 
-export function updateWinner(player){
-    return {
-        type: UPDATE_WINNER,
-        payload:{
+export function updateWinner(player) {
+    return {type: UPDATE_WINNER, payload: {
             player
-        }
-    };
+        }};
 }
 
-export function calculateScore(player, course, holes){
+export function calculateScore(player, course, holes) {
     return {
         type: CALCULATE_SCORE,
-        payload:{
+        payload: {
             player,
             course,
             holes
@@ -199,91 +169,66 @@ export function calculateScore(player, course, holes){
     };
 }
 
-
-export const setGameStart = (course) =>({
+export const setGameStart = ({course, hole_id}) => ({
     type: SET_GAME_START,
     payload: {
         course,
+        hole_id
     }
 });
 
-export const unsetGameStart = () =>({
-    type: UNSET_GAME_START,
-});
+export const unsetGameStart = () => ({type: UNSET_GAME_START});
 
-export const resetCount = () =>({
-    type: RESET_COUNT,
-});
+export const resetCount = () => ({type: RESET_COUNT});
 
-export function incrementCount(){
-    return {
-        type: INCREMENT_COUNT,
-    };
+export function incrementCount() {
+    return {type: INCREMENT_COUNT};
 }
 
-export function decrementCount(){
-    return {
-        type: DECREMENT_COUNT,
-    };
+export function decrementCount() {
+    return {type: DECREMENT_COUNT};
 }
 
-export function setRedirect(){
-    return {
-        type: SET_REDIRECT,
-    };
+export function setRedirect() {
+    return {type: SET_REDIRECT};
 }
 
-export function unsetRedirect(){
-    return {
-        type: UNSET_REDIRECT,
-    };
+export function unsetRedirect() {
+    return {type: UNSET_REDIRECT};
 }
 
-export function changeHole(holes, direction = 'next', hole_id = null){
-    return {
-        type: CHANGE_HOLE,
-        payload: {
-            holes,
-            direction,
-            hole_id
-        }
-    };
-}
+export const changeHole = (hole_id) => ({type: CHANGE_HOLE, payload: {
+        hole_id
+    }});
 
+export const changePlayer = (index) => ({type: CHANGE_PLAYER, payload: {
+        index
+    }});
 
-export const changePlayer = (players, goToNext, goToLast) =>({    
-    type: CHANGE_PLAYER,
-    payload: {
-        players,            
-        goToNext,
-        goToLast,
-    }
-})
-
-export function updateScore(player, score, hole_id){
+export function updateScore(player, score, hole_id) {
     return {
         type: UPDATE_SCORE,
         payload: {
             player,
             score,
-            hole_id,
+            hole_id
         }
     };
 }
 
-export function togglePlayerNameColor(player){
-    return {
-        type: TOGGLE_PLAYER_NAME_COLOR,
-        player
-    };
+export function togglePlayerNameColor(player) {
+    return {type: TOGGLE_PLAYER_NAME_COLOR, player};
 }
 
-export function startNewGame(course, players){
+export function startNewGame(course, players) {
     return {
         type: START_NEW_GAME,
         payload: {
             course: course,
-            promise: Promise.resolve(axios.post('/api/game/add', {course:course.id,  players: players.map(itm => (itm.id))}))
+            promise: Promise.resolve(axios.post('/api/game/add', {
+                course: course.id,
+                players: players.map(itm => (itm.id))
+            }))
         }
     };
 }
@@ -292,69 +237,54 @@ export const ADD_HOLE_SCORE = 'ADD_HOLE_SCORE';
 export const ADD_HOLE_SCORE_PENDING = 'ADD_HOLE_SCORE_PENDING';
 export const ADD_HOLE_SCORE_FULFILLED = 'ADD_HOLE_SCORE_FULFILLED';
 
-export function addNewHoleScore(score_card_id,hole_id,player,score){
+export function addNewHoleScore(score_card_id, hole_id, player, score) {
     return {
         type: ADD_HOLE_SCORE,
         payload: {
-            promise: Promise.resolve(
-                axios.post(
-                    `/api/add_score/${score_card_id}/${hole_id}/${player.id}`,
-                    { 
-                        value: score 
-                    }
-                )
-            )
+            promise: Promise.resolve(axios.post(`/api/add_score/${score_card_id}/${hole_id}/${player.id}`, {value: score}))
         }
     }
 }
 
-export function selectCourse(course){
-    return {
-        type: SELECT_COURSE,
-        course,
-    };
+export function selectCourse(course) {
+    return {type: SELECT_COURSE, course};
 }
-export function selectPlayer(player){
-    return {
-        type: SELECT_PLAYER,
-        player
-    };
+export function selectPlayer(player) {
+    return {type: SELECT_PLAYER, player};
 }
 
-export function loadPlayerNameColors(players){
+export function loadPlayerNameColors(players) {
     const playerNameColors = {};
-    players.payload.data.map((player)=>{
-        playerNameColors[player.name] = 'text-danger';
-    });
-    return {
-        type: LOAD_PLAYER_NAME_COLORS,
-        playerNameColors,
-    };
+    players
+        .payload
+        .data
+        .map((player) => {
+            playerNameColors[player.name] = 'text-danger';
+        });
+    return {type: LOAD_PLAYER_NAME_COLORS, playerNameColors};
 }
 
-export function loadPlayers(){
+export function loadPlayers() {
     console.log('loading players')
 
     return {
-        types: ['FETCH_PLAYERS', 'FETCH_PLAYERS_SUCCESS', 'FETCH_PLAYES_FAILURE'],
-        payload:{
-            request:{
+        types: [
+            'FETCH_PLAYERS', 'FETCH_PLAYERS_SUCCESS', 'FETCH_PLAYES_FAILURE'
+        ],
+        payload: {
+            request: {
                 url: '/api/player'
             }
         }
     };
 }
 
-
-
-export function loadCourses(){
+export function loadCourses() {
     console.log('loading courses');
 
     return {
         types: [
-            'FETCH_COURSES', 
-            'FETCH_COURSES_SUCCESS', 
-            'FETCH_COURSES_FAILURE'
+            'FETCH_COURSES', 'FETCH_COURSES_SUCCESS', 'FETCH_COURSES_FAILURE'
         ],
         payload: {
             request: {
@@ -363,4 +293,3 @@ export function loadCourses(){
         }
     };
 }
-

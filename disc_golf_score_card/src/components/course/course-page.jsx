@@ -6,9 +6,10 @@ import AddCourseForm from './add-course-form';
 import ScoreTable from './course-list';
 import * as axios from 'axios';
 
+import Icon from '../widgets/icon';
+
 export default class CoursePage extends Component {
     handleSubmit = (name, location, number_of_holes) =>{
-        alert(`got ${name} ${location} ${number_of_holes}`);
         let newCourse = {
             name,
             location,
@@ -16,16 +17,21 @@ export default class CoursePage extends Component {
             hole_count: number_of_holes,
             display_name: name,
         };
-        //let courses = this.state.courses;
-        //courses.push(newCourse);
-        //this.setState({courses: courses});
-        //console.log(courses);
         this.props.handleAddCourse(newCourse);
     }
 
     render(){
+        const styles = { marginBottom: "20px"};
         let courses = this.props.courses;
-        console.log(this.props);
+        const iconRow = this.props.coursesLoading ? (
+            <Row>
+                <Col xs={12} xsPush={5}>
+                    <Icon name="spinner" spin size="4x" /> 
+                </Col>
+            </Row>
+        ) : (
+            <div></div>
+        );
         return (
             <Grid>
                 <Row>
@@ -36,14 +42,14 @@ export default class CoursePage extends Component {
                                     <Button bsSize="lg" block bsStyle="primary">Back</Button>
                                 </LinkContainer>
                             </Col>
-                        </Row>
-                   
+                        </Row>                        
                         <Row>
                             <Col xs={12} md={8}>                        
                                 <ScoreTable removeCourse={this.props.removeCourse} courses={courses}/>    
                             </Col>
                             <Col xs={12} md={4}>
-                                <AddCourseForm onCourseSubmit={this.handleSubmit} />
+                                <AddCourseForm onCourseSubmit={this.handleSubmit} style={styles} />
+                                {iconRow}
                             </Col>
                         </Row>
                     </Col>
