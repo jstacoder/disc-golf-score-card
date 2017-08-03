@@ -11,6 +11,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const  BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const chalk = require('chalk');
 const pkg = require('./package.json');
+const Guage = require('gauge-webpack-plugin');
 
 const BASE_PATH = path.join(path.resolve(__dirname), 'disc_golf_score_card');
 const APP_PATH = path.join(BASE_PATH, 'src');
@@ -110,7 +111,11 @@ let getConfig = (clean_options) => {
 			]
         },
 		resolve:{
-			extensions: [' ', '.js','.jsx','.css']
+			extensions: [' ', '.js','.jsx','.css'],
+            alias:{
+                react: "preact-compat",
+                "react-dom":"preact-compat"
+            }
 		},
         plugins: [
             new HtmlWebpackPlugin(htmlPluginOptions),
@@ -127,21 +132,21 @@ let getConfig = (clean_options) => {
                 return context && context.indexOf('node_modules') >= 0;
             },
         }),
-		
 		//*********** progress bar 
-		new ProgressBarPlugin(
-			{
-				complete: chalk.bgGreen(' '),
-    			incomplete: chalk.bgWhite('+'),
-    			width: 60,
-    			total: 100,
-    			clear: false,
+            Guage(),
+//		new ProgressBarPlugin(
+//			{
+//				complete: chalk.bgGreen(' '),
+  //  			incomplete: chalk.bgWhite('+'),
+    //			width: 60,
+   // 			total: 100,
+   // 			clear: false,
 				// clear:false,
 				// complete: '>',
 				// incomplete:'*',
-				format:chalk.bgGreen(chalk.black(':elapsed secs')+'  ')+'\t'+chalk.blue('[:current/:total]')+chalk.green(' { ') + ':bar' +chalk.green(' }')+chalk.red(':percent')+'\t'+chalk.red(' :msg')
-			}
-		),
+	//			format:chalk.bgGreen(chalk.black(':elapsed secs')+'  ')+'\t'+chalk.blue('[:current/:total]')+chalk.green(' { ') + ':bar' +chalk.green(' }')+chalk.red(':percent')+'\t'+chalk.red(' :msg')
+	//		}
+	//	),
 		//new webpack.ProgressPlugin(percentage => (new progressBar(":current % :bar", 100)).update(percentage)),
 		//*************\
         //*********************************** async chunks*************************
@@ -154,13 +159,12 @@ let getConfig = (clean_options) => {
         //         return count >= 2;
         //     },
         // }),
-        
 		new ExtractTextPlugin({
 			filename: '[name]-[hash].bundle.css',
 			allChunks: true,
 		}),	
 		],
-		devtool:'source-map',
+		devtool:'eval-source-map',
 		stats: {
 			colors: true
 		}
