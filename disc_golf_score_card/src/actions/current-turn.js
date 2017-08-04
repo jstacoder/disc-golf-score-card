@@ -35,7 +35,9 @@ export const removeStroke = () =>({
 });
 export const setStroke = ({stroke}) =>({
 	type: SET_STROKE,
-	payload: stroke
+	payload: {
+		stroke
+	}
 });
 export const incrementTurn = () =>({
 	type: INCREMENT_TURN,

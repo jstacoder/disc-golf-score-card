@@ -6,9 +6,10 @@ import RedirectRoutes from './redirect-routes';
 import { ConnectedRouter as Router } from 'react-router-redux';
 import * as mainActions from './actions';
 import * as turnActions from './actions/current-turn';
+import * as editActions from './actions/editing';
 import { history } from './store/configureStore';
 import CurrentGamePage from './components/game/current-game-page';
-const Actions = {...mainActions, ...turnActions};
+const Actions = {...mainActions, ...turnActions, ...editActions};
 //import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 // const renderWithRedux = (props) => (
@@ -52,6 +53,7 @@ function mapStateToProps(state){
         started: state.started,
         player: state.player,
         gameHistory:state.gameHistory,
+        editing: state.editing,
     };
 }
 function mapDispatchToProps(dispatch){
