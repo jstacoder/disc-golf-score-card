@@ -337,8 +337,11 @@ export default class DisGolfScoreCardRoutes extends Component {
                     setRedirect={this.props.actions.setRedirect}
                     changeHole={this.props.actions.changeHole}
                     startNewGame={this.props.actions.startNewGame}
+                    editing={this.props.editing}
                     setCount={this.props.actions.setStroke}
-                    {...props}/>)}></Route>
+                    {...props}
+                    {...this.props}
+                    />)}></Route>
                 <Route
                     path='/app/turn/:turn'
                     render={props => (<TurnPage
