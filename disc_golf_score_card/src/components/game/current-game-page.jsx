@@ -204,7 +204,8 @@ export default class CurrentGamePage extends Component {
                                                             borderStyle:'ridged',                                                            
                                                             backgroundColor: backgroundColor,
                                                             color:"#fffeef",
-                                                            width: '120%',
+                                                            minWidth: '110%',
+                                                            maxWidth:'160%',
                                                             borderRadius: '0px',
                                                             height: '30px',
                                                             marginTop: '-4px',
@@ -246,7 +247,9 @@ export default class CurrentGamePage extends Component {
                                                                     console.log("STARTING NEW CLICK HANDLER");                         
                                                                 };
                                                                 const completeEditing = () =>{
-                                                                    this.props.actions.updateScore(player, this.state.editingCell[editId], hidx);
+                                                                    const score = this.state.editingCell[editId];
+                                                                    this.props.actions.updateScore(player, score, hidx);
+                                                                    this.props.actions.updateTotal(player, score)
                                                                     this.props.actions.unsetEditing(tableDataId);
                                                                     this.toggleEditError(false);
                                                                     document.removeEventListener('keypress', keyPressEvent);
