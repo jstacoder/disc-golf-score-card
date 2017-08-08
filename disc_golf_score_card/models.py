@@ -73,8 +73,17 @@ class BaseModel(object):
     def display_name(self):
         return humanize(getattr(self, 'name', self.__class__.__name__)).title()
         
+convention = {
+  "ix": 'ix_%(column_0_label)s',
+  "uq": "uq_%(table_name)s_%(column_0_name)s",
+  "ck": "ck_%(table_name)s_%(constraint_name)s",
+  "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+  "pk": "pk_%(table_name)s"
+}
 
-Model = declarative_base(cls=BaseModel, class_registry=cls_registry)
+metadata = sa.MetaData(naming_convention=convention)
+
+Model = declarative_base(cls=BaseModel, metadata=metadata, class_registry=cls_registry)
 
 class User(Model):
     name = sa.Column(sa.String(255), nullable=False)
@@ -151,6 +160,22 @@ class DiscGolfGame(Model):
     )
     course_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_courses.id'))
 
+    @property
+    def scores(self):
+        return {
+            player.name: player.get_scores_for_game(self)
+            for player in self.players.all()
+        }
+
+    def has_complete_score_card(self):
+        players = self.players.all()
+        scores = {}
+        score_card = self.score_card
+
+        for player in players:
+            scores[player.id] = DiscGolfGamePlayerScore.query.filter_by(player=player, score_card=score_card).all()
+        return any(map(lambda x: len(x) >= self.course.holes.count(), scores.values()))
+
     @staticmethod
     def complete_game(game):
         game.complete = True
@@ -159,12 +184,13 @@ class DiscGolfGame(Model):
 
     @cached_property
     def json(self):
-        return dict(
-            date=self.date.strftime('%y-%m-%dT%H:%I:%S%Z'),
-            course=self.course.name,
-            id=self.id,
-            complete=self.complete
-        )
+        if self.course:
+            return dict(
+                date=self.date.strftime('%Y-%m-%dT%H:%I:%S%Z'),
+                course=self.course.name,
+                id=self.id,
+                complete=self.complete
+            )
     
     @classproperty
     def has_incomplete_games(cls):
@@ -194,6 +220,10 @@ class DiscGolfGamePlayerScore(Model):
         Twila Reid: <- game
         hole: 1 - kyle: 3 <- hole/player/value
     """
+    __table_args__ = (
+        (sa.UniqueConstraint('hole_id', 'player_id','score_card_id'),)
+    )
+
     hole = sa.orm.relation('DiscGolfHole', backref=sa.orm.backref('player_scores', lazy='dynamic'))
     hole_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_holes.id'))
 
@@ -205,16 +235,28 @@ class DiscGolfGamePlayerScore(Model):
 
     value = sa.Column(sa.Integer, nullable=False)
 
+    @classmethod
+    def get_player_score(cls, hole, player, game):
+        sc = DiscGolfScoreCard.query.filter_by(game=game).first()
+        result = cls.query.filter_by(
+            hole=hole,
+            player=player,
+            score_card=sc
+        ).first()
+        if result:
+            return result.value
+
     @cached_property
     def json(self):
-        return dict(
-            hole=self.hole.number,
-            #course=self.hole.course.name,
-            player=self.player.id,
-            score_card=self.score_card_id,
-            value=self.value, 
-            id=self.id,
-        )
+        if self.hole and self.player:
+            return dict(    
+                hole=self.hole.number,
+                #course=self.hole.course.name,
+                player=self.player.id,
+                score_card=self.score_card_id,
+                value=self.value, 
+                id=self.id,
+            )
     
 
 class DiscGolfScoreCard(Model):
@@ -275,6 +317,11 @@ class DiscGolfPlayer(Model):
                 frisbees = [frisbees]
             kwargs['frisbees'] = frisbees
         super(DiscGolfPlayer, self).__init__(*args, **kwargs)
+
+    def get_scores_for_game(self, game):
+        return DiscGolfGamePlayerScore.query.filter_by(
+            player=self, score_card=game.score_card
+        ).order_by('disc_golf_game_player_scores.hole_id').all()
 
     @cached_property
     def json(self):

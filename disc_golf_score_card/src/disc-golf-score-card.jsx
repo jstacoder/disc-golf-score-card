@@ -33,16 +33,91 @@ import * as Actions from './actions';
 
 import {history} from './store/configureStore';
 
+class  HistoryItem extends Component {
+    parseData = (data) =>{
+        const { course, date, holes } = data;
+        let results = [];
+        return holes.map( hole =>{
+            const { players } = hole;
+            return (
+                <p>
+                    {players.map( player =>{
+                        const { name, value } = player;
+                        return (
+                            <span>{name} - {value}</span>
+                        );
+                    })}
+                </p>
+            );
+        });
+    }
+    render(){
+        console.log(this.props);
+        const { course, date, holes } = this.props.item;
+        if(course && ('name' in course)){
+            const { name, location } = course;
+            // const data = [        
+            //        ]
+            // const hole_data = holes.map( itm =>{
+            //     const { number, players } = itm;
+            //     const player_result = [<p>Hole: {number}</p>];
+            //     const p = players.map( ({name, value}) => {
+            //         if(value){
+            //             return (                                                      
+            //                 <Col xs={12} md={3}>
+            //                     <p>{name} - {value}</p>
+            //                 </Col>                                                        
+            //             );
+            //         }
+            //         return false;
+            //     });
+            //     const fp = p.filter( itm =>( itm ));
+            //     if(fp.length){
+            //         return [...player_result, ...fp];
+            //     }
+            //     return false;
+            // });
+            // const goodData = (
+            //     <Row>
+            //         {hole_data.filter( itm =>( itm ))}
+            //     </Row>
+            // );
+            // const rtn = [...data, ...goodData];                      
+            // console.log(rtn);
+            
+            //let [a, b, ...rest] = rtn;
+            //let x = [a, b];
+            //rest.map( itm =>{ itm.map( y =>( x.push(y)))});            
+                return (
+                    <Row>
+                        <Col md={12}>
+                             <PageHeader>{name} - {location} <small>{date}</small></PageHeader>
+                             {this.parseData(this.props.item)}
+                        </Col>
+                    </Row>
+                );
+            
+        }
+        return (
+            <p>x</p>
+        );
+    }        
+};
+
 class GameHistory extends Component {
     componentWillMount = () => {
         this
             .props
             .loadHistory();
+        //this.props.actions.loadGamesHistory();
     }
-    createListGroup = (children) => {
+    createListGroup = (children, ...rest) => {
+        console.log(rest);
         return (
             <ListGroup fill>
-                {children}
+                <pre>
+                    {rest}
+                </pre>
             </ListGroup>
         );
     }
@@ -56,40 +131,93 @@ class GameHistory extends Component {
         );
     }
     render() {
-        let game,
-            playerHistorys;
-        const history = this
-            .props
-            .history
-            .map((itm) => {
-                [game, playerHistorys] = itm;
-                console.log("PLAYER HIST: ", playerHistorys);
-                let rtn = [ < p > {
-                        game.date
-                    } - {
-                        game.course
-                    } < /p>
-            ];
-            
-            let gamePlayerScores = {};
-            const gamePlayers = playerHistorys.map(itm =>{
-                const name = Object.keys(itm)[0];
-                gamePlayerScores[name] = itm[name];
-                return name;
+        // let items = {};
+        // let names = new Set();
+         let items = [];
+         if(this.props.history.length){
+            const hist = this.props.history[0];
+                hist.map( (itm) =>{
+                items.push(
+                    <HistoryItem item={itm} />
+                );
             });
-            const players = gamePlayers.map( (itm, idx) =>{
-                const playerStyle = {
-                    display:'inline-block',
-                    marginRight:'3px'
-                };
-                const lineEnd = (gamePlayers.length - 1) == idx ? '' : ', ';
-                return (
-                    <p style={playerStyle}>{itm}{lineEnd} </p >);
-                });
-            rtn.push(players);
-            const gameUrl = `/app/game/${game.id}`;
-            return this.createListGroupItem(rtn, gameUrl);
-        });
+         }
+        //             //console.log(itm, idx);
+        //             const i = itm[idx + 1][0];
+
+        //             //console.log(i);      
+        //             const name = Object.keys(i)[0];
+        //             if(!(name in items)){
+        //                 items[name] = [];
+        //             }
+        //             console.log(name, i[name]);    
+        //             names.add(name);
+        //             items[name].push(i[name]);
+        //         });
+        // }
+        // let s = JSON.stringify(items);        
+        // let eles = [];
+        // const inline = { display: 'inline-block'};
+        // for(const k in items){
+        //     const data = items[k];
+        //     const playerEle = (                
+        //         <ul>
+        //         <p>{k}</p>
+        //         {data.map( itm =>{
+        //             if(itm.length){
+        //                 return (
+        //                     <li>{itm.filter( x => (x !== null)).map(gameInfo =>(
+        //                         <div style={inline}>
+        //                             <p>hole: {gameInfo.hole} => {gameInfo.value}  -----  </p>
+                                    
+        //                         </div>
+        //                     ))}</li>
+        //                 );
+        //             }
+        //         })}</ul>
+        //     );
+        //     eles.push(playerEle);
+        // }
+        
+        // let game,
+        //     playerHistorys;
+        // const history = this
+        //     .props
+        //     .history
+        //     .map((itm) => {
+        //         [game, playerHistorys] = itm;
+        //         console.log("PLAYER HIST: ", itm.length, this.props.history);
+        //         let rtn = [ <p> {
+        //                 game.date
+        //             } - {
+        //                 game.course
+        //             } </p>
+        //     ];
+            
+        //     let gamePlayerScores = {};
+        //     let gamePlayers = [];
+        //     for( const key in playerHistorys){
+        //         const itm = playerHistorys[key];
+        //         if(itm){
+        //             const name = Object.keys(itm)[0];
+        //             gamePlayerScores[name] = itm[name];
+
+        //             gamePlayers.push(name);
+        //         }
+        //     };
+        //     const players = gamePlayers.map( (itm, idx) =>{
+        //         const playerStyle = {
+        //             display:'inline-block',
+        //             marginRight:'3px'
+        //         };
+        //         const lineEnd = (gamePlayers.length - 1) == idx ? '' : ', ';
+        //         return (
+        //             <p style={playerStyle}>{itm}{lineEnd} </p>);
+        //         });
+        //     rtn.push(players);
+        //     const gameUrl = `/app/game/${game.id}`;
+        //     return this.createListGroupItem(rtn, gameUrl);
+        // });
         return (
             <Grid>
                 <Row>
@@ -100,7 +228,7 @@ class GameHistory extends Component {
                     </Col>
                     <Col xs={12}>
                         <Panel>
-                            {this.createListGroup(history)}
+                           {items}
                         </Panel>
                     </Col>
                 </Row>
@@ -291,7 +419,9 @@ export default class DisGolfScoreCardRoutes extends Component {
 
             return (<GameHistory
                 history={this.props.gameHistory.games}
-                loadHistory={this.props.actions.loadAllGamesHistory}/>);
+                loadHistory={this.props.actions.loadAllGamesHistory}
+                {...this.props}
+                />);
         }
         return (
             <div>

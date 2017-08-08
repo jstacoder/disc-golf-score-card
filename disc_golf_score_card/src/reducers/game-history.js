@@ -1,4 +1,4 @@
-import { LOAD_ALL_GAMES_HISTORY, LOAD_ALL_GAMES_HISTORY_FAILURE, LOAD_ALL_GAMES_HISTORY_SUCCESS, LOAD_GAME_HISTORY, LOAD_GAME_HISTORY_FAILURE, LOAD_GAME_HISTORY_SUCCESS } from '../actions';
+import { LOAD_GAMES_HISTORY,LOAD_ALL_GAMES_HISTORY, LOAD_ALL_GAMES_HISTORY_FAILURE, LOAD_ALL_GAMES_HISTORY_SUCCESS, LOAD_GAME_HISTORY, LOAD_GAME_HISTORY_FAILURE, LOAD_GAME_HISTORY_SUCCESS } from '../actions';
 
 const initialState = {
     loading: false,
@@ -10,6 +10,9 @@ const initialState = {
 
 const gameHistory = (state = initialState, action = {}) =>{
     switch(action.type){
+        case LOAD_GAMES_HISTORY:
+            console.log(action);
+            return action.payload.data;
         case LOAD_ALL_GAMES_HISTORY:
             return { 
                 ...state,

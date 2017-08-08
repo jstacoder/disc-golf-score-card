@@ -218,38 +218,43 @@ class ModelEncoder(JSONEncoder):
         try:
             return o.json
         except Exception as e:
-
+            #raise e
             return super(ModelEncoder, self).default(o)
 
 class GameView(BaseListView):
     _model = models.DiscGolfGame
 
-    def get(self, game_id=None, player_id=None, game_list=None):
-        result = []
-        if game_list is not None:
-            result = self._model._get_all()
-        if game_id is not None: 
-            result.append(
-                self._model.query.get(game_id)
-            )
-        if player_id is not None:
-            map(
-                result.append, 
-                models
-                .DiscGolfPlayer
-                .query
-                .get(player_id)
-                .games
-            )
-        rtn = [
-            (
-                game,            
-                models.DiscGolfScoreCard.get_game_scores(game_id=game.id),   
-            ) for game in result
-        ]
-        response = flask.make_response(json.dumps(rtn, cls=ModelEncoder ))
+    def get(self, game_id=None):
+        games = models.DiscGolfGame.query.all() if game_id is None else [models.DiscGolfGame.query.get(game_id)]
+        rtn = json.dumps(filter(None,[
+            generate_game_data(game) for game in games if game.has_complete_score_card()
+        ]))
+        response = flask.make_response(rtn)
         response.headers['Content-Type'] = 'application/json'
         return response
+
+
+def generate_game_data(game):
+    #game = models.DiscGolfGame.query.get(game_id)
+    if game.course is None or game.players.count() == 0:
+        return
+    return dict(
+        date=game.date.strftime('%Y-%m-%dT%H:%I:%S%Z'),
+        course=dict(
+            name=game.course.name,
+            location=game.course.location,
+        ),
+        holes=[
+            dict(
+                number=hole.number, 
+                players=[
+                    dict(
+                        name=player.name, 
+                        value=models.DiscGolfGamePlayerScore.get_player_score(hole, player, game)
+                    ) for player in game.players.all()
+            ]) for hole in game.course.holes.all()
+        ]
+    )
 
 class PlayerView(BaseListView, BaseAddView, BaseRemoveView):
     _model = models.DiscGolfPlayer

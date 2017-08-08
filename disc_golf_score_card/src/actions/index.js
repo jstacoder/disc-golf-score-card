@@ -60,13 +60,21 @@ export const loadGameHistory = (gameId) => ({
     }
 });
 
+export const LOAD_GAMES_HISTORY = 'LOAD_GAMES_HISTORY';
+export const loadGamesHistory = () => (dispatch, getState) =>({
+    type: LOAD_GAMES_HISTORY,
+    payload: {
+        result: 55
+    }
+});
+
 export const loadAllGamesHistory = () => ({
     types: [
         LOAD_ALL_GAMES_HISTORY, LOAD_ALL_GAMES_HISTORY_SUCCESS, LOAD_ALL_GAMES_HISTORY_FAILURE
     ],
     payload: {
         request: {
-            url: '/api/gamelist/1'
+            url: '/api/game/'
         }
     }
 });
