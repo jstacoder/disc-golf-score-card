@@ -195,6 +195,13 @@ class DiscGolfGame(Model):
     @classproperty
     def has_incomplete_games(cls):
         return any(filter(lambda x: not x.complete, cls._get_all()))
+    
+    def get_scores(self):
+        return {
+            player.name: player.get_scores_from_game(self)
+            for player in self.players.all()
+        }
+
 
 class DiscGolfHole(Model):
     par = sa.Column(sa.Integer, nullable=False, default=3)
@@ -333,6 +340,13 @@ class DiscGolfPlayer(Model):
             ),
             games=self.games.count(),
         )
+
+    def get_scores_from_game(self,game):
+        score_card = game.score_card
+        score_query = DiscGolfGamePlayerScore.query.filter_by(
+            score_card=score_card,player=self
+        ).order_by(DiscGolfGamePlayerScore.hole.number).all()
+        return map(lambda x: x.value, score_query)
 
 players_score_cards = sa.Table(
     'players_score_cards', Model.metadata,
