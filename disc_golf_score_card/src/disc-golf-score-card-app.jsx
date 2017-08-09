@@ -5,11 +5,17 @@ import DiscGolfScoreCardRoutes from './disc-golf-score-card';
 import RedirectRoutes from './redirect-routes';
 import { ConnectedRouter as Router } from 'react-router-redux';
 import * as mainActions from './actions';
+import * as historyActions from './actions/history';
 import * as turnActions from './actions/current-turn';
 import * as editActions from './actions/editing';
 import { history } from './store/configureStore';
 import CurrentGamePage from './components/game/current-game-page';
-const Actions = {...mainActions, ...turnActions, ...editActions};
+const Actions = {
+    ...mainActions, 
+    ...turnActions, 
+    ...editActions,
+    ...historyActions,
+};
 //import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
 // const renderWithRedux = (props) => (
@@ -54,6 +60,8 @@ function mapStateToProps(state){
         player: state.player,
         gameHistory:state.gameHistory,
         editing: state.editing,
+        loading: state.loading,
+        historyData: state.historyData,
     };
 }
 function mapDispatchToProps(dispatch){

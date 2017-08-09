@@ -16,6 +16,7 @@ const loading = (state = initialState, action) =>{
             return state;
     }
 };
+export default loading
 /*
 export default loading
 

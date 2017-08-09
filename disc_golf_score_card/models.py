@@ -162,10 +162,10 @@ class DiscGolfGame(Model):
 
     @property
     def scores(self):
-        return {
-            player.name: player.get_scores_for_game(self)
+        return [
+            (player.name, player.get_scores_for_game(self))
             for player in self.players.all()
-        }
+        ]
 
     def has_complete_score_card(self):
         players = self.players.all()
@@ -174,7 +174,7 @@ class DiscGolfGame(Model):
 
         for player in players:
             scores[player.id] = DiscGolfGamePlayerScore.query.filter_by(player=player, score_card=score_card).all()
-        return any(map(lambda x: len(x) >= self.course.holes.count(), scores.values()))
+        return any(map(lambda x: (len(x) >= self.course.holes.count()) if self.course is not None else False, scores.values()))
 
     @staticmethod
     def complete_game(game):
@@ -326,9 +326,12 @@ class DiscGolfPlayer(Model):
         super(DiscGolfPlayer, self).__init__(*args, **kwargs)
 
     def get_scores_for_game(self, game):
-        return DiscGolfGamePlayerScore.query.filter_by(
-            player=self, score_card=game.score_card
-        ).order_by('disc_golf_game_player_scores.hole_id').all()
+        return map(
+                lambda x: x.value, 
+                DiscGolfGamePlayerScore.query.filter_by(
+                    player=self, score_card=game.score_card
+                ).order_by('disc_golf_game_player_scores.hole_id').all()
+        )
 
     @cached_property
     def json(self):

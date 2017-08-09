@@ -9,6 +9,8 @@ import currentTurn from './current-turn';
 import started from './started';
 import gameHistory from './game-history';
 import editing from './editing';
+import loading from './loading';
+import historyData from './history';
 import { routerReducer as router } from 'react-router-redux';
 //import { reducer as reduxAsyncConnect } from 'redux-async-connect';
 import redirect from './redirect-reducer';
@@ -27,6 +29,8 @@ const rootReducer = storage.reducer(
         redirect,
         started,
         player,
+        loading,
+        historyData,
         // reduxAsyncConnect,
     })
 );

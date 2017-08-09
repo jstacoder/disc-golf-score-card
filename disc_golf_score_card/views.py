@@ -226,9 +226,17 @@ class GameView(BaseListView):
 
     def get(self, game_id=None):
         games = models.DiscGolfGame.query.all() if game_id is None else [models.DiscGolfGame.query.get(game_id)]
-        rtn = json.dumps(filter(None,[
-            generate_game_data(game) for game in games if game.has_complete_score_card()
-        ]))
+        scores = filter(None,[
+            dict(
+                scores=game.scores, 
+                date=game.date.strftime('%Y-%m-%dT%H:%I:%S%Z'), 
+                course=game.course.location
+            ) for game in games 
+            if game.has_complete_score_card() 
+            and game.course is not None             
+        ])
+        print scores
+        rtn = json.dumps(scores)
         response = flask.make_response(rtn)
         response.headers['Content-Type'] = 'application/json'
         return response
@@ -236,25 +244,40 @@ class GameView(BaseListView):
 
 def generate_game_data(game):
     #game = models.DiscGolfGame.query.get(game_id)
-    if game.course is None or game.players.count() == 0:
-        return
-    return dict(
-        date=game.date.strftime('%Y-%m-%dT%H:%I:%S%Z'),
-        course=dict(
-            name=game.course.name,
-            location=game.course.location,
-        ),
-        holes=[
-            dict(
-                number=hole.number, 
-                players=[
-                    dict(
-                        name=player.name, 
-                        value=models.DiscGolfGamePlayerScore.get_player_score(hole, player, game)
-                    ) for player in game.players.all()
-            ]) for hole in game.course.holes.all()
-        ]
-    )
+    # if game.course is None or game.players.count() == 0:
+    #     return
+    # score_card = game.score_card
+    # rtn = dict(
+    #     date=game.date.strftime('%Y-%m-%dT%H:%I:%S%Z'),
+    #     course=dict(
+    #         name=game.course.name,
+    #         location=game.course.location,
+    #     ),
+    # )
+    # scores = {
+    #     name: [] for name in map(lambda x: x.name, game.players.query.all())
+    # }
+    # for hole in game.course.holes.all():
+    #     for player in scores.keys():
+    #         scores[player].append(
+    #             models.DiscGolfGamePlayerScore.query.filter_by(
+    #                 score_card=game.score_card,
+    #                 player=player,
+    #             )
+    #         )
+        # holes=[
+        #     dict(
+        #         number=hole.number, 
+        #         players=[
+        #             dict(
+        #                 name=player.name, 
+        #                 value=models.DiscGolfGamePlayerScore.get_player_score(hole, player, game)
+        #             ) for player in game.players.all()
+        #     ]) for hole in game.course.holes.all()
+        # ]
+    #)
+    #return scores
+    return game.scores
 
 class PlayerView(BaseListView, BaseAddView, BaseRemoveView):
     _model = models.DiscGolfPlayer
