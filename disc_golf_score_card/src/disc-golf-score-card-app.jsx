@@ -8,6 +8,7 @@ import * as mainActions from './actions';
 import * as historyActions from './actions/history';
 import * as turnActions from './actions/current-turn';
 import * as editActions from './actions/editing';
+import * as loadingActions from './actions/loading';
 import { history } from './store/configureStore';
 import CurrentGamePage from './components/game/current-game-page';
 const Actions = {
@@ -15,6 +16,7 @@ const Actions = {
     ...turnActions, 
     ...editActions,
     ...historyActions,
+    ...loadingActions,
 };
 //import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 

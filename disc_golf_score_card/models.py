@@ -383,6 +383,9 @@ def add_score(hole=None, player=None, score_card=None, value=None):
     for key,cls in model_map.items():
         if type(arg_map[key]) in [str, unicode, int]:
             arg_map[key] = cls.query.get(arg_map[key])
+    score_query = DiscGolfGamePlayerScore.query.filter_by(**arg_map)
+    if score_query.count():
+        score_query.one().delete()
     return DiscGolfGamePlayerScore(value=value, **arg_map).save()
 
 class MyDb(Model):

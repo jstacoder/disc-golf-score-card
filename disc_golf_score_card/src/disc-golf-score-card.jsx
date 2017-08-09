@@ -8,7 +8,7 @@ import {Route, Redirect} from 'react-router-dom';
 import {ConnectedRouter as Router} from 'react-router-redux';
 import {LinkContainer, IndexLinkContainer} from 'react-router-bootstrap';
 import * as axios from 'axios';
-
+import Icon from './components/widgets/icon';
 import {
     Button,
     Grid,
@@ -58,17 +58,26 @@ class  HistoryItem extends Component {
      
 
         return (
-            <Col xs={12} md={6}>                
+            <Col xs={12} md={12}>                
                 
                     <Row>                                
                         {scores.map( score =>{            
                             const [ player, hole_scores ] = score;
                             console.log("PLATYERLL : ", player);                                             
                             const rtn = ( 
-                                <Col xs={4} md={2}>
-                                    <h2>
-                                        <Label bsSize="lg" bsStyle="primary"> {player} </Label>
-                                    </h2> 
+                                <Col xs={12} md={12}>
+                                    <Row>
+                                        <Col xs={3} md={2}>
+                                            <h2>
+                                                <Label bsSize="lg" bsStyle="primary"> {player} </Label>
+                                            </h2> 
+                                        </Col>
+                                        <Col xs={9} md={10}>
+                                            {hole_scores.map( (itm, idx) =>(
+                                                <span>{idx+1} - {itm} |</span>
+                                            ))}
+                                        </Col>
+                                    </Row>
                                 </Col>
                             );
                             console.log(rtn);
@@ -85,9 +94,11 @@ class  HistoryItem extends Component {
 
 class GameHistory extends Component {
     componentWillMount = () => {
+        console.log(this.props.actions);
+        this.props.actions.setLoading();
         this
             .props
-            .loadHistory();
+            .loadHistory().then(this.props.actions.unsetLoading);
         //this.props.actions.loadGamesHistory();
     }
     componentDidMount = () =>{
@@ -200,6 +211,12 @@ class NewStartPage extends Component {
         );
     }
 }
+
+const Loading = props =>{
+    return props.loading ? (
+        <Icon name="spinner" size="4x" spin />
+    ) : (<p></p>);
+};
 
 function GameRoute({match}) {
     return (
@@ -354,7 +371,7 @@ export default class DisGolfScoreCardRoutes extends Component {
         }
         return (
             <div>
-
+                <Loading loading={this.props.loading} />
                 <Route
                     path="/app/players"
                     render={props => (<PlayerPage
