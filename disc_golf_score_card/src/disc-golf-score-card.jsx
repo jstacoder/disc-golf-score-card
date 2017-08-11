@@ -22,6 +22,8 @@ import {
     Badge,
     Label,
     PanelGroup,
+    Table,
+
 } from 'react-bootstrap';
 import PlayerPage from './components/player/player-page';
 import CoursePage from './components/course/course-page';
@@ -49,33 +51,69 @@ class  HistoryItem extends Component {
             this.props.actions.setActive(key);
         }
     }
-   
+    generateHoleTable = (holes, total, player, front_or_back) =>{
+        return holes.length > 0 ? (
+            <Panel>
+            {[(<h4>{player} <small>{front_or_back} nine</small></h4>),
+            (<Table condensed hover bordered fill>
+                <thead>
+                    <tr>
+                        {[<th>Holes</th>].concat(
+                        holes.map( itm =>(
+                            <th>{itm[0]}</th>
+                        ))).concat([<th>total</th>])}
+                    </tr>
+                </thead>
+                <tbody>
+                        <tr>
+                            {[<td>scores</td>].concat(
+                            holes.map( itm =>(
+                                <td>{itm[1]}</td>
+                            ))).concat([<td>{total}</td>])}
+                        </tr>
+                </tbody>
+            </Table>)
+        ]}
+        </Panel>
+        ) : (<span></span>);
+    }
     parseData = (data) =>{
         //const { course, date, holes } = data;
         //const { count, ...players } = data;
         const { course, date, scores } = data;
         let results = [];
-     
+        Object.keys(scores).map( score_data =>{
 
+            //console.log(scores[score_data], score_data);
+            if(scores[score_data]){
+                const { total, scores: player_score } = scores[score_data];
+                results.push({
+                    name: score_data,
+                    scores: player_score,
+                    total,
+                });
+            }
+        });
+        console.log(results);
         return (
             <Col xs={12} md={12}>                
                 
                     <Row>                                
-                        {scores.map( score =>{            
-                            const [ player, hole_scores ] = score;
-                            console.log("PLATYERLL : ", player);                                             
+                        {results.map( result =>{       
+                            console.log(result);     
+                            const { name: player, total, scores: hole_scores } = result;                                                        
+                            const front_nine = hole_scores.slice(0, 9);
+                            const back_nine = hole_scores.length === 9 ? [] : hole_scores.slice(9,18);
+                            //const [ player hole_scores ] = score;
+                            //console.log("PLATYERLL : ", score);                                             
                             const rtn = ( 
                                 <Col xs={12} md={12}>
-                                    <Row>
-                                        <Col xs={3} md={2}>
-                                            <h2>
-                                                <Label bsSize="lg" bsStyle="primary"> {player} </Label>
-                                            </h2> 
+                                    <Row>                                       
+                                        <Col xs={12} md={6}>
+                                            {this.generateHoleTable(front_nine,total, player, 'Front')}
                                         </Col>
-                                        <Col xs={9} md={10}>
-                                            {hole_scores.map( (itm, idx) =>(
-                                                <span>{idx+1} - {itm} |</span>
-                                            ))}
+                                        <Col xs={12} md={6}>
+                                            {this.generateHoleTable(back_nine, total, player, 'Back')}
                                         </Col>
                                     </Row>
                                 </Col>
@@ -95,10 +133,12 @@ class  HistoryItem extends Component {
 class GameHistory extends Component {
     componentWillMount = () => {
         console.log(this.props.actions);
-        this.props.actions.setLoading();
-        this
-            .props
-            .loadHistory().then(this.props.actions.unsetLoading);
+        if(!this.props.history.length){
+            this.props.actions.setLoading();
+            this
+                .props
+                .loadHistory().then(this.props.actions.unsetLoading);
+        }
         //this.props.actions.loadGamesHistory();
     }
     componentDidMount = () =>{
@@ -112,9 +152,9 @@ class GameHistory extends Component {
     }
      parseDate = (date) =>{
         const dateObj = new Date(date);
-        const month = dateObj.getMonth();
+        const month = dateObj.getMonth()+1;
         const year = dateObj.getFullYear();
-        const day = dateObj.getDay()+1;
+        const day = dateObj.getDate();
         return `${month}-${day}-${year}`;
     }
     createListGroup = (children, ...rest) => {
@@ -144,10 +184,10 @@ class GameHistory extends Component {
          if(this.props.history.length){            
             const hist = this.props.history[0];            
                 hist.map( (itm, idx) =>{                    
-                    const { course, date, scores } = itm;
+                    const { course, date, scores, winner } = itm;
                     const goodDate = this.parseDate(date);
                     const header = (
-                        <h3>{course} <Badge pullRight>{goodDate}</Badge></h3>
+                        <h3>{course} <small>winner: {winner}</small> <Badge pullRight>{goodDate}</Badge></h3>
                     );
                     items.push(
                         <Panel eventKey={idx} header={header}>    
@@ -214,7 +254,10 @@ class NewStartPage extends Component {
 
 const Loading = props =>{
     return props.loading ? (
-        <Icon name="spinner" size="4x" spin />
+        <Col xs={1} xsPush={5}>
+            <Icon name="spinner" size="4x" spin />
+        </Col>
+
     ) : (<p></p>);
 };
 

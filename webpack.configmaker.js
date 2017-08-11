@@ -118,7 +118,7 @@ let getConfig = (clean_options) => {
 												new HtmlWebpackPlugin(htmlPluginOptions),
 												new CleanWebpackPlugin(clean_dirs, clean_options),
 												//new BundleAnalyzerPlugin({ analyzerMode: 'static' }),
-
+												new webpack.NamedModulesPlugin(),
 												new webpack
 																.optimize
 																.CommonsChunkPlugin({

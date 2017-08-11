@@ -21,7 +21,7 @@ app = flask.Flask(
 
 app.config.SECRET_KEY = 'secret'
 app.config.SQLALCHEMY_URI = os.environ.get('DATABASE_URL', 'sqlite:///my.db')#os.environ.get('SQLALCHEMY_URI',False) or ('sqlite:///my.db' if use_sqlite else 'postgresql://dgsc:dgsc@localhost:5432/dgsc2')
-app.config.SQLALCHEMY_ECHO = True
+app.config.SQLALCHEMY_ECHO = False
 
 
 app.add_url_rule('/', 'index', view_func=views.IndexView.as_view('index'))

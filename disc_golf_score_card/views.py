@@ -43,7 +43,7 @@ class AddHoleScoreView(BaseView):
         try:
             value = self.request.json['value']
         except Exception as e:
-            print self.request.json
+            #print self.request.json
             raise e
         models.add_score(hole_id, player_id, score_card_id, value)
         rtn = flask.make_response(json.dumps({'result':'success'}))
@@ -135,11 +135,7 @@ class BaseListView(BaseModelView):
             'view_{}'.format(cls.model.__name__.lower())
             )
         )
-        # for c in cls.mro():
-            #     if hasattr(c, '_add_routes') and hasattr(c, '_model') and callable(getattr(c, '_add_routes')):
-            #         getattr(c, '_add_routes')(app)
-
-
+     
     def get(self, obj_id=None):
         if obj_id is not None:
             return self.json(self.model.query.get(obj_id).json)
@@ -177,11 +173,6 @@ class BaseAddView(BaseModelView):
             self._form = self._form_class(**self._form_args)
 
     def post(self, obj_id=None):
-        print self.request.form
-        print self.request.data
-        print self.request.json
-        print self.request.args
-
         _form = self.__class__._form_class(**self.request.json)
         new_model = self.__class__.model(**_form.data).save()
         if new_model.id:
@@ -208,10 +199,7 @@ class BaseAddView(BaseModelView):
                 )
             )
         )
-        # for c in cls.mro():
-            #     if hasattr(c, '_add_routes') and hasattr(c, '_model') and callable(getattr(c, '_add_routes')):
-            #         getattr(c, '_add_routes')(app)
-
+  
 from json import JSONEncoder
 class ModelEncoder(JSONEncoder):
     def default(self, o):
@@ -225,17 +213,16 @@ class GameView(BaseListView):
     _model = models.DiscGolfGame
 
     def get(self, game_id=None):
-        games = models.DiscGolfGame.query.all() if game_id is None else [models.DiscGolfGame.query.get(game_id)]
+        games = models.DiscGolfGame.query.filter(self._model.course != None) if game_id is None else [models.DiscGolfGame.query.get(game_id)]
         scores = filter(None,[
             dict(
-                scores=game.scores, 
+                scores=models.DiscGolfGamePlayerScore.get_scores_for_game(game), 
                 date=game.date.strftime('%Y-%m-%dT%H:%I:%S%Z'), 
-                course=game.course.location
-            ) for game in games 
-            if game.has_complete_score_card() 
-            and game.course is not None             
+                course=game.course.location,
+                winner=game.winner,
+            ) for game in games                          
         ])
-        print scores
+        # print scores
         rtn = json.dumps(scores)
         response = flask.make_response(rtn)
         response.headers['Content-Type'] = 'application/json'

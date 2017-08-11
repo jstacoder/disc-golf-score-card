@@ -161,6 +161,24 @@ class DiscGolfGame(Model):
     course_id = sa.Column(sa.Integer, sa.ForeignKey('disc_golf_courses.id'))
 
     @property
+    def winner(self):
+        players = self.players
+        if players.count() == 1:
+            return players.first().name
+        totals = {
+            player.name: DiscGolfGamePlayerScore.get_player_total(self, player) for player in players.all()
+        }
+        winning_score = 0
+        winner = None
+        for key in totals:
+            if totals[key] > winning_score:
+                winning_score = totals[key]
+                winner = key
+        return winner
+
+
+
+    @property
     def scores(self):
         return [
             (player.name, player.get_scores_for_game(self))
@@ -243,15 +261,41 @@ class DiscGolfGamePlayerScore(Model):
     value = sa.Column(sa.Integer, nullable=False)
 
     @classmethod
-    def get_player_score(cls, hole, player, game):
-        sc = DiscGolfScoreCard.query.filter_by(game=game).first()
-        result = cls.query.filter_by(
-            hole=hole,
-            player=player,
-            score_card=sc
-        ).first()
-        if result:
-            return result.value
+    def get_player_score(cls, game, player, hole):
+        # sc = DiscGolfScoreCard.query.filter_by(game=game).one()
+        # result = cls.query.filter_by(
+        #     hole=hole,
+        #     player=player,
+        #     score_card=sc
+        # )
+        # if result and result.count():
+        #     return result.order_by('-id').first().value
+        # return 0
+        try:
+            return player.get_scores_for_game(game)[hole.number-1]
+        except:
+            return 0
+    
+    @classmethod
+    def get_player_total(cls, game, player):
+        return sum(
+            [cls.get_player_score(game, player, hole) or 0 for hole in game.course.holes.all()]
+        )
+
+    @classmethod
+    def get_scores_for_game(cls, game, player_arg=None):
+        if player_arg is None:
+            players = game.players.all()
+        else:
+            players = [player_arg]        
+        return {
+            player.name: {
+                'scores': [(hole.number, cls.get_player_score(game, player, hole)) for hole in game.course.holes.all()],
+                'total': cls.get_player_total(game, player)                 
+            }            
+            for player in players 
+        }
+
 
     @cached_property
     def json(self):
