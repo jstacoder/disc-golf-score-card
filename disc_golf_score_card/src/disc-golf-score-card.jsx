@@ -32,6 +32,7 @@ import StartGamePage from './components/game/start-game';
 import SelectCourse from './components/course/select-course';
 import CurrentGamePage from './components/game/current-game-page';
 import TurnPage from './components/turn/turn-page';
+import GoBack from './components/widgets/go-back';
 
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -52,24 +53,25 @@ class  HistoryItem extends Component {
         }
     }
     generateHoleTable = (holes, total, player, front_or_back) =>{
+        const tableEndStyle = {width:"60px"};
         return holes.length > 0 ? (
             <Panel>
             {[(<h4>{player} <small>{front_or_back} nine</small></h4>),
             (<Table condensed hover bordered fill>
                 <thead>
                     <tr>
-                        {[<th>Holes</th>].concat(
+                        {[<th style={tableEndStyle}>Holes</th>].concat(
                         holes.map( itm =>(
                             <th>{itm[0]}</th>
-                        ))).concat([<th>total</th>])}
+                        ))).concat([<th style={tableEndStyle}>total</th>])}
                     </tr>
                 </thead>
                 <tbody>
                         <tr>
-                            {[<td>scores</td>].concat(
+                            {[<td style={tableEndStyle}>scores</td>].concat(
                             holes.map( itm =>(
                                 <td>{itm[1]}</td>
-                            ))).concat([<td>{total}</td>])}
+                            ))).concat([<td style={tableEndStyle}>{total}</td>])}
                         </tr>
                 </tbody>
             </Table>)
@@ -200,6 +202,7 @@ class GameHistory extends Component {
             <Grid>
                 <Row>
                     <Col xs={12}>
+                        <GoBack />
                         <PageHeader>
                             History
                         </PageHeader>
@@ -252,10 +255,11 @@ class NewStartPage extends Component {
     }
 }
 
-const Loading = props =>{
+const Loading = props =>{ 
+    const style = { top: '4em', position: 'relative'  };
     return props.loading ? (
         <Col xs={1} xsPush={5}>
-            <Icon name="spinner" size="4x" spin />
+            <Icon name="spinner" size="5x" pulse />
         </Col>
 
     ) : (<p></p>);

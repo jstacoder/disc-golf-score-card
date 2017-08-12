@@ -1,15 +1,21 @@
 from datetime import datetime as dt
 
+from werkzeug.security import check_password_hash, generate_password_hash
 import sqlalchemy as sa 
 from sqlalchemy.ext.declarative import declarative_base, declared_attr
 
 from inflection import underscore, pluralize, humanize
 
 from werkzeug import import_string, cached_property
+from werkzeug.local import Local, LocalProxy
 
-from flask import current_app
+from flask import current_app, g, session as flask_session
 
 from helpers import classproperty
+
+local = Local()
+
+current_user = local('current_user')
 
 cls_registry = dict()
 
@@ -86,7 +92,38 @@ metadata = sa.MetaData(naming_convention=convention)
 Model = declarative_base(cls=BaseModel, metadata=metadata, class_registry=cls_registry)
 
 class User(Model):
+    __table_args__ = (
+        (sa.UniqueConstraint('name', 'email'),)
+    )
+
     name = sa.Column(sa.String(255), nullable=False)
+    email = sa.Column(sa.String(255))
+    _password = sa.Column(sa.String(255))
+
+    @property
+    def password(self):
+        ''' cannot access password '''
+        return None
+
+    @password.setter
+    def password(self, val):
+        self._password = generate_password_hash(val)
+
+    def check_password(self, pw):
+        return check_password_hash(self._password, pw)
+
+    def login(self):
+        g.user = self.id
+        current_user = self
+        flask_session['logged_in'] = True
+    
+    def logout(self):
+        if hasattr(g,'user'):
+            del g.user
+        flask_session['logged_in'] = False
+
+
+
 
 class DiscGolfCourse(Model):
     name = sa.Column(sa.String(255), nullable=False)
