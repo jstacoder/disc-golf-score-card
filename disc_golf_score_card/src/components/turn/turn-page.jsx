@@ -4,6 +4,7 @@ import * as RB from 'react-bootstrap';
 import {LinkContainer} from 'react-router-bootstrap';
 import {Redirect} from 'react-router-dom';
 import Icon from '../widgets/icon';
+import calc from '../../utils/geo';
 
 export default class TurnPage extends Component {
     constructor(props) {
@@ -17,8 +18,31 @@ export default class TurnPage extends Component {
                 .holes
                 .map(itm => {
                     return false;
-                })
+                }),
+            distance: 0,
+            last_latitude:0,
+            last_longitude: 0,
+            updated: false,
         };
+    }
+    setHoleLocationStart = () =>{
+        this.props.actions.setPos();
+        this.props.actions.setPos(false);
+    }
+    updateHoleLocation = () =>{                
+        this.props.actions.setPos(false).then( () =>{
+            const lastPosition = this.props.location.currentPosition.position;
+            const { latitude: last_latitude, longitude: last_longitude } = lastPosition;
+            const { last_latitude: current_latitude, last_longitude: current_longitude } = 
+                this.state.updated ? this.state : { last_latitude, last_longitude};
+            const distance = calc(last_latitude, last_longitude, current_latitude, current_longitude );
+            this.setState({
+                last_latitude,
+                last_longitude,
+                distance,
+                updated: true,
+            });
+        })        
     }
     handleFinish = (goToNext = true, goToLast = false) => {
 
@@ -95,6 +119,7 @@ export default class TurnPage extends Component {
         }
     }
     incrementCount = () => {
+        this.updateHoleLocation();
         this
             .props
             .incrementCount();
@@ -282,11 +307,15 @@ export default class TurnPage extends Component {
             ? 'first player'
             : 'after first player';
         console.log(isFirstPlayer);
+        const hasLocation = this.props.location.loaded;
+        const holeLon = hasLocation ? this.props.location.currentPosition.position.longitude : '';
+        const holeLat = hasLocation ? this.props.location.currentPosition.position.latitude : '';
+        const holeLocation = hasLocation ? (<p>Current Location: {`lat: ${holeLat}, lon: ${holeLon}`} distance: {`${this.state.distance}`}</p>) : (<p></p>);
         return (
             <RB.Grid style={{
                 marginTop: "5%"
             }}>
-                <RB.Row>
+                <RB.Row>                
                     <RB.Col xs={12} sm={12} md={6} lg={8} mdOffset={3} lgOffset={2}>
                         <RB.Row>
                             <RB.Col xs={12}>
@@ -295,6 +324,8 @@ export default class TurnPage extends Component {
                                 </LinkContainer>
                             </RB.Col>
                         </RB.Row>
+                        <RB.Button onClick={this.setHoleLocationStart} block>Track Hole</RB.Button>
+                        {holeLocation}
                         <RB.Panel style={panelStyles}>
                             <RB.PageHeader className='text-center'>{course.display_name}</RB.PageHeader>
                             <RB.Label bsSize='lg' style={labelStyle} bsStyle="success">

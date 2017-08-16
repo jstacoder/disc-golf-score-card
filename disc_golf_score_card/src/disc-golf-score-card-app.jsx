@@ -9,6 +9,7 @@ import * as historyActions from './actions/history';
 import * as turnActions from './actions/current-turn';
 import * as editActions from './actions/editing';
 import * as loadingActions from './actions/loading';
+import * as locationActions from './actions/position';
 import { history } from './store/configureStore';
 import CurrentGamePage from './components/game/current-game-page';
 const Actions = {
@@ -17,6 +18,7 @@ const Actions = {
     ...editActions,
     ...historyActions,
     ...loadingActions,
+    ...locationActions,
 };
 //import { ReduxAsyncConnect, asyncConnect } from 'redux-async-connect';
 
@@ -64,6 +66,7 @@ function mapStateToProps(state){
         editing: state.editing,
         loading: state.loading,
         historyData: state.historyData,
+        location: state.location,
     };
 }
 function mapDispatchToProps(dispatch){

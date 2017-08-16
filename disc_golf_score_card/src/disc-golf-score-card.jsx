@@ -316,12 +316,16 @@ export default class DisGolfScoreCardRoutes extends Component {
                     .actions
                     .loadPlayerNameColors(res);
             });
+        
     }
     handleCourseSelect = (course) => {
         this
             .props
             .actions
             .selectCourse(course);
+        // this.props.actions.setPos();//.then( ()=> {
+        //     alert(`got pos: ${this.props.location.startingPosition.position.latitude}`);
+        // });
     }
     handlePlayerSelect = (player) => {
         this
