@@ -28,6 +28,7 @@ export default class TurnPage extends Component {
     setHoleLocationStart = () =>{
         this.props.actions.setPos();
         this.props.actions.setPos(false);
+
     }
     updateHoleLocation = () =>{                
         this.props.actions.setPos(false).then( () =>{
@@ -36,6 +37,8 @@ export default class TurnPage extends Component {
             const { last_latitude: current_latitude, last_longitude: current_longitude } = 
                 this.state.updated ? this.state : { last_latitude, last_longitude};
             const distance = calc(last_latitude, last_longitude, current_latitude, current_longitude );
+            const player = this.props.gameData.players[this.props.currentTurn.currentPlayerIndex];
+            this.props.actions.addThrowToHole(player.name, this.props.currentTurn.turnNumber, this.props.currentTurn.currentStrokes, distance);
             this.setState({
                 last_latitude,
                 last_longitude,
@@ -250,6 +253,14 @@ export default class TurnPage extends Component {
         }
     }
     componentWillMount() {
+        const player = this.props.gameData.players[this.props.currentTurn.currentPlayerIndex];
+        if(!(player.name in this.props.location.throws)){
+            this.props.actions.addPlayerToThrows(player.name);
+            this.props.actions.addHoleToPlayer(player.name, this.props.currentTurn.turnNumber);
+        }
+        if((player.name in this.props.location.throws) && !(this.props.currentTurn.turnNumber in this.props.location.throws[player.name])){
+            this.props.actions.addHoleToPlayer(player.name, this.props.currentTurn.turnNumber);
+        }
         const currHoleId = this.props.currentTurn.currentHoleId;
         const course = this.props.gameData.course;
         const ended = currHoleId == course.holes[course.holes.length - 1].id;

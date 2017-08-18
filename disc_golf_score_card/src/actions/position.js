@@ -2,8 +2,32 @@ export const SET_STARTING_POSITION = 'SET_STARTING_POSITION';
 export const SET_CURRENT_POSITION = 'SET_CURRENT_POSITION';
 export const STARTING_LOCATION_REQUEST = 'STARTING_LOCATION_REQUEST';
 export const FINISHED_LOCATION_REQUEST = 'FINISHED_LOCATION_REQUEST';
+export const ADD_PLAYER_TO_THROWS = 'ADD_PLAYER_TO_THROWS';
+export const ADD_HOLE_TO_PLAYER = 'ADD_HOLE_TO_PLAYER';
+export const ADD_THROW_TO_HOLE = 'ADD_THROW_TO_HOLE';
 
-
+export const addPlayerToThrows = name =>({
+    type: ADD_PLAYER_TO_THROWS,
+    payload: {
+        name,
+    }
+});
+export const addHoleToPlayer = (name, hole) =>({
+    type: ADD_HOLE_TO_PLAYER,
+    payload:{
+        name,
+        hole,
+    }
+});
+export const addThrowToHole = (name, hole, strokes, distance) =>({
+    type: ADD_THROW_TO_HOLE,
+    payload:{
+        name,
+        hole,
+        strokes,
+        distance,
+    }
+});
 const getPos = (opts) =>{ 
     return new Promise( (resolve, reject) =>{
         navigator.geolocation.getCurrentPosition( (position) =>{
